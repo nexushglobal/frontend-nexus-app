@@ -24,55 +24,53 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { BankInfo } from "@/types/profile.types";
+import { ContactInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreditCard, Hash, Landmark } from "lucide-react";
+import { Globe, Mail, MapPin, Phone } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updateBankInfo } from "../actions/profile";
-import { BankInfoFormData, bankInfoSchema } from "../schemas/profile-schemas";
+import { ContactInfoFormData, contactInfoSchema } from "../../schemas/profile-schemas";
+import { updateContactInfo } from "../../actions/profile";
 
-interface BankInfoModalProps {
+interface ContactInfoModalProps {
     children: React.ReactNode;
-    bankInfo: BankInfo | null;
+    contactInfo: ContactInfo | null;
     onUpdate: () => void;
 }
 
-const banks = [
-    { value: "BCP", label: "Banco de Crédito del Perú (BCP)" },
-    { value: "BBVA", label: "BBVA" },
-    { value: "Interbank", label: "Interbank" },
-    { value: "Scotiabank", label: "Scotiabank" },
-    { value: "Banco de la Nación", label: "Banco de la Nación" },
-    { value: "Banco Pichincha", label: "Banco Pichincha" },
-    { value: "Banbif", label: "Banbif" },
-    { value: "Banco Falabella", label: "Banco Falabella" },
-    { value: "Banco Ripley", label: "Banco Ripley" },
-    { value: "Mi Banco", label: "Mi Banco" },
-    { value: "Otro", label: "Otro" },
+const countries = [
+    { value: "Peru", label: "Perú" },
+    { value: "Colombia", label: "Colombia" },
+    { value: "Ecuador", label: "Ecuador" },
+    { value: "Bolivia", label: "Bolivia" },
+    { value: "Chile", label: "Chile" },
+    { value: "Argentina", label: "Argentina" },
+    // Agrega más países según sea necesario
 ];
 
-export function BankInfoModal({ children, bankInfo, onUpdate }: BankInfoModalProps) {
+export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInfoModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
-    const form = useForm<BankInfoFormData>({
-        resolver: zodResolver(bankInfoSchema),
+    const form = useForm<ContactInfoFormData>({
+        resolver: zodResolver(contactInfoSchema),
         defaultValues: {
-            bankName: bankInfo?.bankName || "",
-            accountNumber: bankInfo?.accountNumber || "",
-            cci: bankInfo?.cci || "",
+            phone: contactInfo?.phone || "",
+            address: contactInfo?.address || "",
+            postalCode: contactInfo?.postalCode || "",
+            country: contactInfo?.country || "Peru",
         },
     });
 
-    const onSubmit = (data: BankInfoFormData) => {
+    const onSubmit = (data: ContactInfoFormData) => {
         startTransition(async () => {
             try {
-                const result = await updateBankInfo({
-                    bankName: data.bankName || undefined,
-                    accountNumber: data.accountNumber || undefined,
-                    cci: data.cci || undefined,
+                const result = await updateContactInfo({
+                    phone: data.phone,
+                    address: data.address || undefined,
+                    postalCode: data.postalCode || undefined,
+                    country: data.country,
                 });
 
                 if (result.success) {
@@ -99,9 +97,10 @@ export function BankInfoModal({ children, bankInfo, onUpdate }: BankInfoModalPro
         if (newOpen) {
             // Reset form when opening
             form.reset({
-                bankName: bankInfo?.bankName || "",
-                accountNumber: bankInfo?.accountNumber || "",
-                cci: bankInfo?.cci || "",
+                phone: contactInfo?.phone || "",
+                address: contactInfo?.address || "",
+                postalCode: contactInfo?.postalCode || "",
+                country: contactInfo?.country || "Peru",
             });
         }
     };
@@ -114,8 +113,8 @@ export function BankInfoModal({ children, bankInfo, onUpdate }: BankInfoModalPro
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Landmark className="h-5 w-5" />
-                        Información Bancaria
+                        <Phone className="h-5 w-5" />
+                        Información de Contacto
                     </DialogTitle>
                 </DialogHeader>
 
@@ -123,48 +122,16 @@ export function BankInfoModal({ children, bankInfo, onUpdate }: BankInfoModalPro
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="bankName"
+                            name="phone"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Banco</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isPending}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <div className="flex items-center gap-2">
-                                                    <Landmark className="h-4 w-4 text-muted-foreground" />
-                                                    <SelectValue placeholder="Selecciona un banco" />
-                                                </div>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {banks.map((bank) => (
-                                                <SelectItem key={bank.value} value={bank.value}>
-                                                    {bank.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="accountNumber"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Número de Cuenta</FormLabel>
+                                    <FormLabel>Teléfono *</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <CreditCard className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 {...field}
-                                                placeholder="1234567800"
+                                                placeholder="958920823"
                                                 className="pl-10"
                                                 disabled={isPending}
                                             />
@@ -177,19 +144,72 @@ export function BankInfoModal({ children, bankInfo, onUpdate }: BankInfoModalPro
 
                         <FormField
                             control={form.control}
-                            name="cci"
+                            name="country"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>CCI (Código de Cuenta Interbancaria)</FormLabel>
+                                    <FormLabel>País *</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={isPending}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <div className="flex items-center gap-2">
+                                                    <Globe className="h-4 w-4 text-muted-foreground" />
+                                                    <SelectValue placeholder="Selecciona un país" />
+                                                </div>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {countries.map((country) => (
+                                                <SelectItem key={country.value} value={country.value}>
+                                                    {country.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="address"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Dirección</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <Hash className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 {...field}
-                                                placeholder="12345678001234567800"
+                                                placeholder="Tu dirección"
                                                 className="pl-10"
                                                 disabled={isPending}
-                                                maxLength={20}
+                                            />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="postalCode"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Código Postal</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                {...field}
+                                                placeholder="12345"
+                                                className="pl-10"
+                                                disabled={isPending}
                                             />
                                         </div>
                                     </FormControl>

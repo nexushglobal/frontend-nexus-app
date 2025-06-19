@@ -17,60 +17,41 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { ContactInfo } from "@/types/profile.types";
+import { BillingInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Globe, Mail, MapPin, Phone } from "lucide-react";
+import { Building, MapPin, Receipt } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updateContactInfo } from "../actions/profile";
-import { ContactInfoFormData, contactInfoSchema } from "../schemas/profile-schemas";
+import { BillingInfoFormData, billingInfoSchema } from "../../schemas/profile-schemas";
+import { updateBillingInfo } from "../../actions/profile";
 
-interface ContactInfoModalProps {
+interface BillingInfoModalProps {
     children: React.ReactNode;
-    contactInfo: ContactInfo | null;
+    billingInfo: BillingInfo | null;
     onUpdate: () => void;
 }
 
-const countries = [
-    { value: "Peru", label: "Perú" },
-    { value: "Colombia", label: "Colombia" },
-    { value: "Ecuador", label: "Ecuador" },
-    { value: "Bolivia", label: "Bolivia" },
-    { value: "Chile", label: "Chile" },
-    { value: "Argentina", label: "Argentina" },
-    // Agrega más países según sea necesario
-];
-
-export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInfoModalProps) {
+export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInfoModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
-    const form = useForm<ContactInfoFormData>({
-        resolver: zodResolver(contactInfoSchema),
+    const form = useForm<BillingInfoFormData>({
+        resolver: zodResolver(billingInfoSchema),
         defaultValues: {
-            phone: contactInfo?.phone || "",
-            address: contactInfo?.address || "",
-            postalCode: contactInfo?.postalCode || "",
-            country: contactInfo?.country || "Peru",
+            ruc: billingInfo?.ruc || "",
+            razonSocial: billingInfo?.razonSocial || "",
+            address: billingInfo?.address || "",
         },
     });
 
-    const onSubmit = (data: ContactInfoFormData) => {
+    const onSubmit = (data: BillingInfoFormData) => {
         startTransition(async () => {
             try {
-                const result = await updateContactInfo({
-                    phone: data.phone,
+                const result = await updateBillingInfo({
+                    ruc: data.ruc || undefined,
+                    razonSocial: data.razonSocial || undefined,
                     address: data.address || undefined,
-                    postalCode: data.postalCode || undefined,
-                    country: data.country,
                 });
 
                 if (result.success) {
@@ -97,10 +78,9 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
         if (newOpen) {
             // Reset form when opening
             form.reset({
-                phone: contactInfo?.phone || "",
-                address: contactInfo?.address || "",
-                postalCode: contactInfo?.postalCode || "",
-                country: contactInfo?.country || "Peru",
+                ruc: billingInfo?.ruc || "",
+                razonSocial: billingInfo?.razonSocial || "",
+                address: billingInfo?.address || "",
             });
         }
     };
@@ -113,8 +93,8 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Phone className="h-5 w-5" />
-                        Información de Contacto
+                        <Receipt className="h-5 w-5" />
+                        Información de Facturación
                     </DialogTitle>
                 </DialogHeader>
 
@@ -122,16 +102,16 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="phone"
+                            name="ruc"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Teléfono *</FormLabel>
+                                    <FormLabel>RUC</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Receipt className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 {...field}
-                                                placeholder="958920823"
+                                                placeholder="12345678910"
                                                 className="pl-10"
                                                 disabled={isPending}
                                             />
@@ -144,31 +124,21 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
 
                         <FormField
                             control={form.control}
-                            name="country"
+                            name="razonSocial"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>País *</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isPending}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <div className="flex items-center gap-2">
-                                                    <Globe className="h-4 w-4 text-muted-foreground" />
-                                                    <SelectValue placeholder="Selecciona un país" />
-                                                </div>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {countries.map((country) => (
-                                                <SelectItem key={country.value} value={country.value}>
-                                                    {country.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <FormLabel>Razón Social</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Building className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                {...field}
+                                                placeholder="Nombre de la empresa"
+                                                className="pl-10"
+                                                disabled={isPending}
+                                            />
+                                        </div>
+                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -179,35 +149,13 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
                             name="address"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Dirección</FormLabel>
+                                    <FormLabel>Dirección Fiscal</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 {...field}
-                                                placeholder="Tu dirección"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="postalCode"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Código Postal</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="12345"
+                                                placeholder="Dirección de la empresa"
                                                 className="pl-10"
                                                 disabled={isPending}
                                             />

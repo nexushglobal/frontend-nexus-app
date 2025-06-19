@@ -17,41 +17,62 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { BillingInfo } from "@/types/profile.types";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { BankInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building, MapPin, Receipt } from "lucide-react";
+import { CreditCard, Hash, Landmark } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updateBillingInfo } from "../actions/profile";
-import { BillingInfoFormData, billingInfoSchema } from "../schemas/profile-schemas";
+import { BankInfoFormData, bankInfoSchema } from "../../schemas/profile-schemas";
+import { updateBankInfo } from "../../actions/profile";
 
-interface BillingInfoModalProps {
+interface BankInfoModalProps {
     children: React.ReactNode;
-    billingInfo: BillingInfo | null;
+    bankInfo: BankInfo | null;
     onUpdate: () => void;
 }
 
-export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInfoModalProps) {
+const banks = [
+    { value: "BCP", label: "Banco de Crédito del Perú (BCP)" },
+    { value: "BBVA", label: "BBVA" },
+    { value: "Interbank", label: "Interbank" },
+    { value: "Scotiabank", label: "Scotiabank" },
+    { value: "Banco de la Nación", label: "Banco de la Nación" },
+    { value: "Banco Pichincha", label: "Banco Pichincha" },
+    { value: "Banbif", label: "Banbif" },
+    { value: "Banco Falabella", label: "Banco Falabella" },
+    { value: "Banco Ripley", label: "Banco Ripley" },
+    { value: "Mi Banco", label: "Mi Banco" },
+    { value: "Otro", label: "Otro" },
+];
+
+export function BankInfoModal({ children, bankInfo, onUpdate }: BankInfoModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
-    const form = useForm<BillingInfoFormData>({
-        resolver: zodResolver(billingInfoSchema),
+    const form = useForm<BankInfoFormData>({
+        resolver: zodResolver(bankInfoSchema),
         defaultValues: {
-            ruc: billingInfo?.ruc || "",
-            razonSocial: billingInfo?.razonSocial || "",
-            address: billingInfo?.address || "",
+            bankName: bankInfo?.bankName || "",
+            accountNumber: bankInfo?.accountNumber || "",
+            cci: bankInfo?.cci || "",
         },
     });
 
-    const onSubmit = (data: BillingInfoFormData) => {
+    const onSubmit = (data: BankInfoFormData) => {
         startTransition(async () => {
             try {
-                const result = await updateBillingInfo({
-                    ruc: data.ruc || undefined,
-                    razonSocial: data.razonSocial || undefined,
-                    address: data.address || undefined,
+                const result = await updateBankInfo({
+                    bankName: data.bankName || undefined,
+                    accountNumber: data.accountNumber || undefined,
+                    cci: data.cci || undefined,
                 });
 
                 if (result.success) {
@@ -76,11 +97,10 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
         if (newOpen) {
-            // Reset form when opening
             form.reset({
-                ruc: billingInfo?.ruc || "",
-                razonSocial: billingInfo?.razonSocial || "",
-                address: billingInfo?.address || "",
+                bankName: bankInfo?.bankName || "",
+                accountNumber: bankInfo?.accountNumber || "",
+                cci: bankInfo?.cci || "",
             });
         }
     };
@@ -93,8 +113,8 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Receipt className="h-5 w-5" />
-                        Información de Facturación
+                        <Landmark className="h-5 w-5" />
+                        Información Bancaria
                     </DialogTitle>
                 </DialogHeader>
 
@@ -102,16 +122,48 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="ruc"
+                            name="bankName"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>RUC</FormLabel>
+                                    <FormLabel>Banco</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={isPending}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <div className="flex items-center gap-2">
+                                                    <Landmark className="h-4 w-4 text-muted-foreground" />
+                                                    <SelectValue placeholder="Selecciona un banco" />
+                                                </div>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {banks.map((bank) => (
+                                                <SelectItem key={bank.value} value={bank.value}>
+                                                    {bank.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="accountNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Número de Cuenta</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <Receipt className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <CreditCard className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 {...field}
-                                                placeholder="12345678910"
+                                                placeholder="1234567800"
                                                 className="pl-10"
                                                 disabled={isPending}
                                             />
@@ -124,40 +176,19 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
 
                         <FormField
                             control={form.control}
-                            name="razonSocial"
+                            name="cci"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Razón Social</FormLabel>
+                                    <FormLabel>CCI (Código de Cuenta Interbancaria)</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <Building className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Hash className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 {...field}
-                                                placeholder="Nombre de la empresa"
+                                                placeholder="12345678001234567800"
                                                 className="pl-10"
                                                 disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dirección Fiscal</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="Dirección de la empresa"
-                                                className="pl-10"
-                                                disabled={isPending}
+                                                maxLength={20}
                                             />
                                         </div>
                                     </FormControl>

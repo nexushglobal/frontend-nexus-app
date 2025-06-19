@@ -22,8 +22,8 @@ import { Camera, Upload, User, X } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updatePhoto } from "../actions/profile";
-import { PhotoFormData, photoSchema } from "../schemas/profile-schemas";
+import { updatePhoto } from "../../actions/profile";
+import { PhotoFormData, photoSchema } from "../../schemas/profile-schemas";
 
 interface PhotoUploadModalProps {
     children: React.ReactNode;
@@ -146,7 +146,6 @@ export function PhotoUploadModal({
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        {/* Foto actual */}
                         <div className="flex flex-col items-center gap-4">
                             <div className="text-center">
                                 <p className="text-sm text-muted-foreground mb-3">Foto actual</p>
@@ -158,7 +157,6 @@ export function PhotoUploadModal({
                                 </Avatar>
                             </div>
 
-                            {/* Preview de la nueva foto */}
                             {preview && (
                                 <div className="text-center">
                                     <p className="text-sm text-muted-foreground mb-3">Vista previa</p>
