@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { LoginModal } from "./LoginModal";
 import { UserMenu } from "./UserMenu";
+import ThemeSwitch from "@/components/common/ThemeSwich";
 
 export function NavbarLanding() {
     const { data: session, status } = useSession();
@@ -28,7 +29,7 @@ export function NavbarLanding() {
                             </span>
                         </Link>
                     </div>
-
+                    <ThemeSwitch />
                     {/* Auth Section */}
                     <div className="flex items-center space-x-4">
                         {status === "loading" ? (
