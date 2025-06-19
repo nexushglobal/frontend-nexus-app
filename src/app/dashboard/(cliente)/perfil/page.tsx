@@ -1,4 +1,4 @@
-export default function HomeDashboard() {
+export default function ProfilePage() {
     return (
         <main className="flex  flex-col items-center justify-between p-24">
             <h1 className="text-4xl font-bold">NEXUS 2.0</h1>

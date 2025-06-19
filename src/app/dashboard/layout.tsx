@@ -1,6 +1,6 @@
 import React from "react";
-// import Navbar from "./components/navigation/Navbar";
-// import Sidebar from "./components/navigation/SIdebar";
+import Navbar from "./components/NavbarDashboard";
+import Sidebar from "./components/Sidebar";
 export default function LayoutDashboard({
     children,
 }: {
@@ -8,9 +8,9 @@ export default function LayoutDashboard({
 }) {
     return (
         <div className="flex">
-            {/* <Sidebar /> */}
+            <Sidebar />
             <div className="flex-1 flex flex-col min-h-screen">
-                {/* <Navbar /> */}
+                <Navbar />
                 <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 p-6">
                     {children}
                 </main>

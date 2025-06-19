@@ -1,3 +1,4 @@
+// src/app/dashboard/components/SidebarLink.tsx
 import {
   Collapsible,
   CollapsibleContent,
@@ -10,7 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { View } from "@/types/user.types";
+import { MenuItem } from "@/types/menu.types";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Award,
@@ -34,6 +35,10 @@ import {
   Users,
   UsersRound,
   Wallet,
+  ShoppingBag,
+  Package,
+  ShoppingCart,
+  Receipt,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -50,6 +55,7 @@ const ICON_MAPPING = {
   membership: Crown,
   "membership-plan": PlaneTakeoff,
   "my-plan": ClipboardCheck,
+  reconsumos: Award, // Para "Mis Reconsumos"
 
   // Puntos
   points: Award,
@@ -64,6 +70,12 @@ const ICON_MAPPING = {
   // Equipo
   team: Users,
 
+  // Tienda
+  store: ShoppingBag,
+  products: Package,
+  cart: ShoppingCart,
+  orders: Receipt,
+
   // Admin
   users: UserCog,
   "membership-admin": Settings,
@@ -75,7 +87,7 @@ const ICON_MAPPING = {
 };
 
 type Props = {
-  item: View;
+  item: MenuItem;
   isCollapsed: boolean;
   isNested?: boolean;
 };

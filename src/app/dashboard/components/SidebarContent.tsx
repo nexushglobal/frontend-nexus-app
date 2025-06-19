@@ -8,22 +8,27 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, LogOut, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { MenuItem } from "@/types/menu.types";
 import SidebarLink from "./SidebarLink";
 
 type Props = {
     isCollapsed: boolean;
     setIsCollapsed: (value: boolean) => void;
     isMobile?: boolean;
+    menuItems: MenuItem[]; // Recibimos los items del menú como prop
 };
 
-const SidebarContent = ({
+export const SidebarContent = ({
     isCollapsed,
     setIsCollapsed,
     isMobile = false,
+    menuItems = [], // Default a array vacío
 }: Props) => {
     const { data: session } = useSession();
     const user = session?.user;
+
     if (!user) return null;
+
     return (
         <motion.div
             initial={false}
@@ -50,7 +55,7 @@ const SidebarContent = ({
                     <Image
                         src="/imgs/logo.png"
                         alt="Logo"
-                        width={100}
+                        width={150}
                         height={40}
                         className="h-10 w-auto"
                     />
@@ -142,11 +147,29 @@ const SidebarContent = ({
                             {user.role.name}
                         </span>
                         {user.nickname && (
-                            <p className="text-sm text-primary">@{user.nickname}</p>
+                            <p className="text-sm ">@{user.nickname}</p>
                         )}
                     </motion.div>
                 </div>
             </div>
+
+            {/* Navegación */}
+            <nav className="flex-1 overflow-y-auto py-4">
+                <motion.div
+                    className="space-y-1 px-2"
+                    transition={{ staggerChildren: 0.05 }}
+                >
+                    {menuItems.map((item) => (
+                        <SidebarLink
+                            key={item.id}
+                            item={item}
+                            isCollapsed={isCollapsed}
+                        />
+                    ))}
+                </motion.div>
+            </nav>
+
+            {/* Cerrar sesión */}
             <motion.div className="p-4 border-t border-gray-800">
                 {isCollapsed ? (
                     <TooltipProvider>
@@ -187,22 +210,6 @@ const SidebarContent = ({
                     </motion.button>
                 )}
             </motion.div>
-            {/* Navegación */}
-            <nav className="flex-1 overflow-y-auto py-4">
-                <motion.div
-                    className="space-y-1 px-2"
-                    transition={{ staggerChildren: 0.05 }}
-                >
-                    {user.views.map((item) => (
-                        <SidebarLink key={item.id} item={item} isCollapsed={isCollapsed} />
-                    ))}
-                </motion.div>
-            </nav>
-
-            {/* Cerrar sesión */}
-
         </motion.div>
     );
 };
-
-export default SidebarContent;

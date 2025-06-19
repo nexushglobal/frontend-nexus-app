@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { LoginModal } from "./LoginModal";
-import { UserMenu } from "./UserMenu";
 import ThemeSwitch from "@/components/common/ThemeSwich";
+import { UserMenu } from "@/components/common/UserMenu";
 
 export function NavbarLanding() {
     const { data: session, status } = useSession();
