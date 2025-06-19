@@ -92,7 +92,12 @@ export function ProfilePageContent() {
 
             {/* Cards Grid */}
             <div className="grid gap-6 md:grid-cols-2">
-                <PersonalInfoCard personalInfo={profile.personalInfo} />
+                <PersonalInfoCard
+                    personalInfo={profile.personalInfo}
+                    currentEmail={profile.email}
+                    currentNickname={profile.nickname}
+                    onUpdate={refetch}
+                />
 
                 <ContactInfoCard
                     contactInfo={profile.contactInfo}

@@ -9,6 +9,14 @@ import {
 } from "@/types/profile.types";
 import { ActionResponse } from "@/types/user.types";
 
+// Tipo para la actualización de información personal
+interface PersonalInfoRequest {
+  nickname?: string;
+  email?: string;
+  documentType?: "DNI" | "CE" | "PAS";
+  documentNumber?: string;
+}
+
 export async function getProfile(): Promise<ActionResponse<ProfileData>> {
   try {
     const apiResponse = await httpClient<ProfileData>("/api/user/profile", {
@@ -137,6 +145,45 @@ export async function updatePhoto(
     return {
       success: false,
       message: "Error al actualizar la foto",
+      data: null,
+      errors: error,
+    };
+  }
+}
+export async function updatePersonalInfo(data: {
+  nickname?: string;
+  email?: string;
+  documentType?: string;
+  documentNumber?: string;
+}): Promise<ActionResponse<null>> {
+  try {
+    // Limpiar datos vacíos
+    const cleanData = Object.entries(data).reduce((acc, [key, value]) => {
+      if (value && value.trim() !== "") {
+        acc[key] = value.trim();
+      }
+      return acc;
+    }, {} as any);
+
+    const apiResponse = await httpClient<null>(
+      "/api/user/profile/personal-info",
+      {
+        method: "PUT",
+        body: cleanData,
+      }
+    );
+
+    return {
+      success: apiResponse.success,
+      message: apiResponse.message || "Información personal actualizada",
+      data: apiResponse.data,
+      errors: apiResponse.errors,
+    };
+  } catch (error: any) {
+    console.error("Error updating personal info:", error);
+    return {
+      success: false,
+      message: "Error al actualizar información personal",
       data: null,
       errors: error,
     };

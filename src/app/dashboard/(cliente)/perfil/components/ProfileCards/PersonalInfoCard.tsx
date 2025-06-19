@@ -1,12 +1,22 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PersonalInfo } from "@/types/profile.types";
-import { User } from "lucide-react";
+import { Edit, User } from "lucide-react";
+import { PersonalInfoModal } from "../modal/PersonalInfoModal";
 
 interface PersonalInfoCardProps {
     personalInfo: PersonalInfo | null;
+    currentEmail: string;
+    currentNickname?: string | null;
+    onUpdate: () => void;
 }
 
-export function PersonalInfoCard({ personalInfo }: PersonalInfoCardProps) {
+export function PersonalInfoCard({
+    personalInfo,
+    currentEmail,
+    currentNickname,
+    onUpdate
+}: PersonalInfoCardProps) {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('es-ES', {
             year: 'numeric',
@@ -22,10 +32,30 @@ export function PersonalInfoCard({ personalInfo }: PersonalInfoCardProps) {
                     <User className="h-5 w-5" />
                     Información Personal
                 </CardTitle>
+                <PersonalInfoModal
+                    personalInfo={personalInfo}
+                    currentEmail={currentEmail}
+                    currentNickname={currentNickname}
+                    onUpdate={onUpdate}
+                >
+                    <Button size="sm" variant="outline">
+                        <Edit className="h-4 w-4" />
+                    </Button>
+                </PersonalInfoModal>
             </CardHeader>
             <CardContent className="space-y-4">
                 {personalInfo ? (
                     <>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm text-muted-foreground">Email</p>
+                                <p className="font-medium">{currentEmail}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Nickname</p>
+                                <p className="font-medium">{currentNickname || "No establecido"}</p>
+                            </div>
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-muted-foreground">Nombre</p>
@@ -58,7 +88,21 @@ export function PersonalInfoCard({ personalInfo }: PersonalInfoCardProps) {
                         </div>
                     </>
                 ) : (
-                    <p className="text-muted-foreground">No hay información personal disponible</p>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm text-muted-foreground">Email</p>
+                                <p className="font-medium">{currentEmail}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Nickname</p>
+                                <p className="font-medium">{currentNickname || "No establecido"}</p>
+                            </div>
+                        </div>
+                        <p className="text-muted-foreground text-sm">
+                            Información personal básica no completada
+                        </p>
+                    </div>
                 )}
             </CardContent>
         </Card>
