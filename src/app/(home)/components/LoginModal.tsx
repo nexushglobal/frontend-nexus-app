@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Loader2, Mail, Lock } from "lucide-react";
+import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -26,6 +26,7 @@ export function LoginModal({ children }: LoginModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
     const router = useRouter();
 
@@ -80,6 +81,7 @@ export function LoginModal({ children }: LoginModalProps) {
                 setOpen(false);
                 setEmail("");
                 setPassword("");
+                setShowPassword(false);
                 setErrors({});
                 router.push("/dashboard");
                 router.refresh(); // Refresh para actualizar el estado de la sesión
@@ -91,6 +93,10 @@ export function LoginModal({ children }: LoginModalProps) {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -134,16 +140,31 @@ export function LoginModal({ children }: LoginModalProps) {
                             <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 id="password"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => {
                                     setPassword(e.target.value);
                                     if (errors.password) setErrors({ ...errors, password: undefined });
                                 }}
-                                className={`pl-10 ${errors.password ? 'border-destructive' : ''}`}
+                                className={`pl-10 pr-10 ${errors.password ? 'border-destructive' : ''}`}
                                 disabled={isLoading}
                             />
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                onClick={togglePasswordVisibility}
+                                disabled={isLoading}
+                                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                            >
+                                {showPassword ? (
+                                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                ) : (
+                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                )}
+                            </Button>
                         </div>
                         {errors.password && (
                             <p className="text-sm text-destructive">{errors.password}</p>

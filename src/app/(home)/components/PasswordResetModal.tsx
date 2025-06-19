@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Mail, Lock, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { Mail, Lock, ArrowLeft, Check, Loader2, Eye, EyeOff } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -33,6 +33,10 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    // Password visibility state
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     // Validation errors
     const [errors, setErrors] = useState<{
         email?: string;
@@ -47,6 +51,8 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
         setCode("");
         setNewPassword("");
         setConfirmPassword("");
+        setShowNewPassword(false);
+        setShowConfirmPassword(false);
         setErrors({});
     };
 
@@ -149,6 +155,14 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
         setOpen(false);
         // Reset after animation
         setTimeout(resetForm, 300);
+    };
+
+    const toggleNewPasswordVisibility = () => {
+        setShowNewPassword(!showNewPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     };
 
     const renderStepContent = () => {
@@ -285,16 +299,31 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
                                     <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         id="new-password"
-                                        type="password"
+                                        type={showNewPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         value={newPassword}
                                         onChange={(e) => {
                                             setNewPassword(e.target.value);
                                             if (errors.newPassword) setErrors({ ...errors, newPassword: undefined });
                                         }}
-                                        className={`pl-10 ${errors.newPassword ? 'border-destructive' : ''}`}
+                                        className={`pl-10 pr-10 ${errors.newPassword ? 'border-destructive' : ''}`}
                                         disabled={isPending}
                                     />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={toggleNewPasswordVisibility}
+                                        disabled={isPending}
+                                        aria-label={showNewPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                    >
+                                        {showNewPassword ? (
+                                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                        ) : (
+                                            <Eye className="h-4 w-4 text-muted-foreground" />
+                                        )}
+                                    </Button>
                                 </div>
                                 {errors.newPassword && (
                                     <p className="text-sm text-destructive">{errors.newPassword}</p>
@@ -307,16 +336,31 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
                                     <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         id="confirm-password"
-                                        type="password"
+                                        type={showConfirmPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         value={confirmPassword}
                                         onChange={(e) => {
                                             setConfirmPassword(e.target.value);
                                             if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: undefined });
                                         }}
-                                        className={`pl-10 ${errors.confirmPassword ? 'border-destructive' : ''}`}
+                                        className={`pl-10 pr-10 ${errors.confirmPassword ? 'border-destructive' : ''}`}
                                         disabled={isPending}
                                     />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={toggleConfirmPasswordVisibility}
+                                        disabled={isPending}
+                                        aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                    >
+                                        {showConfirmPassword ? (
+                                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                        ) : (
+                                            <Eye className="h-4 w-4 text-muted-foreground" />
+                                        )}
+                                    </Button>
                                 </div>
                                 {errors.confirmPassword && (
                                     <p className="text-sm text-destructive">{errors.confirmPassword}</p>
