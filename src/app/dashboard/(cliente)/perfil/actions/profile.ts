@@ -189,3 +189,29 @@ export async function updatePersonalInfo(data: {
     };
   }
 }
+export async function changePassword(data: {
+  currentPassword: string;
+  newPassword: string;
+}): Promise<ActionResponse<null>> {
+  try {
+    const apiResponse = await httpClient<null>("/api/profile/change-password", {
+      method: "POST",
+      body: data,
+    });
+
+    return {
+      success: apiResponse.success,
+      message: apiResponse.message || "Contraseña actualizada correctamente",
+      data: apiResponse.data,
+      errors: apiResponse.errors,
+    };
+  } catch (error: any) {
+    console.error("Error changing password:", error);
+    return {
+      success: false,
+      message: "Error al cambiar la contraseña",
+      data: null,
+      errors: error,
+    };
+  }
+}

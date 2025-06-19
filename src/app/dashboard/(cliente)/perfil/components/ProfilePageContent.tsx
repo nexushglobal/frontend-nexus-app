@@ -13,6 +13,7 @@ import { BillingInfoCard } from "./ProfileCards/BillingInfoCard";
 import { ContactInfoCard } from "./ProfileCards/ContactInfoCard";
 import { PersonalInfoCard } from "./ProfileCards/PersonalInfoCard";
 import { ReferralCodesCard } from "./ProfileCards/ReferralCodesCard";
+import { SecurityCard } from "./ProfileCards/SecurityCard";
 import { ProfilePageSkeleton } from "./ProfilePageSkeleton";
 
 export function ProfilePageContent() {
@@ -91,7 +92,7 @@ export function ProfilePageContent() {
             </div>
 
             {/* Cards Grid */}
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <PersonalInfoCard
                     personalInfo={profile.personalInfo}
                     currentEmail={profile.email}
@@ -111,6 +112,10 @@ export function ProfilePageContent() {
 
                 <BankInfoCard
                     bankInfo={profile.bankInfo}
+                    onUpdate={refetch}
+                />
+
+                <SecurityCard
                     onUpdate={refetch}
                 />
             </div>
