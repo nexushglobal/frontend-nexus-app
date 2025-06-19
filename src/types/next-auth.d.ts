@@ -1,5 +1,6 @@
 import { DefaultSession, DefaultUser } from "next-auth";
-import { UserClient, View } from "./user.types";
+import { UserClient } from "./user.types";
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
     accessToken: string;
@@ -7,6 +8,7 @@ declare module "next-auth" {
     error?: string;
     user: UserClient & DefaultSession["user"];
   }
+
   interface User extends DefaultUser, UserClient {
     accessToken: string;
     refreshToken: string;
@@ -17,18 +19,18 @@ declare module "next-auth" {
     firstName: string;
     lastName: string;
     role: {
-      id: number;
+      id: string; // Cambiado de number a string
       code: string;
       name: string;
     };
   }
 }
+
 declare module "next-auth/jwt" {
   interface JWT {
     accessToken: string;
     refreshToken: string;
     error?: string;
     user: UserClient;
-    error?: string;
   }
 }

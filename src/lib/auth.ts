@@ -1,5 +1,37 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+
+// Interfaces para el nuevo estándar de API
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message: string;
+  errors: any;
+}
+
+interface LoginData {
+  user: {
+    id: string;
+    email: string;
+    photo?: string;
+    nickname?: string;
+    firstName: string;
+    lastName: string;
+    role: {
+      id: string;
+      code: string;
+      name: string;
+    };
+  };
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface RefreshData {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -10,6 +42,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+
         try {
           const res = await fetch(
             `${process.env.API_BACKENDL_URL}/api/auth/login`,
@@ -22,16 +55,26 @@ export const authOptions: NextAuthOptions = {
               }),
             }
           );
-          const data = await res.json();
-          if (res.ok && data.user) {
+
+          const response: ApiResponse<LoginData> = await res.json();
+
+          // Verificar si la respuesta es exitosa según el nuevo estándar
+          if (res.ok && response.success && response.data?.user) {
             return {
-              ...data.user,
-              accessToken: data.accessToken,
-              refreshToken: data.refreshToken,
+              ...response.data.user,
+              accessToken: response.data.accessToken,
+              refreshToken: response.data.refreshToken,
             };
           }
+
+          // Si hay errores específicos, los logueamos
+          if (response.errors) {
+            console.error("Login errors:", response.errors);
+          }
+
           return null;
-        } catch {
+        } catch (error) {
+          console.error("Login error:", error);
           return null;
         }
       },
@@ -39,6 +82,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account }) {
+      // Si es el primer login
       if (account && user) {
         return {
           ...token,
@@ -55,34 +99,64 @@ export const authOptions: NextAuthOptions = {
           },
         };
       }
-      const currentTimestamp = Math.floor(Date.now() / 1000);
-      const tokenData = JSON.parse(atob(token.accessToken.split(".")[1]));
-      if (tokenData.exp < currentTimestamp) {
-        try {
-          const response = await fetch(
-            `${process.env.API_BACKENDL_URL}/api/auth/refresh`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ refreshToken: token.refreshToken }),
+
+      // Verificar si el token ha expirado
+      try {
+        const tokenData = JSON.parse(atob(token.accessToken.split(".")[1]));
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+
+        // Si el token está por expirar (con 1 minuto de margen)
+        if (tokenData.exp < currentTimestamp + 60) {
+          try {
+            const response = await fetch(
+              `${process.env.API_BACKENDL_URL}/api/auth/refresh`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refreshToken: token.refreshToken }),
+              }
+            );
+
+            const refreshResponse: ApiResponse<RefreshData> =
+              await response.json();
+
+            if (
+              response.ok &&
+              refreshResponse.success &&
+              refreshResponse.data
+            ) {
+              // Actualizar tokens
+              token.accessToken = refreshResponse.data.accessToken;
+              token.refreshToken = refreshResponse.data.refreshToken;
+
+              // Limpiar cualquier error previo
+              delete token.error;
+            } else {
+              console.error(
+                "Refresh token error:",
+                refreshResponse.errors || refreshResponse.message
+              );
+              return { ...token, error: "RefreshAccessTokenError" };
             }
-          );
-          const data = await response.json();
-          if (response.ok) {
-            token.accessToken = data.accessToken;
-            token.refreshToken = data.refreshToken;
+          } catch (error) {
+            console.error("Error refreshing token:", error);
+            return { ...token, error: "RefreshAccessTokenError" };
           }
-        } catch (error) {
-          console.error("Error refreshing token:", error);
-          return { ...token, error: "RefreshAccessTokenError" };
         }
+      } catch (error) {
+        console.error("Error parsing token:", error);
+        return { ...token, error: "InvalidTokenError" };
       }
+
       return token;
     },
     async session({ session, token }) {
+      // Pasar los datos del token a la sesión
       session.user = token.user;
       session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
       session.error = token.error;
+
       return session;
     },
   },
@@ -96,6 +170,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60,
+    maxAge: 24 * 60 * 60, // 24 horas
   },
 };

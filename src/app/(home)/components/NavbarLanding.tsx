@@ -1,8 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { LoginModal } from "./LoginModal";
+import { UserMenu } from "./UserMenu";
 
 export function NavbarLanding() {
+    const { data: session, status } = useSession();
+
     return (
         <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,13 +29,26 @@ export function NavbarLanding() {
                         </Link>
                     </div>
 
-                    {/* Botón de Ingresar */}
-                    <div className="flex items-center">
-                        <Button asChild>
-                            <Link href="/login">
-                                Ingresar
-                            </Link>
-                        </Button>
+                    {/* Auth Section */}
+                    <div className="flex items-center space-x-4">
+                        {status === "loading" ? (
+                            <div className="h-8 w-20 bg-muted animate-pulse rounded" />
+                        ) : session ? (
+                            <div className="flex items-center space-x-3">
+                                <Button asChild variant="outline">
+                                    <Link href="/dashboard">
+                                        Dashboard
+                                    </Link>
+                                </Button>
+                                <UserMenu />
+                            </div>
+                        ) : (
+                            <LoginModal>
+                                <Button>
+                                    Ingresar
+                                </Button>
+                            </LoginModal>
+                        )}
                     </div>
                 </div>
             </div>
