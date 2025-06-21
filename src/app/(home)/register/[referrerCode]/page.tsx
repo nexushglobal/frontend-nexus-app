@@ -1,75 +1,60 @@
-"use client";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RegisterPageContent } from "./RegisterPageContent";
 
-import { motion } from "framer-motion";
-import { useParams, useSearchParams } from "next/navigation";
+interface RegisterPageProps {
+  params: Promise<{ referrerCode: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-export default function RegisterPage() {
-  const params = useParams<{ referrerCode: string }>();
-  const searchParams = useSearchParams();
-  const position = searchParams.get("lado");
-  const referrerCode = params.referrerCode;
+function RegisterPageSkeleton() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-8 space-y-4">
+          <Skeleton className="h-12 w-80 mx-auto" />
+          <Skeleton className="h-6 w-96 mx-auto" />
+          <Skeleton className="h-8 w-48 mx-auto" />
+        </div>
+
+        <div className="max-w-2xl mx-auto">
+          <Skeleton className="h-24 w-full mb-6" />
+          <div className="bg-card border rounded-lg p-6 space-y-6">
+            <Skeleton className="h-8 w-64 mx-auto" />
+            <div className="space-y-4">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default async function RegisterPage({
+  params,
+  searchParams
+}: RegisterPageProps) {
+  const { referrerCode } = await params;
+  const searchParamsResolved = await searchParams;
+
+  const lado = searchParamsResolved.lado as string;
+  const position = lado === "izquierda" ? "LEFT" : lado === "derecha" ? "RIGHT" : null;
 
   return (
-    <div className=" flex flex-col">
-
-
-      <main className="flex-1 py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8 text-center"
-          >
-            <h1 className="text-3xl font-bold tracking-tight">
-              Únete a Nexus H. Global
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              {referrerCode !== "new" ? (
-                <>
-                  Te estás registrando con el código de referido:{" "}
-                  <span className="font-semibold">{referrerCode}</span>
-                  {position && (
-                    <>
-                      {" "}
-                      en el lado{" "}
-                      <span className="font-semibold">
-                        {position === "izquierda" ? "izquierdo" : "derecho"}
-                      </span>
-                    </>
-                  )}
-                  {!position && (
-                    <>
-                      {" "}
-                      en el lado{" "}
-                      <span className="font-semibold">
-                        derecho (por defecto)
-                      </span>
-                    </>
-                  )}
-                </>
-              ) : (
-                "Crea tu cuenta para acceder a la plataforma"
-              )}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-
-          </motion.div>
-        </div>
+    <div className="flex flex-col">
+      <main className="flex-1">
+        <Suspense fallback={<RegisterPageSkeleton />}>
+          <RegisterPageContent
+            referrerCode={referrerCode}
+            position={position}
+          />
+        </Suspense>
       </main>
 
-      <footer className="border-t py-6 px-4 text-center text-muted-foreground text-sm">
-        <p>
-          © {new Date().getFullYear()} Nexus Global Network. Todos los derechos
-          reservados.
-        </p>
-      </footer>
+
     </div>
   );
 }
