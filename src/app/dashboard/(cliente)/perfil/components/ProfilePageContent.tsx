@@ -120,12 +120,8 @@ export function ProfilePageContent() {
                 />
             </div>
 
-            {/* Referral Codes */}
             <ReferralCodesCard
                 referralCode={profile.referralCode}
-                referrerCode={profile.referrerCode}
-                copiedField={copiedField}
-                onCopy={copyToClipboard}
             />
         </div>
     );
