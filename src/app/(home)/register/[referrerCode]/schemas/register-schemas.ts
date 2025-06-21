@@ -48,7 +48,7 @@ export const personalInfoStepSchema = z.object({
   country: z.string().min(1, "El país es requerido").trim(),
 });
 
-// Schema base para credenciales (sin confirmPassword)
+// Schema base para credenciales (sin confirmPassword ni términos)
 export const baseCredentialsSchema = z.object({
   email: z
     .string()
@@ -64,10 +64,13 @@ export const baseCredentialsSchema = z.object({
     ),
 });
 
-// Schema para el paso 3 - Credenciales (con confirmPassword y validación)
+// Schema para el paso 3 - Credenciales (con confirmPassword y términos)
 export const credentialsStepSchema = baseCredentialsSchema
   .extend({
     confirmPassword: z.string().min(1, "Confirma tu contraseña"),
+    acceptTerms: z.boolean().refine((val) => val === true, {
+      message: "Debes aceptar los términos y condiciones para continuar",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden",
@@ -77,7 +80,7 @@ export const credentialsStepSchema = baseCredentialsSchema
 // Schema completo del registro
 export const completeRegistrationSchema = documentStepSchema
   .merge(personalInfoStepSchema)
-  .merge(baseCredentialsSchema) // Usar el schema base sin confirmPassword
+  .merge(baseCredentialsSchema) // Usar el schema base sin confirmPassword ni términos
   .extend({
     referrerCode: z.string().optional(),
     position: PositionEnum.optional(),

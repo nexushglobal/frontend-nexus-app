@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Form,
     FormControl,
@@ -10,8 +11,9 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, FileText, Loader2, Lock, Mail } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,6 +23,7 @@ import {
     CredentialsStepData,
     credentialsStepSchema,
 } from "../../schemas/register-schemas";
+import { TermsAndConditionsModal } from "@/components/common/TermsAndConditionsModal";
 
 interface CredentialsStepProps {
     onPrevious: () => void;
@@ -37,6 +40,7 @@ export function CredentialsStep({
 }: CredentialsStepProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showTermsModal, setShowTermsModal] = useState(false);
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<CredentialsStepData>({
@@ -45,13 +49,14 @@ export function CredentialsStep({
             email: defaultValues?.email || "",
             password: defaultValues?.password || "",
             confirmPassword: defaultValues?.confirmPassword || "",
+            acceptTerms: defaultValues?.acceptTerms || false,
         },
     });
 
     const onSubmit = (data: CredentialsStepData) => {
         startTransition(async () => {
             try {
-                // Combinar todos los datos del registro
+                // Combinar todos los datos del registro (sin incluir acceptTerms)
                 const completeData: CompleteRegistrationData = {
                     ...registrationData,
                     email: data.email,
@@ -84,6 +89,15 @@ export function CredentialsStep({
 
     const toggleConfirmPasswordVisibility = () => {
         setShowConfirmPassword(!showConfirmPassword);
+    };
+
+    const handleTermsAccept = (accepted: boolean) => {
+        form.setValue("acceptTerms", accepted, { shouldValidate: true });
+    };
+
+    const handleTermsLinkClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setShowTermsModal(true);
     };
 
     return (
@@ -204,6 +218,50 @@ export function CredentialsStep({
                         </ul>
                     </div>
 
+                    {/* Términos y Condiciones */}
+                    <FormField
+                        control={form.control}
+                        name="acceptTerms"
+                        render={({ field }) => (
+                            <FormItem>
+                                <div className="border border-primary/20 bg-primary/5 rounded-lg p-4">
+                                    <div className="flex items-start space-x-3">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                disabled={isPending}
+                                                className="mt-1"
+                                            />
+                                        </FormControl>
+                                        <div className="space-y-1">
+                                            <Label
+                                                className="text-sm font-medium leading-relaxed cursor-pointer"
+                                                onClick={() => field.onChange(!field.value)}
+                                            >
+                                                Acepto los{" "}
+                                                <button
+                                                    type="button"
+                                                    onClick={handleTermsLinkClick}
+                                                    className="text-primary hover:text-primary/80 underline underline-offset-2 inline-flex items-center gap-1"
+                                                    disabled={isPending}
+                                                >
+                                                    <FileText className="h-3 w-3" />
+                                                    términos y condiciones
+                                                </button>
+                                                {" "}de Nexus H. Global
+                                            </Label>
+                                            <p className="text-xs text-muted-foreground">
+                                                Al registrarte, aceptas nuestros términos de servicio y política de privacidad.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <div className="flex gap-3 pt-4">
                         <Button
                             type="button"
@@ -232,6 +290,14 @@ export function CredentialsStep({
                     </div>
                 </form>
             </Form>
+
+            {/* Modal de Términos y Condiciones */}
+            <TermsAndConditionsModal
+                open={showTermsModal}
+                onOpenChange={setShowTermsModal}
+                onAccept={handleTermsAccept}
+                isAccepted={form.watch("acceptTerms")}
+            />
         </div>
     );
 }

@@ -52,7 +52,7 @@ export function RegisterForm({ referrerCode, position }: RegisterFormProps) {
         setCurrentStep(step);
     };
 
-    const getRegistrationData = (): Omit<CompleteRegistrationData, keyof CredentialsStepData> => {
+    const getRegistrationData = (): Omit<CompleteRegistrationData, "email" | "password"> => {
         return {
             documentType: stepData.document!.documentType,
             documentNumber: stepData.document!.documentNumber,
