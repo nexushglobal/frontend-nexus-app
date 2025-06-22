@@ -21,7 +21,7 @@ export function ProfilePageSkeleton() {
             <CardContent className="pt-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                     {/* Avatar */}
-                    <div className="relative">
+                    <div className="relative flex-shrink-0">
                         <Skeleton className="h-20 w-20 md:h-24 md:w-24 rounded-full" />
                         <Skeleton className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full" />
                     </div>
@@ -34,8 +34,8 @@ export function ProfilePageSkeleton() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2">
-                            <Skeleton className="h-6 w-16" /> {/* Active badge */}
-                            <Skeleton className="h-6 w-20" /> {/* Nickname badge */}
+                            <Skeleton className="h-6 w-20" /> {/* Completion badge */}
+                            <Skeleton className="h-6 w-16" /> {/* Nickname badge */}
                         </div>
                     </div>
                 </div>
@@ -43,36 +43,89 @@ export function ProfilePageSkeleton() {
         </Card>
     );
 
+    const AlertSkeleton = () => (
+        <Card className="mb-6 border-muted">
+            <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                    <Skeleton className="h-4 w-4" />
+                    <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="h-3 w-64" />
+                    </div>
+                    {!isMobile && (
+                        <div className="flex gap-2">
+                            <Skeleton className="h-8 w-24" />
+                            <Skeleton className="h-8 w-20" />
+                        </div>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
+    );
+
     const OverviewSkeleton = () => (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[...Array(3)].map((_, i) => (
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[...Array(2)].map((_, i) => (
                     <Card key={i}>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center space-x-2">
-                                <Skeleton className="h-5 w-5" />
-                                <div className="space-y-2">
-                                    <Skeleton className="h-4 w-24" />
-                                    <Skeleton className="h-6 w-16" />
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <Skeleton className="h-12 w-12 rounded-lg" />
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-24" />
+                                        <Skeleton className="h-8 w-16" />
+                                        <Skeleton className="h-3 w-20" />
+                                    </div>
                                 </div>
+                                {i === 0 && <Skeleton className="h-16 w-16 rounded-full" />}
                             </div>
                         </CardContent>
                     </Card>
                 ))}
             </div>
 
-            <Card>
-                <CardHeader>
-                    <Skeleton className="h-6 w-40" />
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[...Array(4)].map((_, i) => (
-                            <div key={i} className="space-y-2">
-                                <Skeleton className="h-4 w-20" />
+            {/* Info Sections */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                    <Card key={i}>
+                        <CardHeader className="pb-3">
+                            <div className="flex items-center gap-2">
+                                <Skeleton className="h-5 w-5" />
                                 <Skeleton className="h-5 w-32" />
                             </div>
-                        ))}
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {[...Array(3)].map((_, j) => (
+                                <div key={j} className="flex items-start gap-3 p-2 rounded-lg border">
+                                    <Skeleton className="h-4 w-4 mt-0.5" />
+                                    <div className="flex-1 space-y-1">
+                                        <Skeleton className="h-3 w-16" />
+                                        <Skeleton className="h-4 w-24" />
+                                    </div>
+                                    <Skeleton className="h-4 w-4" />
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+
+            {/* Suggestion Card */}
+            <Card className="border-muted">
+                <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                        <Skeleton className="h-9 w-9 rounded-lg" />
+                        <div className="flex-1 space-y-3">
+                            <Skeleton className="h-5 w-64" />
+                            <Skeleton className="h-4 w-80" />
+                            <div className="flex flex-wrap gap-2">
+                                {[...Array(4)].map((_, i) => (
+                                    <Skeleton key={i} className="h-6 w-20 rounded-full" />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -82,18 +135,27 @@ export function ProfilePageSkeleton() {
     const SectionContentSkeleton = () => (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <Skeleton className="h-5 w-5" />
-                    <Skeleton className="h-6 w-40" />
+                <div className="flex items-center gap-3">
+                    <Skeleton className="h-9 w-9 rounded-lg" />
+                    <div className="space-y-2">
+                        <Skeleton className="h-5 w-40" />
+                        <div className="flex items-center gap-2">
+                            <Skeleton className="h-1.5 w-20 rounded-full" />
+                            <Skeleton className="h-3 w-16" />
+                        </div>
+                    </div>
                 </div>
-                <Skeleton className="h-8 w-8" />
+                <Skeleton className="h-9 w-20" />
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="space-y-2">
-                            <Skeleton className="h-4 w-24" />
-                            <Skeleton className="h-5 w-full" />
+                        <div key={i} className="flex items-center gap-2 p-2.5 rounded-lg border">
+                            <Skeleton className="h-4 w-4" />
+                            <div className="flex-1 space-y-1">
+                                <Skeleton className="h-3 w-16" />
+                                <Skeleton className="h-4 w-24" />
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -104,7 +166,7 @@ export function ProfilePageSkeleton() {
     const SidebarSkeleton = () => (
         <Card>
             <CardHeader>
-                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-5 w-48" />
             </CardHeader>
             <CardContent className="p-0">
                 <div className="space-y-1">
@@ -112,9 +174,13 @@ export function ProfilePageSkeleton() {
                         <div key={i} className="px-4 py-3 flex items-center gap-3">
                             <Skeleton className="h-4 w-4" />
                             <div className="flex-1 space-y-1">
-                                <Skeleton className="h-4 w-20" />
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-4 w-20" />
+                                    {i < 3 && <Skeleton className="h-3 w-3" />} {/* Warning icon */}
+                                </div>
                                 <Skeleton className="h-3 w-32" />
                             </div>
+                            {i === 0 && <Skeleton className="h-4 w-4" />} {/* Check icon */}
                         </div>
                     ))}
                 </div>
@@ -137,7 +203,7 @@ export function ProfilePageSkeleton() {
     const MobileMoreSkeleton = () => (
         <div className="grid grid-cols-2 gap-2 mt-4">
             {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-20 border rounded-lg flex flex-col items-center justify-center gap-2 bg-muted/50">
+                <div key={i} className="h-20 border rounded-lg flex flex-col items-center justify-center gap-2 bg-muted/30">
                     <Skeleton className="h-5 w-5" />
                     <Skeleton className="h-3 w-16" />
                 </div>
@@ -149,6 +215,7 @@ export function ProfilePageSkeleton() {
         return (
             <div className="container mx-auto p-4 space-y-6 animate-pulse">
                 <HeaderSkeleton />
+                <AlertSkeleton />
                 <MobileTabsSkeleton />
                 <MobileMoreSkeleton />
             </div>
@@ -158,6 +225,7 @@ export function ProfilePageSkeleton() {
     return (
         <div className="container mx-auto p-6 space-y-6 animate-pulse">
             <HeaderSkeleton />
+            <AlertSkeleton />
 
             <div className="grid grid-cols-12 gap-6">
                 {/* Sidebar Skeleton */}

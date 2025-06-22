@@ -2,13 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import {
     Form,
     FormControl,
     FormField,
@@ -32,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ContactInfoFormData, contactInfoSchema } from "../../schemas/profile-schemas";
 import { updateContactInfo } from "../../actions/profile";
+import { ResponsiveModal } from "@/components/common/ResponsiveModal";
 
 interface ContactInfoModalProps {
     children: React.ReactNode;
@@ -78,14 +72,20 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
                 });
 
                 if (result.success) {
-                    toast.success("Información de contacto actualizada correctamente");
+                    toast.success("Información actualizada", {
+                        description: "Tu información de contacto se ha actualizado correctamente",
+                    });
                     setOpen(false);
                     onUpdate();
                 } else {
-                    toast.error(result.message);
+                    toast.error("Error al actualizar", {
+                        description: result.message,
+                    });
                 }
             } catch (error) {
-                toast.error("Error de conexión. Intenta nuevamente.");
+                toast.error("Error de conexión", {
+                    description: "No se pudo actualizar la información. Intenta nuevamente.",
+                });
             }
         });
     };
@@ -102,181 +102,185 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
         }
     };
 
-    return (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild>
-                {children}
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-xl">
-                <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <Phone className="h-5 w-5" />
-                        Información de Contacto
-                    </DialogTitle>
-                </DialogHeader>
+    // Contenido del formulario
+    const formContent = (
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Información Principal */}
+                <div className="space-y-4">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                        Información Principal
+                    </h3>
 
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        {/* Información Principal */}
-                        <div className="space-y-4">
-                            <h3 className="text-sm font-medium text-muted-foreground">
-                                Información Principal
-                            </h3>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField
-                                    control={form.control}
-                                    name="phone"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Teléfono *
-                                                <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                                    <Input
-                                                        {...field}
-                                                        placeholder="958920823"
-                                                        className="pl-10"
-                                                        disabled={isPending}
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="country"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                País *
-                                                <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
-                                            </FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
+                    <div className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="phone"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Teléfono *
+                                        <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                {...field}
+                                                placeholder="958920823"
+                                                className="pl-10"
                                                 disabled={isPending}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <div className="flex items-center gap-2">
-                                                            <Globe className="h-4 w-4 text-muted-foreground" />
-                                                            <SelectValue placeholder="Selecciona un país" />
-                                                        </div>
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {countries.map((country) => (
-                                                        <SelectItem key={country.value} value={country.value}>
-                                                            <div className="flex items-center gap-2">
-                                                                <span>{country.flag}</span>
-                                                                <span>{country.label}</span>
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                        </div>
+                                            />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                        {/* Información Adicional */}
-                        <div className="space-y-4">
-                            <h3 className="text-sm font-medium text-muted-foreground">
-                                Información Adicional
-                                <span className="text-xs text-muted-foreground ml-1">(opcional)</span>
-                            </h3>
-
-                            <div className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="address"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Dirección</FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                                    <Input
-                                                        {...field}
-                                                        placeholder="Av. Principal 123, Distrito"
-                                                        className="pl-10"
-                                                        disabled={isPending}
-                                                    />
+                        <FormField
+                            control={form.control}
+                            name="country"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        País *
+                                        <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
+                                    </FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={isPending}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <div className="flex items-center gap-2">
+                                                    <Globe className="h-4 w-4 text-muted-foreground" />
+                                                    <SelectValue placeholder="Selecciona un país" />
                                                 </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {countries.map((country) => (
+                                                <SelectItem key={country.value} value={country.value}>
+                                                    <div className="flex items-center gap-2">
+                                                        <span>{country.flag}</span>
+                                                        <span>{country.label}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="postalCode"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Código Postal</FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                                    <Input
-                                                        {...field}
-                                                        placeholder="15001"
-                                                        className="pl-10 font-mono"
-                                                        disabled={isPending}
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                        </div>
+                {/* Información Adicional */}
+                <div className="space-y-4">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                        Información Adicional
+                        <span className="text-xs text-muted-foreground ml-1">(opcional)</span>
+                    </h3>
 
-                        {/* Footer */}
-                        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setOpen(false)}
-                                disabled={isPending}
-                                className="flex-1 sm:flex-none"
-                            >
-                                <X className="mr-2 h-4 w-4" />
-                                Cancelar
-                            </Button>
+                    <div className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="address"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Dirección</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                {...field}
+                                                placeholder="Av. Principal 123, Distrito"
+                                                className="pl-10"
+                                                disabled={isPending}
+                                            />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                            <Button
-                                type="submit"
-                                disabled={isPending}
-                                className="flex-1 sm:flex-none"
-                            >
-                                {isPending ? (
-                                    <>
-                                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                        Guardando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Save className="mr-2 h-4 w-4" />
-                                        Guardar Cambios
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
+                        <FormField
+                            control={form.control}
+                            name="postalCode"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Código Postal</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                {...field}
+                                                placeholder="15001"
+                                                className="pl-10 font-mono"
+                                                disabled={isPending}
+                                            />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+            </form>
+        </Form>
+    );
+
+    // Acciones personalizadas
+    const customActions = (
+        <div className="flex flex-col-reverse sm:flex-row gap-3">
+            <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={isPending}
+                className="flex-1 sm:flex-none"
+            >
+                <X className="mr-2 h-4 w-4" />
+                Cancelar
+            </Button>
+
+            <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit)}
+                disabled={isPending}
+                className="flex-1 sm:flex-none"
+            >
+                {isPending ? (
+                    <>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Guardando...
+                    </>
+                ) : (
+                    <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Guardar Cambios
+                    </>
+                )}
+            </Button>
+        </div>
+    );
+
+    return (
+        <ResponsiveModal
+            open={open}
+            onOpenChange={handleOpenChange}
+            title="Información de Contacto"
+            icon={Phone}
+            content={formContent}
+            customFooter={customActions}
+            isPending={isPending}
+        >
+            {children}
+        </ResponsiveModal>
     );
 }

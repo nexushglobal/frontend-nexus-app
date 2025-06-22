@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from "@/components/ui/card";
 import { ProfileData } from '@/types/profile.types';
-import { Camera } from 'lucide-react';
+import { Camera, AtSign } from 'lucide-react';
 import { PhotoUploadModal } from './modal/PhotoUploadModal';
 
 type Props = {
@@ -16,11 +16,28 @@ const ProfileHeader = ({ profile, onUpdate }: Props) => {
         return `${firstName[0]}${lastName[0]}`.toUpperCase();
     };
 
+    const getCompletionPercentage = () => {
+        let completedFields = 0;
+        const totalFields = 6;
+
+        if (profile.personalInfo) completedFields++;
+        if (profile.contactInfo) completedFields++;
+        if (profile.billingInfo?.ruc) completedFields++;
+        if (profile.bankInfo?.bankName) completedFields++;
+        if (profile.nickname) completedFields++;
+        if (profile.photo) completedFields++;
+
+        return Math.round((completedFields / totalFields) * 100);
+    };
+
+    const completionPercentage = getCompletionPercentage();
+
     return (
-        <Card className="mb-6 ">
+        <Card className="mb-6">
             <CardContent className="pt-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                    <div className="relative">
+                    {/* Avatar Section */}
+                    <div className="relative flex-shrink-0">
                         <Avatar className="h-20 w-20 md:h-24 md:w-24">
                             <AvatarImage src={profile.photo || undefined} alt="Perfil" />
                             <AvatarFallback className="text-xl">
@@ -30,6 +47,7 @@ const ProfileHeader = ({ profile, onUpdate }: Props) => {
                                 }
                             </AvatarFallback>
                         </Avatar>
+
                         <PhotoUploadModal
                             currentPhoto={profile.photo}
                             userName={profile.personalInfo
@@ -47,7 +65,8 @@ const ProfileHeader = ({ profile, onUpdate }: Props) => {
                         </PhotoUploadModal>
                     </div>
 
-                    <div className="flex-1 space-y-2">
+                    {/* Profile Info */}
+                    <div className="flex-1 space-y-3">
                         <div>
                             <h1 className="text-2xl md:text-3xl font-bold">
                                 {profile.personalInfo
@@ -59,11 +78,14 @@ const ProfileHeader = ({ profile, onUpdate }: Props) => {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2">
-                            <Badge variant={profile.isActive ? "default" : "secondary"}>
-                                {profile.isActive ? "Activo" : "Inactivo"}
+                            <Badge variant="outline" className="text-xs">
+                                {completionPercentage}% Completo
                             </Badge>
                             {profile.nickname && (
-                                <Badge variant="outline">@{profile.nickname}</Badge>
+                                <Badge variant="secondary" className="flex items-center gap-1">
+                                    <AtSign className="h-3 w-3" />
+                                    {profile.nickname}
+                                </Badge>
                             )}
                         </div>
                     </div>

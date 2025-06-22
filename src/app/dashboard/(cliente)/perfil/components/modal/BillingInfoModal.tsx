@@ -9,6 +9,13 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
     Form,
     FormControl,
     FormField,
@@ -17,11 +24,12 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BillingInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building, MapPin, Receipt, Save, X, Info } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { BillingInfoFormData, billingInfoSchema } from "../../schemas/profile-schemas";
@@ -36,6 +44,17 @@ interface BillingInfoModalProps {
 export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInfoModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, []);
 
     const form = useForm<BillingInfoFormData>({
         resolver: zodResolver(billingInfoSchema),
@@ -56,14 +75,20 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
                 });
 
                 if (result.success) {
-                    toast.success("Información de facturación actualizada correctamente");
+                    toast.success("Información actualizada", {
+                        description: "Tu información de facturación se ha actualizado correctamente",
+                    });
                     setOpen(false);
                     onUpdate();
                 } else {
-                    toast.error(result.message);
+                    toast.error("Error al actualizar", {
+                        description: result.message,
+                    });
                 }
             } catch (error) {
-                toast.error("Error de conexión. Intenta nuevamente.");
+                toast.error("Error de conexión", {
+                    description: "No se pudo actualizar la información. Intenta nuevamente.",
+                });
             }
         });
     };
@@ -79,21 +104,11 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
         }
     };
 
-    return (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild>
-                {children}
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-xl">
-                <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <Receipt className="h-5 w-5" />
-                        Información de Facturación
-                    </DialogTitle>
-                </DialogHeader>
-
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    const FormContent = () => (
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <ScrollArea className={isMobile ? "h-[60vh]" : "max-h-[70vh]"}>
+                    <div className="space-y-6 pr-4">
                         {/* Alerta informativa */}
                         <Alert className="border-info/20 bg-info/5">
                             <Info className="h-4 w-4 text-info" />
@@ -200,40 +215,80 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
                                 <li>• Los datos se utilizarán para generar comprobantes fiscales válidos</li>
                             </ul>
                         </div>
+                    </div>
+                </ScrollArea>
 
-                        {/* Footer */}
-                        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setOpen(false)}
-                                disabled={isPending}
-                                className="flex-1 sm:flex-none"
-                            >
-                                <X className="mr-2 h-4 w-4" />
-                                Cancelar
-                            </Button>
+                {/* Footer */}
+                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t bg-background">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setOpen(false)}
+                        disabled={isPending}
+                        className="flex-1 sm:flex-none"
+                    >
+                        <X className="mr-2 h-4 w-4" />
+                        Cancelar
+                    </Button>
 
-                            <Button
-                                type="submit"
-                                disabled={isPending}
-                                className="flex-1 sm:flex-none"
-                            >
-                                {isPending ? (
-                                    <>
-                                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                        Guardando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Save className="mr-2 h-4 w-4" />
-                                        Guardar Información
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
+                    <Button
+                        type="submit"
+                        disabled={isPending}
+                        className="flex-1 sm:flex-none"
+                    >
+                        {isPending ? (
+                            <>
+                                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                Guardando...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="mr-2 h-4 w-4" />
+                                Guardar Información
+                            </>
+                        )}
+                    </Button>
+                </div>
+            </form>
+        </Form>
+    );
+
+    if (isMobile) {
+        return (
+            <Drawer open={open} onOpenChange={handleOpenChange}>
+                <DrawerTrigger asChild>
+                    {children}
+                </DrawerTrigger>
+                <DrawerContent className="max-h-[85vh]">
+                    <DrawerHeader className="text-left pb-4">
+                        <DrawerTitle className="flex items-center gap-2">
+                            <Receipt className="h-5 w-5" />
+                            Información de Facturación
+                        </DrawerTitle>
+                    </DrawerHeader>
+                    <div className="px-4 pb-4">
+                        <FormContent />
+                    </div>
+                </DrawerContent>
+            </Drawer>
+        );
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={handleOpenChange}>
+            <DialogTrigger asChild>
+                {children}
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xl max-h-[90vh] flex flex-col">
+                <DialogHeader className="flex-shrink-0">
+                    <DialogTitle className="flex items-center gap-2">
+                        <Receipt className="h-5 w-5" />
+                        Información de Facturación
+                    </DialogTitle>
+                </DialogHeader>
+                <div className="flex-1 overflow-hidden">
+                    <FormContent />
+                </div>
             </DialogContent>
         </Dialog>
     );

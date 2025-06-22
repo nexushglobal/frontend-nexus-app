@@ -1,15 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import {
     ArrowLeft,
     ArrowRight,
     Copy,
     ExternalLink,
+    Link as LinkIcon,
     Share,
-    Share2,
-    Link
+    Share2
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -102,113 +102,151 @@ export function ReferralCodesCard({
                     </div>
                 </div>
 
-                {/* Tabs para lados */}
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
-                    <TabsList className="grid grid-cols-2 w-full">
-                        <TabsTrigger value="izquierda" className="flex items-center gap-2">
+                {/* Tabs mejorados para mejor visibilidad en modo oscuro */}
+                <div className="w-full">
+                    {/* Custom TabsList */}
+                    <div className="inline-flex w-full rounded-md bg-muted p-1 text-muted-foreground dark:bg-gray-800/50">
+                        {/* Custom TabsTrigger para Izquierda */}
+                        <button
+                            onClick={() => setActiveTab("izquierda")}
+                            className={cn(
+                                "flex items-center justify-center gap-2 flex-1 rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all relative",
+                                activeTab === "izquierda"
+                                    ? "bg-background text-foreground shadow-sm dark:bg-gray-700 dark:text-primary-foreground dark:shadow-[0_0_0_1px_rgba(var(--primary),0.2)]"
+                                    : "hover:bg-muted/80 hover:text-foreground"
+                            )}
+                        >
                             <ArrowLeft className="h-3.5 w-3.5" />
-                            Izquierda
-                        </TabsTrigger>
-                        <TabsTrigger value="derecha" className="flex items-center gap-2">
-                            Derecha
+                            <span>Izquierda</span>
+
+                            {/* Indicador visual para el tab activo */}
+                            {activeTab === "izquierda" && (
+                                <span className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1/4 h-0.5 bg-primary rounded-full dark:bg-primary dark:shadow-[0_0_5px_rgba(var(--primary),0.8)]" />
+                            )}
+                        </button>
+
+                        {/* Custom TabsTrigger para Derecha */}
+                        <button
+                            onClick={() => setActiveTab("derecha")}
+                            className={cn(
+                                "flex items-center justify-center gap-2 flex-1 rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all relative",
+                                activeTab === "derecha"
+                                    ? "bg-background text-foreground shadow-sm dark:bg-gray-700 dark:text-primary-foreground dark:shadow-[0_0_0_1px_rgba(var(--primary),0.2)]"
+                                    : "hover:bg-muted/80 hover:text-foreground"
+                            )}
+                        >
+                            <span>Derecha</span>
                             <ArrowRight className="h-3.5 w-3.5" />
-                        </TabsTrigger>
-                    </TabsList>
 
-                    <TabsContent value="izquierda" className="space-y-3 mt-4">
-                        {/* URL del lado izquierdo */}
-                        <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                            <Link className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground">Enlace de Referido - Izquierda</p>
-                                <p className="text-xs text-muted-foreground font-mono truncate">
-                                    {getShareUrl("izquierda")}
-                                </p>
+                            {/* Indicador visual para el tab activo */}
+                            {activeTab === "derecha" && (
+                                <span className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1/4 h-0.5 bg-primary rounded-full dark:bg-primary dark:shadow-[0_0_5px_rgba(var(--primary),0.8)]" />
+                            )}
+                        </button>
+                    </div>
+
+                    {/* Content panel for active tab */}
+                    <div className="mt-4">
+                        {/* Contenido para Izquierda */}
+                        {activeTab === "izquierda" && (
+                            <div className="space-y-3 animate-in fade-in-50 duration-300">
+                                {/* URL del lado izquierdo */}
+                                <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
+                                    <LinkIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-muted-foreground">Enlace de Referido - Izquierda</p>
+                                        <p className="text-xs text-muted-foreground font-mono truncate">
+                                            {getShareUrl("izquierda")}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Botones de acción */}
+                                <div className="grid grid-cols-3 gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => copyToClipboard("izquierda")}
+                                        disabled={copying}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <Copy className="h-3.5 w-3.5" />
+                                        Copiar
+                                    </Button>
+
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => shareReferral("izquierda")}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <Share className="h-3.5 w-3.5" />
+                                        Compartir
+                                    </Button>
+
+                                    <Button
+                                        variant="default"
+                                        size="sm"
+                                        onClick={() => openReferralLink("izquierda")}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <ExternalLink className="h-3.5 w-3.5" />
+                                        Abrir
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
+                        )}
 
-                        {/* Botones de acción */}
-                        <div className="grid grid-cols-3 gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => copyToClipboard("izquierda")}
-                                disabled={copying}
-                                className="flex items-center gap-1.5"
-                            >
-                                <Copy className="h-3.5 w-3.5" />
-                                Copiar
-                            </Button>
+                        {activeTab === "derecha" && (
+                            <div className="space-y-3 animate-in fade-in-50 duration-300">
+                                {/* URL del lado derecho */}
+                                <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
+                                    <LinkIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-muted-foreground">Enlace de Referido - Derecha</p>
+                                        <p className="text-xs text-muted-foreground font-mono truncate">
+                                            {getShareUrl("derecha")}
+                                        </p>
+                                    </div>
+                                </div>
 
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => shareReferral("izquierda")}
-                                className="flex items-center gap-1.5"
-                            >
-                                <Share className="h-3.5 w-3.5" />
-                                Compartir
-                            </Button>
+                                {/* Botones de acción */}
+                                <div className="grid grid-cols-3 gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => copyToClipboard("derecha")}
+                                        disabled={copying}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <Copy className="h-3.5 w-3.5" />
+                                        Copiar
+                                    </Button>
 
-                            <Button
-                                variant="default"
-                                size="sm"
-                                onClick={() => openReferralLink("izquierda")}
-                                className="flex items-center gap-1.5"
-                            >
-                                <ExternalLink className="h-3.5 w-3.5" />
-                                Abrir
-                            </Button>
-                        </div>
-                    </TabsContent>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => shareReferral("derecha")}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <Share className="h-3.5 w-3.5" />
+                                        Compartir
+                                    </Button>
 
-                    <TabsContent value="derecha" className="space-y-3 mt-4">
-                        {/* URL del lado derecho */}
-                        <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                            <Link className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground">Enlace de Referido - Derecha</p>
-                                <p className="text-xs text-muted-foreground font-mono truncate">
-                                    {getShareUrl("derecha")}
-                                </p>
+                                    <Button
+                                        variant="default"
+                                        size="sm"
+                                        onClick={() => openReferralLink("derecha")}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <ExternalLink className="h-3.5 w-3.5" />
+                                        Abrir
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-
-                        {/* Botones de acción */}
-                        <div className="grid grid-cols-3 gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => copyToClipboard("derecha")}
-                                disabled={copying}
-                                className="flex items-center gap-1.5"
-                            >
-                                <Copy className="h-3.5 w-3.5" />
-                                Copiar
-                            </Button>
-
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => shareReferral("derecha")}
-                                className="flex items-center gap-1.5"
-                            >
-                                <Share className="h-3.5 w-3.5" />
-                                Compartir
-                            </Button>
-
-                            <Button
-                                variant="default"
-                                size="sm"
-                                onClick={() => openReferralLink("derecha")}
-                                className="flex items-center gap-1.5"
-                            >
-                                <ExternalLink className="h-3.5 w-3.5" />
-                                Abrir
-                            </Button>
-                        </div>
-                    </TabsContent>
-                </Tabs>
+                        )}
+                    </div>
+                </div>
 
                 {/* Nota informativa */}
                 <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
