@@ -4,15 +4,15 @@ import { BillingInfo } from "@/types/profile.types";
 import { Building, Edit, MapPin, Receipt } from "lucide-react";
 import { BillingInfoModal } from "../modal/BillingInfoModal";
 
-interface BillingInfoCardProps {
+interface Props {
     billingInfo: BillingInfo | null;
     onUpdate: () => void;
 }
 
-export function BillingInfoCard({ billingInfo, onUpdate }: BillingInfoCardProps) {
+export function BillingInfoCard({ billingInfo, onUpdate }: Props) {
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                     <Receipt className="h-5 w-5" />
                     Información de Facturación

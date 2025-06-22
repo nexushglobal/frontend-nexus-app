@@ -4,15 +4,15 @@ import { BankInfo } from "@/types/profile.types";
 import { CreditCard, Edit, Hash, Landmark } from "lucide-react";
 import { BankInfoModal } from "../modal/BankInfoModal";
 
-interface BankInfoCardProps {
+interface Props {
     bankInfo: BankInfo | null;
     onUpdate: () => void;
 }
 
-export function BankInfoCard({ bankInfo, onUpdate }: BankInfoCardProps) {
+export function BankInfoCard({ bankInfo, onUpdate }: Props) {
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                     <Landmark className="h-5 w-5" />
                     Información Bancaria

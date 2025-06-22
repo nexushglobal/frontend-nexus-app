@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContactInfo } from "@/types/profile.types";
-import { Edit, Globe, IdCard, MapPin, Phone } from "lucide-react";
+import { Edit, FileText, Globe, MapPin, Phone } from "lucide-react";
 import { ContactInfoModal } from "../modal/ContactInfoModal";
 
-interface ContactInfoCardProps {
+interface Props {
     contactInfo: ContactInfo | null;
     onUpdate: () => void;
 }
 
-export function ContactInfoCard({ contactInfo, onUpdate }: ContactInfoCardProps) {
+export function ContactInfoCard({ contactInfo, onUpdate }: Props) {
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                     <Phone className="h-5 w-5" />
                     Información de Contacto
@@ -42,7 +42,7 @@ export function ContactInfoCard({ contactInfo, onUpdate }: ContactInfoCardProps)
                         )}
                         {contactInfo.postalCode && (
                             <div className="flex items-center gap-2">
-                                <IdCard className="h-4 w-4 text-muted-foreground" />
+                                <FileText className="h-4 w-4 text-muted-foreground" />
                                 <span>{contactInfo.postalCode}</span>
                             </div>
                         )}

@@ -3,14 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, Shield } from "lucide-react";
 import { ChangePasswordModal } from "../modal/ChangePasswordModal";
 
-interface SecurityCardProps {
+interface Props {
     onUpdate: () => void;
 }
 
-export function SecurityCard({ onUpdate }: SecurityCardProps) {
+export function SecurityCard({ onUpdate }: Props) {
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                     <Shield className="h-5 w-5" />
                     Seguridad
@@ -25,15 +25,14 @@ export function SecurityCard({ onUpdate }: SecurityCardProps) {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="font-medium">Contraseña</p>
-
+                        <p className="text-sm text-muted-foreground">
+                            Mantén tu cuenta segura con una contraseña fuerte
+                        </p>
                     </div>
                     <div className="text-muted-foreground">
                         ••••••••
                     </div>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                    Mantén tu cuenta segura con una contraseña fuerte
-                </p>
             </CardContent>
         </Card>
     );
