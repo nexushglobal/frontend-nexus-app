@@ -2,23 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { motion } from "framer-motion";
 import {
     ArrowLeft,
     ArrowRight,
     Copy,
     ExternalLink,
-    Gift,
-    Link,
     Share,
-    UserCircle
+    Share2,
+    Link
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface ReferralCodesCardProps {
     referralCode: string;
-
 }
 
 export function ReferralCodesCard({
@@ -38,9 +35,9 @@ export function ReferralCodesCard({
         navigator.clipboard
             .writeText(url)
             .then(() => {
-                toast.success(`Link de ${side} copiado`, {
-                    description: "El enlace se ha copiado al portapapeles",
-                    duration: 1500,
+                toast.success(`Enlace copiado`, {
+                    description: `Link del lado ${side} copiado al portapapeles`,
+                    duration: 2000,
                 });
                 setTimeout(() => setCopying(false), 1500);
             })
@@ -81,148 +78,144 @@ export function ReferralCodesCard({
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <UserCircle className="h-5 w-5" />
-                    Códigos de Referido
-                </CardTitle>
+            <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                        <Share2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                        <CardTitle className="text-lg">Códigos de Referido</CardTitle>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            Comparte tus enlaces para referir nuevos miembros
+                        </p>
+                    </div>
+                </div>
             </CardHeader>
-            <CardContent>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="space-y-4"
-                >
-                    <div className="bg-secondary/30 dark:bg-secondary/20 rounded-lg p-4">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Gift className="h-5 w-5 text-primary" />
-                            <p className="text-sm font-medium">Enlaces de Referido</p>
+
+            <CardContent className="space-y-4">
+                {/* Código de referido principal */}
+                <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
+                    <Share2 className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground">Tu Código de Referido</p>
+                        <p className="text-sm font-medium font-mono">{referralCode}</p>
+                    </div>
+                </div>
+
+                {/* Tabs para lados */}
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <TabsList className="grid grid-cols-2 w-full">
+                        <TabsTrigger value="izquierda" className="flex items-center gap-2">
+                            <ArrowLeft className="h-3.5 w-3.5" />
+                            Izquierda
+                        </TabsTrigger>
+                        <TabsTrigger value="derecha" className="flex items-center gap-2">
+                            Derecha
+                            <ArrowRight className="h-3.5 w-3.5" />
+                        </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="izquierda" className="space-y-3 mt-4">
+                        {/* URL del lado izquierdo */}
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
+                            <Link className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs text-muted-foreground">Enlace de Referido - Izquierda</p>
+                                <p className="text-xs text-muted-foreground font-mono truncate">
+                                    {getShareUrl("izquierda")}
+                                </p>
+                            </div>
                         </div>
 
-                        <p className="text-sm text-muted-foreground mb-4">
-                            Selecciona el lado para referir nuevos miembros:
-                        </p>
+                        {/* Botones de acción */}
+                        <div className="grid grid-cols-3 gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => copyToClipboard("izquierda")}
+                                disabled={copying}
+                                className="flex items-center gap-1.5"
+                            >
+                                <Copy className="h-3.5 w-3.5" />
+                                Copiar
+                            </Button>
 
-                        <Tabs
-                            defaultValue="izquierda"
-                            className="w-full"
-                            onValueChange={setActiveTab}
-                        >
-                            <TabsList className="grid grid-cols-2 w-full mb-4">
-                                <TabsTrigger
-                                    value="izquierda"
-                                    className="flex items-center gap-1"
-                                >
-                                    <ArrowLeft className="h-3.5 w-3.5" />
-                                    <span>Izquierda</span>
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="derecha"
-                                    className="flex items-center gap-1"
-                                >
-                                    <span>Derecha</span>
-                                    <ArrowRight className="h-3.5 w-3.5" />
-                                </TabsTrigger>
-                            </TabsList>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => shareReferral("izquierda")}
+                                className="flex items-center gap-1.5"
+                            >
+                                <Share className="h-3.5 w-3.5" />
+                                Compartir
+                            </Button>
 
-                            <TabsContent value="izquierda" className="space-y-3">
-                                <div className="bg-primary/10 dark:bg-primary/5 rounded-md p-3 flex items-center justify-between">
-                                    <div className="flex items-center gap-2 truncate flex-1">
-                                        <Link className="h-4 w-4 flex-shrink-0 text-primary" />
-                                        <span className="text-xs truncate">
-                                            {getShareUrl("izquierda")}
-                                        </span>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => copyToClipboard("izquierda")}
-                                        className="flex-shrink-0"
-                                        disabled={copying}
-                                    >
-                                        {copying ? (
-                                            <motion.div
-                                                animate={{ rotate: 360 }}
-                                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                                className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full"
-                                            />
-                                        ) : (
-                                            <Copy className="h-4 w-4" />
-                                        )}
-                                    </Button>
-                                </div>
+                            <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => openReferralLink("izquierda")}
+                                className="flex items-center gap-1.5"
+                            >
+                                <ExternalLink className="h-3.5 w-3.5" />
+                                Abrir
+                            </Button>
+                        </div>
+                    </TabsContent>
 
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Button
-                                        variant="outline"
-                                        className="flex items-center gap-2 justify-center"
-                                        onClick={() => shareReferral("izquierda")}
-                                    >
-                                        <Share className="h-4 w-4" />
-                                        <span>Compartir</span>
-                                    </Button>
+                    <TabsContent value="derecha" className="space-y-3 mt-4">
+                        {/* URL del lado derecho */}
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
+                            <Link className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs text-muted-foreground">Enlace de Referido - Derecha</p>
+                                <p className="text-xs text-muted-foreground font-mono truncate">
+                                    {getShareUrl("derecha")}
+                                </p>
+                            </div>
+                        </div>
 
-                                    <Button
-                                        variant="default"
-                                        className="flex items-center gap-2 justify-center"
-                                        onClick={() => openReferralLink("izquierda")}
-                                    >
-                                        <ExternalLink className="h-4 w-4" />
-                                        <span>Abrir link</span>
-                                    </Button>
-                                </div>
-                            </TabsContent>
+                        {/* Botones de acción */}
+                        <div className="grid grid-cols-3 gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => copyToClipboard("derecha")}
+                                disabled={copying}
+                                className="flex items-center gap-1.5"
+                            >
+                                <Copy className="h-3.5 w-3.5" />
+                                Copiar
+                            </Button>
 
-                            <TabsContent value="derecha" className="space-y-3">
-                                <div className="bg-primary/10 dark:bg-primary/5 rounded-md p-3 flex items-center justify-between">
-                                    <div className="flex items-center gap-2 truncate flex-1">
-                                        <Link className="h-4 w-4 flex-shrink-0 text-primary" />
-                                        <span className="text-xs truncate">
-                                            {getShareUrl("derecha")}
-                                        </span>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => copyToClipboard("derecha")}
-                                        className="flex-shrink-0"
-                                        disabled={copying}
-                                    >
-                                        {copying ? (
-                                            <motion.div
-                                                animate={{ rotate: 360 }}
-                                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                                className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full"
-                                            />
-                                        ) : (
-                                            <Copy className="h-4 w-4" />
-                                        )}
-                                    </Button>
-                                </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => shareReferral("derecha")}
+                                className="flex items-center gap-1.5"
+                            >
+                                <Share className="h-3.5 w-3.5" />
+                                Compartir
+                            </Button>
 
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Button
-                                        variant="outline"
-                                        className="flex items-center gap-2 justify-center"
-                                        onClick={() => shareReferral("derecha")}
-                                    >
-                                        <Share className="h-4 w-4" />
-                                        <span>Compartir</span>
-                                    </Button>
+                            <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => openReferralLink("derecha")}
+                                className="flex items-center gap-1.5"
+                            >
+                                <ExternalLink className="h-3.5 w-3.5" />
+                                Abrir
+                            </Button>
+                        </div>
+                    </TabsContent>
+                </Tabs>
 
-                                    <Button
-                                        variant="default"
-                                        className="flex items-center gap-2 justify-center"
-                                        onClick={() => openReferralLink("derecha")}
-                                    >
-                                        <ExternalLink className="h-4 w-4" />
-                                        <span>Abrir link</span>
-                                    </Button>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </div>
-                </motion.div>
+                {/* Nota informativa */}
+                <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
+                    <p className="text-xs text-muted-foreground">
+                        💡 <strong>Tip:</strong> Utiliza diferentes lados para organizar tu red de referidos de manera equilibrada.
+                    </p>
+                </div>
             </CardContent>
         </Card>
     );

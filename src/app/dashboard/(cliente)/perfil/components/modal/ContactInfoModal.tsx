@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { ContactInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Globe, Mail, MapPin, Phone } from "lucide-react";
+import { Globe, Mail, MapPin, Phone, Save, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -40,13 +40,17 @@ interface ContactInfoModalProps {
 }
 
 const countries = [
-    { value: "Peru", label: "Perú" },
-    { value: "Colombia", label: "Colombia" },
-    { value: "Ecuador", label: "Ecuador" },
-    { value: "Bolivia", label: "Bolivia" },
-    { value: "Chile", label: "Chile" },
-    { value: "Argentina", label: "Argentina" },
-    // Agrega más países según sea necesario
+    { value: "Peru", label: "Perú", flag: "🇵🇪" },
+    { value: "Colombia", label: "Colombia", flag: "🇨🇴" },
+    { value: "Ecuador", label: "Ecuador", flag: "🇪🇨" },
+    { value: "Bolivia", label: "Bolivia", flag: "🇧🇴" },
+    { value: "Chile", label: "Chile", flag: "🇨🇱" },
+    { value: "Argentina", label: "Argentina", flag: "🇦🇷" },
+    { value: "Uruguay", label: "Uruguay", flag: "🇺🇾" },
+    { value: "Paraguay", label: "Paraguay", flag: "🇵🇾" },
+    { value: "Venezuela", label: "Venezuela", flag: "🇻🇪" },
+    { value: "Mexico", label: "México", flag: "🇲🇽" },
+    { value: "España", label: "España", flag: "🇪🇸" },
 ];
 
 export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInfoModalProps) {
@@ -74,20 +78,14 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
                 });
 
                 if (result.success) {
-                    toast.success("Éxito", {
-                        description: result.message,
-                    });
+                    toast.success("Información de contacto actualizada correctamente");
                     setOpen(false);
                     onUpdate();
                 } else {
-                    toast.error("Error", {
-                        description: result.message,
-                    });
+                    toast.error(result.message);
                 }
             } catch (error) {
-                toast.error("Error", {
-                    description: "Error de conexión. Intenta nuevamente.",
-                });
+                toast.error("Error de conexión. Intenta nuevamente.");
             }
         });
     };
@@ -95,7 +93,6 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
         if (newOpen) {
-            // Reset form when opening
             form.reset({
                 phone: contactInfo?.phone || "",
                 address: contactInfo?.address || "",
@@ -110,7 +107,7 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Phone className="h-5 w-5" />
@@ -119,121 +116,162 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="phone"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Teléfono *</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="958920823"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        {/* Información Principal */}
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-medium text-muted-foreground">
+                                Información Principal
+                            </h3>
 
-                        <FormField
-                            control={form.control}
-                            name="country"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>País *</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isPending}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <div className="flex items-center gap-2">
-                                                    <Globe className="h-4 w-4 text-muted-foreground" />
-                                                    <SelectValue placeholder="Selecciona un país" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Teléfono *
+                                                <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
+                                            </FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="958920823"
+                                                        className="pl-10"
+                                                        disabled={isPending}
+                                                    />
                                                 </div>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {countries.map((country) => (
-                                                <SelectItem key={country.value} value={country.value}>
-                                                    {country.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dirección</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="Tu dirección"
-                                                className="pl-10"
+                                <FormField
+                                    control={form.control}
+                                    name="country"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                País *
+                                                <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
+                                            </FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
                                                 disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <div className="flex items-center gap-2">
+                                                            <Globe className="h-4 w-4 text-muted-foreground" />
+                                                            <SelectValue placeholder="Selecciona un país" />
+                                                        </div>
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {countries.map((country) => (
+                                                        <SelectItem key={country.value} value={country.value}>
+                                                            <div className="flex items-center gap-2">
+                                                                <span>{country.flag}</span>
+                                                                <span>{country.label}</span>
+                                                            </div>
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
 
-                        <FormField
-                            control={form.control}
-                            name="postalCode"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Código Postal</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="12345"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {/* Información Adicional */}
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-medium text-muted-foreground">
+                                Información Adicional
+                                <span className="text-xs text-muted-foreground ml-1">(opcional)</span>
+                            </h3>
 
-                        <div className="flex gap-2 pt-4">
+                            <div className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="address"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Dirección</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Av. Principal 123, Distrito"
+                                                        className="pl-10"
+                                                        disabled={isPending}
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="postalCode"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Código Postal</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="15001"
+                                                        className="pl-10 font-mono"
+                                                        disabled={isPending}
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t">
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={() => setOpen(false)}
                                 disabled={isPending}
-                                className="flex-1"
+                                className="flex-1 sm:flex-none"
                             >
+                                <X className="mr-2 h-4 w-4" />
                                 Cancelar
                             </Button>
+
                             <Button
                                 type="submit"
                                 disabled={isPending}
-                                className="flex-1"
+                                className="flex-1 sm:flex-none"
                             >
-                                {isPending ? "Guardando..." : "Guardar"}
+                                {isPending ? (
+                                    <>
+                                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                        Guardando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="mr-2 h-4 w-4" />
+                                        Guardar Cambios
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </form>

@@ -17,9 +17,10 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BillingInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building, MapPin, Receipt } from "lucide-react";
+import { Building, MapPin, Receipt, Save, X, Info } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -55,20 +56,14 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
                 });
 
                 if (result.success) {
-                    toast.success("Éxito", {
-                        description: result.message,
-                    });
+                    toast.success("Información de facturación actualizada correctamente");
                     setOpen(false);
                     onUpdate();
                 } else {
-                    toast.error("Error", {
-                        description: result.message,
-                    });
+                    toast.error(result.message);
                 }
             } catch (error) {
-                toast.error("Error", {
-                    description: "Error de conexión. Intenta nuevamente.",
-                });
+                toast.error("Error de conexión. Intenta nuevamente.");
             }
         });
     };
@@ -76,7 +71,6 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
         if (newOpen) {
-            // Reset form when opening
             form.reset({
                 ruc: billingInfo?.ruc || "",
                 razonSocial: billingInfo?.razonSocial || "",
@@ -90,7 +84,7 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Receipt className="h-5 w-5" />
@@ -99,89 +93,143 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: BillingInf
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="ruc"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>RUC</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Receipt className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="12345678910"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        {/* Alerta informativa */}
+                        <Alert className="border-info/20 bg-info/5">
+                            <Info className="h-4 w-4 text-info" />
+                            <AlertDescription className="text-sm">
+                                <strong>Información opcional:</strong> Completa estos datos solo si requieres facturación empresarial o comprobantes fiscales.
+                            </AlertDescription>
+                        </Alert>
 
-                        <FormField
-                            control={form.control}
-                            name="razonSocial"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Razón Social</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Building className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="Nombre de la empresa"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {/* Información Fiscal */}
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-medium text-muted-foreground">
+                                Información Fiscal
+                                <span className="text-xs text-muted-foreground ml-1">(opcional)</span>
+                            </h3>
 
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dirección Fiscal</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="Dirección de la empresa"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            <div className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="ruc"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>RUC (Registro Único de Contribuyente)</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Receipt className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="20123456789"
+                                                        className="pl-10 font-mono"
+                                                        disabled={isPending}
+                                                        maxLength={11}
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <p className="text-xs text-muted-foreground">
+                                                11 dígitos para empresas, 8 para personas naturales con negocio
+                                            </p>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                        <div className="flex gap-2 pt-4">
+                                <FormField
+                                    control={form.control}
+                                    name="razonSocial"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Razón Social</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Building className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Mi Empresa S.A.C."
+                                                        className="pl-10"
+                                                        disabled={isPending}
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <p className="text-xs text-muted-foreground">
+                                                Nombre oficial de la empresa o negocio
+                                            </p>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="address"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Dirección Fiscal</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Av. Principal 123, Distrito, Ciudad"
+                                                        className="pl-10"
+                                                        disabled={isPending}
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <p className="text-xs text-muted-foreground">
+                                                Dirección registrada en SUNAT para facturación
+                                            </p>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Información adicional */}
+                        <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
+                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                                📋 Información importante
+                            </h4>
+                            <ul className="text-xs text-muted-foreground space-y-1">
+                                <li>• Esta información es necesaria solo para facturación empresarial</li>
+                                <li>• El RUC debe estar activo y registrado en SUNAT</li>
+                                <li>• La razón social debe coincidir con el registro oficial</li>
+                                <li>• Los datos se utilizarán para generar comprobantes fiscales válidos</li>
+                            </ul>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t">
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={() => setOpen(false)}
                                 disabled={isPending}
-                                className="flex-1"
+                                className="flex-1 sm:flex-none"
                             >
+                                <X className="mr-2 h-4 w-4" />
                                 Cancelar
                             </Button>
+
                             <Button
                                 type="submit"
                                 disabled={isPending}
-                                className="flex-1"
+                                className="flex-1 sm:flex-none"
                             >
-                                {isPending ? "Guardando..." : "Guardar"}
+                                {isPending ? (
+                                    <>
+                                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                        Guardando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="mr-2 h-4 w-4" />
+                                        Guardar Información
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </form>

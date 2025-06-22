@@ -26,101 +26,98 @@
   --popover: hsl(0, 0%, 100%);
   --popover-foreground: hsl(220, 25%, 15%);
 
-  /* Primary - Verde Lima Vibrante */
-  --primary: hsl(85, 85%, 50%);
-  --primary-foreground: hsl(235, 30%, 12%);
-  --primary-hover: hsl(85, 85%, 45%);
-  --primary-active: hsl(85, 85%, 40%);
+  /* Primary - Verde Lima MÁS INTENSO para modo claro */
+  --primary: hsl(85, 95%, 42%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --primary-hover: hsl(85, 95%, 38%);
+  --primary-active: hsl(85, 95%, 34%);
 
-  /* Secondary - Morado Brillante */
-  --secondary: hsl(270, 70%, 85%);
-  --secondary-foreground: hsl(270, 70%, 25%);
-  --secondary-hover: hsl(270, 70%, 80%);
-  --secondary-active: hsl(270, 70%, 75%);
+  /* Secondary - Morado Brillante más contrastado */
+  --secondary: hsl(270, 85%, 75%);
+  --secondary-foreground: hsl(270, 95%, 20%);
+  --secondary-hover: hsl(270, 85%, 70%);
+  --secondary-active: hsl(270, 85%, 65%);
+
+  /* Sidebar - Siempre oscuro y vibrante */
+  --sidebar-border: hsl(235, 25%, 20%);
+  --sidebar-separator: hsl(235, 25%, 25%);
 
   /* Navigation */
   --nav-item: transparent;
-  --nav-item-foreground: hsl(0, 0%, 95%);
-  --nav-item-hover: hsl(235, 30%, 18%);
-  --nav-item-active: hsl(85, 85%, 50%);
-  --nav-item-selected: hsl(235, 30%, 20%);
+  --nav-item-foreground: hsl(210, 40%, 85%);
+  --nav-item-hover: hsl(235, 35%, 18%);
+  --nav-item-active: hsl(85, 100%, 45%);
+  --nav-item-selected: hsl(235, 35%, 20%);
+  --nav-item-selected-foreground: hsl(85, 100%, 70%);
 
   /* Muted - Grises sutiles */
   --muted: hsl(220, 20%, 92%);
   --muted-foreground: hsl(220, 15%, 45%);
 
-  /* Accent - Azul Eléctrico */
-  --accent: hsl(200, 95%, 85%);
-  --accent-foreground: hsl(200, 95%, 25%);
+  /* Accent - Azul Eléctrico más intenso */
+  --accent: hsl(200, 100%, 75%);
+  --accent-foreground: hsl(200, 100%, 15%);
 
   /* Destructive - Rojo Coral Vibrante */
-  --destructive: hsl(350, 85%, 55%);
+  --destructive: hsl(350, 90%, 50%);
   --destructive-foreground: hsl(0, 0%, 100%);
 
   /* Borders & Inputs */
   --border: hsl(220, 20%, 85%);
   --input: hsl(220, 20%, 85%);
-  --ring: hsl(85, 85%, 50%);
+  --ring: hsl(85, 95%, 42%);
 
-  /* Estados propiedades - Colores vivos */
-  --property-available: hsl(140, 80%, 45%);
-  --property-rented: hsl(45, 95%, 55%);
-  --property-sold: hsl(15, 85%, 60%);
-  --property-maintenance: hsl(270, 70%, 60%);
+  /* Estados propiedades - Colores más intensos */
+  --property-available: hsl(140, 85%, 40%);
+  --property-rented: hsl(45, 100%, 50%);
+  --property-sold: hsl(15, 90%, 55%);
+  --property-maintenance: hsl(270, 85%, 55%);
 
-  /* Indicadores vibrantes */
-  --indicator-low: hsl(140, 80%, 45%);
-  --indicator-medium: hsl(45, 95%, 55%);
-  --indicator-high: hsl(350, 85%, 55%);
+  /* Indicadores más contrastados */
+  --indicator-low: hsl(140, 85%, 40%);
+  --indicator-medium: hsl(45, 100%, 50%);
+  --indicator-high: hsl(350, 90%, 50%);
 
-  /* Charts - Paleta vibrante */
-  --chart-1: hsl(85, 85%, 50%); /* Verde lima */
-  --chart-2: hsl(270, 70%, 60%); /* Morado */
-  --chart-3: hsl(200, 95%, 55%); /* Azul eléctrico */
-  --chart-4: hsl(15, 85%, 60%); /* Naranja coral */
-  --chart-5: hsl(320, 80%, 65%); /* Rosa vibrante */
+  /* Charts - Paleta más intensa para modo claro */
+  --chart-1: hsl(85, 95%, 42%); /* Verde lima intenso */
+  --chart-2: hsl(270, 85%, 55%); /* Morado vibrante */
+  --chart-3: hsl(200, 100%, 45%); /* Azul intenso */
+  --chart-4: hsl(15, 90%, 55%); /* Naranja coral */
+  --chart-5: hsl(320, 85%, 60%); /* Rosa vibrante */
   --radius: 0.5rem;
 
-  /* Table - Adaptación con colores vivos */
+  /* Table - Adaptación con verde más visible */
   --table-header: hsl(235, 30%, 15%);
   --table-header-foreground: hsl(0, 0%, 95%);
   --table-row: hsl(0, 0%, 100%);
   --table-row-foreground: hsl(220, 25%, 15%);
   --table-row-alternate: hsl(210, 40%, 98%);
   --table-border: hsl(220, 20%, 85%);
-  --table-row-hover: hsl(85, 85%, 95%);
-  --table-row-selected: hsl(85, 85%, 90%);
-  --table-row-selected-foreground: hsl(235, 30%, 12%);
-  --table-sort-indicator: hsl(85, 85%, 50%);
+  --table-row-hover: hsl(85, 95%, 92%);
+  --table-row-selected: hsl(85, 95%, 85%);
+  --table-row-selected-foreground: hsl(85, 95%, 15%);
+  --table-sort-indicator: hsl(85, 95%, 42%);
   --table-filter-background: hsl(0, 0%, 100%);
   --table-filter-border: hsl(220, 20%, 85%);
   --table-loading-background: hsl(210, 40%, 97%);
   --table-empty-background: hsl(210, 40%, 97%);
   --table-empty-foreground: hsl(220, 15%, 45%);
 
-  /* Nuevos colores para elementos específicos */
-  --success: hsl(140, 80%, 45%);
+  /* Nuevos colores para elementos específicos - más intensos */
+  --success: hsl(140, 85%, 40%);
   --success-foreground: hsl(0, 0%, 100%);
-  --warning: hsl(45, 95%, 55%);
-  --warning-foreground: hsl(235, 30%, 12%);
-  --info: hsl(200, 95%, 55%);
+  --warning: hsl(45, 100%, 50%);
+  --warning-foreground: hsl(45, 100%, 10%);
+  --info: hsl(200, 100%, 45%);
   --info-foreground: hsl(0, 0%, 100%);
 
-  /* Sidebar - Siempre oscuro y vibrante */
-  --layout-sidebar: hsl(235, 35%, 10%);
-  --layout-sidebar-foreground: hsl(210, 40%, 90%);
-
-  /* Navegación del sidebar */
-  --nav-item: transparent;
-  --nav-item-foreground: hsl(210, 40%, 85%);
-  --nav-item-hover: hsl(235, 35%, 18%);
-  --nav-item-active: hsl(85, 95%, 60%);
-  --nav-item-selected: hsl(235, 35%, 20%);
-  --nav-item-selected-foreground: hsl(85, 95%, 80%);
-
-  /* Bordes y separadores del sidebar */
-  --sidebar-border: hsl(235, 25%, 20%);
-  --sidebar-separator: hsl(235, 25%, 25%);
+  /* Colores especiales para badges y estados */
+  --badge-success: hsl(140, 85%, 40%);
+  --badge-success-foreground: hsl(0, 0%, 100%);
+  --badge-warning: hsl(45, 100%, 50%);
+  --badge-warning-foreground: hsl(45, 100%, 10%);
+  --badge-info: hsl(200, 100%, 45%);
+  --badge-info-foreground: hsl(0, 0%, 100%);
 }
 
 .dark {
@@ -148,10 +145,10 @@
   --popover-foreground: hsl(210, 40%, 90%);
 
   /* Primary - Verde Lima Brillante (más vibrante en oscuro) */
-  --primary: hsl(85, 95%, 60%);
+  --primary: hsl(85, 100%, 65%);
   --primary-foreground: hsl(235, 30%, 10%);
-  --primary-hover: hsl(85, 95%, 55%);
-  --primary-active: hsl(85, 95%, 50%);
+  --primary-hover: hsl(85, 100%, 60%);
+  --primary-active: hsl(85, 100%, 55%);
 
   /* Secondary - Morado Vibrante */
   --secondary: hsl(270, 80%, 25%);
@@ -159,11 +156,16 @@
   --secondary-hover: hsl(270, 80%, 30%);
   --secondary-active: hsl(270, 80%, 35%);
 
+  /* Sidebar - Mismo estilo en modo oscuro */
+  --sidebar-border: hsl(235, 25%, 20%);
+  --sidebar-separator: hsl(235, 25%, 25%);
+
   /* Navigation oscuro */
   --nav-item-foreground: hsl(210, 40%, 85%);
   --nav-item-hover: hsl(235, 35%, 18%);
-  --nav-item-active: hsl(85, 95%, 60%);
+  --nav-item-active: hsl(85, 100%, 65%);
   --nav-item-selected: hsl(235, 35%, 20%);
+  --nav-item-selected-foreground: hsl(85, 100%, 75%);
 
   /* Muted oscuro */
   --muted: hsl(235, 25%, 20%);
@@ -180,7 +182,7 @@
   /* Borders & Inputs oscuros */
   --border: hsl(235, 25%, 20%);
   --input: hsl(235, 25%, 20%);
-  --ring: hsl(85, 95%, 60%);
+  --ring: hsl(85, 100%, 65%);
 
   /* Estados propiedades oscuros - más vibrantes */
   --property-available: hsl(140, 85%, 55%);
@@ -194,7 +196,7 @@
   --indicator-high: hsl(350, 90%, 65%);
 
   /* Charts oscuros - paleta neón */
-  --chart-1: hsl(85, 95%, 60%); /* Verde lima neón */
+  --chart-1: hsl(85, 100%, 65%); /* Verde lima neón */
   --chart-2: hsl(270, 80%, 70%); /* Morado brillante */
   --chart-3: hsl(200, 95%, 65%); /* Azul cyber */
   --chart-4: hsl(15, 90%, 70%); /* Naranja neón */
@@ -207,10 +209,10 @@
   --table-row-foreground: hsl(210, 40%, 90%);
   --table-row-alternate: hsl(235, 35%, 14%);
   --table-border: hsl(235, 25%, 20%);
-  --table-row-hover: hsl(85, 95%, 10%);
-  --table-row-selected: hsl(85, 95%, 15%);
-  --table-row-selected-foreground: hsl(85, 95%, 80%);
-  --table-sort-indicator: hsl(85, 95%, 60%);
+  --table-row-hover: hsl(85, 100%, 10%);
+  --table-row-selected: hsl(85, 100%, 15%);
+  --table-row-selected-foreground: hsl(85, 100%, 80%);
+  --table-sort-indicator: hsl(85, 100%, 65%);
   --table-filter-background: hsl(235, 35%, 14%);
   --table-filter-border: hsl(235, 25%, 20%);
   --table-loading-background: hsl(235, 35%, 12%);
@@ -225,21 +227,13 @@
   --info: hsl(200, 95%, 65%);
   --info-foreground: hsl(235, 30%, 10%);
 
-  /* Sidebar - Mismo estilo en modo oscuro */
-  --layout-sidebar: hsl(235, 35%, 10%);
-  --layout-sidebar-foreground: hsl(210, 40%, 90%);
-
-  /* Navegación del sidebar (igual) */
-  --nav-item: transparent;
-  --nav-item-foreground: hsl(210, 40%, 85%);
-  --nav-item-hover: hsl(235, 35%, 18%);
-  --nav-item-active: hsl(85, 95%, 60%);
-  --nav-item-selected: hsl(235, 35%, 20%);
-  --nav-item-selected-foreground: hsl(85, 95%, 80%);
-
-  /* Bordes y separadores del sidebar (igual) */
-  --sidebar-border: hsl(235, 25%, 20%);
-  --sidebar-separator: hsl(235, 25%, 25%);
+  /* Badges oscuros */
+  --badge-success: hsl(140, 85%, 55%);
+  --badge-success-foreground: hsl(235, 30%, 10%);
+  --badge-warning: hsl(45, 95%, 65%);
+  --badge-warning-foreground: hsl(235, 30%, 10%);
+  --badge-info: hsl(200, 95%, 65%);
+  --badge-info-foreground: hsl(235, 30%, 10%);
 }
 
 @theme inline {
@@ -271,12 +265,17 @@
   --color-secondary-hover: var(--secondary-hover);
   --color-secondary-active: var(--secondary-active);
 
-  /* Navegación */
+  /* Sidebar colors */
+  --color-layout-sidebar: var(--layout-sidebar);
+  --color-layout-sidebar-foreground: var(--layout-sidebar-foreground);
   --color-nav-item: var(--nav-item);
   --color-nav-item-foreground: var(--nav-item-foreground);
   --color-nav-item-hover: var(--nav-item-hover);
   --color-nav-item-active: var(--nav-item-active);
   --color-nav-item-selected: var(--nav-item-selected);
+  --color-nav-item-selected-foreground: var(--nav-item-selected-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-separator: var(--sidebar-separator);
 
   /* Estados y utilidades */
   --color-muted: var(--muted);
@@ -315,6 +314,14 @@
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
 
+  /* Badges */
+  --color-badge-success: var(--badge-success);
+  --color-badge-success-foreground: var(--badge-success-foreground);
+  --color-badge-warning: var(--badge-warning);
+  --color-badge-warning-foreground: var(--badge-warning-foreground);
+  --color-badge-info: var(--badge-info);
+  --color-badge-info-foreground: var(--badge-info-foreground);
+
   /* Shadows - Más dramáticas */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -346,18 +353,6 @@
   --color-table-loading-background: var(--table-loading-background);
   --color-table-empty-background: var(--table-empty-background);
   --color-table-empty-foreground: var(--table-empty-foreground);
-
-  /* Sidebar colors */
-  --color-layout-sidebar: var(--layout-sidebar);
-  --color-layout-sidebar-foreground: var(--layout-sidebar-foreground);
-  --color-nav-item: var(--nav-item);
-  --color-nav-item-foreground: var(--nav-item-foreground);
-  --color-nav-item-hover: var(--nav-item-hover);
-  --color-nav-item-active: var(--nav-item-active);
-  --color-nav-item-selected: var(--nav-item-selected);
-  --color-nav-item-selected-foreground: var(--nav-item-selected-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-separator: var(--sidebar-separator);
 }
 
 @layer base {
@@ -368,6 +363,42 @@
     @apply bg-background text-foreground;
   }
 
+  /* Estilos simplificados para campos de información */
+  .info-field {
+    @apply flex items-center gap-3 p-3 rounded-lg border bg-card;
+  }
+
+  .info-field-start {
+    @apply flex items-start gap-3 p-3 rounded-lg border bg-card;
+  }
+
+  /* Barra de progreso simple */
+  .progress-bar {
+    @apply h-1.5 bg-muted rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-primary rounded-full transition-all duration-500;
+  }
+
+  /* Secciones con separadores */
+  .section-title {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+
+  /* Estados de botones mejorados pero sutiles */
+  .btn-edit {
+    @apply transition-colors duration-200 hover:border-primary/50 hover:text-primary;
+  }
+
+  /* Iconos con espaciado consistente */
+  .field-icon {
+    @apply h-4 w-4 text-muted-foreground;
+  }
+
+  .section-icon {
+    @apply h-5 w-5 text-primary;
+  }
   /* Animaciones adicionales para elementos vibrantes */
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
@@ -403,5 +434,54 @@
   .hover-lift:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Mejores contrastes para modo claro */
+  .primary-contrast {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border: 2px solid var(--primary);
+  }
+
+  .primary-contrast:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+
+  /* Badge específicos con mejor contraste */
+  .badge-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .badge-success {
+    background-color: var(--badge-success);
+    color: var(--badge-success-foreground);
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .badge-warning {
+    background-color: var(--badge-warning);
+    color: var(--badge-warning-foreground);
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .badge-info {
+    background-color: var(--badge-info);
+    color: var(--badge-info-foreground);
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
   }
 }
