@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -11,9 +8,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { Eye, EyeOff, Loader2, Lock, LogIn, Mail } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { PasswordResetModal } from "./PasswordResetModal";
 
@@ -28,6 +29,7 @@ export function LoginModal({ children }: LoginModalProps) {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+    const [focusedField, setFocusedField] = useState<string | null>(null);
     const router = useRouter();
 
     const validateForm = () => {
@@ -64,7 +66,6 @@ export function LoginModal({ children }: LoginModalProps) {
             });
 
             if (result?.error) {
-                // Manejar diferentes tipos de errores
                 if (result.error === "CredentialsSignin") {
                     toast.error("Credenciales incorrectas", {
                         description: "Por favor verifica tu email y contraseña",
@@ -83,8 +84,9 @@ export function LoginModal({ children }: LoginModalProps) {
                 setPassword("");
                 setShowPassword(false);
                 setErrors({});
+                setFocusedField(null);
                 router.push("/dashboard");
-                router.refresh(); // Refresh para actualizar el estado de la sesión
+                router.refresh();
             }
         } catch (error) {
             toast.error("Error de conexión", {
@@ -99,106 +101,170 @@ export function LoginModal({ children }: LoginModalProps) {
         setShowPassword(!showPassword);
     };
 
+    const handleOpenChange = (newOpen: boolean) => {
+        setOpen(newOpen);
+        if (!newOpen) {
+            setEmail("");
+            setPassword("");
+            setShowPassword(false);
+            setErrors({});
+            setFocusedField(null);
+        }
+    };
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle className="text-center text-xl font-semibold">
-                        Iniciar Sesión
-                    </DialogTitle>
-                </DialogHeader>
+            <DialogContent className="sm:max-w-md p-0 gap-0 border-0 bg-transparent shadow-none">
+                <div className="bg-background/95 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl overflow-hidden">
+                    {/* Header elegante */}
+                    <div className="relative bg-gradient-to-br from-primary/8 via-primary/4 to-transparent px-6 pt-8 pb-6">
+                        <div className=" space-y-2">
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="tu@email.com"
-                                value={email}
-                                onChange={(e) => {
-                                    setEmail(e.target.value);
-                                    if (errors.email) setErrors({ ...errors, email: undefined });
-                                }}
-                                className={`pl-10 ${errors.email ? 'border-destructive' : ''}`}
-                                disabled={isLoading}
-                            />
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl font-semibold tracking-tight">
+                                    Iniciar Sesión
+                                </DialogTitle>
+                            </DialogHeader>
+                            <p className="text-sm text-muted-foreground">
+                                Accede a tu cuenta de Nexus H. Global
+                            </p>
                         </div>
-                        {errors.email && (
-                            <p className="text-sm text-destructive">{errors.email}</p>
-                        )}
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Contraseña</Label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                id="password"
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => {
-                                    setPassword(e.target.value);
-                                    if (errors.password) setErrors({ ...errors, password: undefined });
-                                }}
-                                className={`pl-10 pr-10 ${errors.password ? 'border-destructive' : ''}`}
-                                disabled={isLoading}
-                            />
+                    {/* Formulario */}
+                    <div className="px-6 pb-6">
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            {/* Campo Email */}
+                            <div className="space-y-2">
+                                <Label htmlFor="email" className="text-sm font-medium text-foreground">
+                                    Correo Electrónico
+                                </Label>
+                                <div className="relative">
+                                    <div className={cn(
+                                        "absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
+                                        focusedField === "email" || email ? "text-primary" : "text-muted-foreground"
+                                    )}>
+                                        <Mail className="h-4 w-4" />
+                                    </div>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        placeholder="tu@email.com"
+                                        value={email}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                            if (errors.email) setErrors({ ...errors, email: undefined });
+                                        }}
+                                        onFocus={() => setFocusedField("email")}
+                                        onBlur={() => setFocusedField(null)}
+                                        className={cn(
+                                            "pl-10 h-11 border-2 transition-all duration-200 rounded-lg bg-background/50",
+                                            errors.email
+                                                ? "border-destructive focus:border-destructive focus:ring-destructive/20"
+                                                : "border-border focus:border-primary focus:ring-primary/20 hover:border-border/80"
+                                        )}
+                                        disabled={isLoading}
+                                    />
+                                </div>
+                                {errors.email && (
+                                    <p className="text-sm text-destructive animate-in fade-in duration-200">
+                                        {errors.email}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Campo Contraseña */}
+                            <div className="space-y-2">
+                                <Label htmlFor="password" className="text-sm font-medium text-foreground">
+                                    Contraseña
+                                </Label>
+                                <div className="relative">
+                                    <div className={cn(
+                                        "absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
+                                        focusedField === "password" || password ? "text-primary" : "text-muted-foreground"
+                                    )}>
+                                        <Lock className="h-4 w-4" />
+                                    </div>
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => {
+                                            setPassword(e.target.value);
+                                            if (errors.password) setErrors({ ...errors, password: undefined });
+                                        }}
+                                        onFocus={() => setFocusedField("password")}
+                                        onBlur={() => setFocusedField(null)}
+                                        className={cn(
+                                            "pl-10 pr-10 h-11 border-2 transition-all duration-200 rounded-lg bg-background/50",
+                                            errors.password
+                                                ? "border-destructive focus:border-destructive focus:ring-destructive/20"
+                                                : "border-border focus:border-primary focus:ring-primary/20 hover:border-border/80"
+                                        )}
+                                        disabled={isLoading}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-muted/80 rounded-md"
+                                        onClick={togglePasswordVisibility}
+                                        disabled={isLoading}
+                                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                        ) : (
+                                            <Eye className="h-4 w-4 text-muted-foreground" />
+                                        )}
+                                    </Button>
+                                </div>
+                                {errors.password && (
+                                    <p className="text-sm text-destructive animate-in fade-in duration-200">
+                                        {errors.password}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="flex items-center justify-end">
+                                <PasswordResetModal>
+                                    <Button
+                                        type="button"
+                                        variant="link"
+                                        className="h-auto p-0 text-sm text-primary hover:text-primary/80 font-medium"
+                                        disabled={isLoading}
+                                    >
+                                        ¿Olvidaste tu contraseña?
+                                    </Button>
+                                </PasswordResetModal>
+                            </div>
+
                             <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                onClick={togglePasswordVisibility}
+                                type="submit"
+                                className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
                                 disabled={isLoading}
-                                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                             >
-                                {showPassword ? (
-                                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                {isLoading ? (
+                                    <div className="flex items-center">
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Iniciando sesión...
+                                    </div>
                                 ) : (
-                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                    <div className="flex items-center">
+                                        <LogIn className="mr-2 h-4 w-4" />
+                                        Iniciar Sesión
+                                    </div>
                                 )}
                             </Button>
-                        </div>
-                        {errors.password && (
-                            <p className="text-sm text-destructive">{errors.password}</p>
-                        )}
-                    </div>
+                        </form>
 
-                    <div className="flex items-center justify-end">
-                        <PasswordResetModal>
-                            <Button
-                                type="button"
-                                variant="link"
-                                className="h-auto p-0 text-sm"
-                                disabled={isLoading}
-                            >
-                                ¿Olvidaste tu contraseña?
-                            </Button>
-                        </PasswordResetModal>
-                    </div>
 
-                    <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Iniciando sesión...
-                            </>
-                        ) : (
-                            "Iniciar Sesión"
-                        )}
-                    </Button>
-                </form>
+                    </div>
+                </div>
             </DialogContent>
         </Dialog>
     );
