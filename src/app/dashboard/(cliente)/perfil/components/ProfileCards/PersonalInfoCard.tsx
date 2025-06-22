@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SectionHeader } from "@/components/common/card/SectionHeader";
+import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { ProfileData } from "@/types/profile.types";
-import { Edit, User, Mail, IdCard, Calendar, Hash, AtSign } from "lucide-react";
+import { AtSign, Calendar, Edit, IdCard, Mail, User } from "lucide-react";
 import { PersonalInfoModal } from "../modal/PersonalInfoModal";
 
-interface Props {
-    profile: ProfileData
-    onUpdate: () => void
+interface PersonalInfoCardProps {
+    profile: ProfileData;
+    onUpdate: () => void;
 }
 
-export function PersonalInfoCard({
-    profile, onUpdate
-}: Props) {
+export function PersonalInfoCard({ profile, onUpdate }: PersonalInfoCardProps) {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('es-ES', {
             year: 'numeric',
@@ -57,87 +57,64 @@ export function PersonalInfoCard({
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                        <User className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                        <CardTitle className="text-lg">Información Personal</CardTitle>
-                        <div className="flex items-center gap-2 mt-1">
-                            <div className="h-1.5 w-20 bg-muted rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-primary rounded-full transition-all duration-500"
-                                    style={{ width: `${completionPercentage}%` }}
-                                />
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                                {completionPercentage}% completo
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <PersonalInfoModal
-                    personalInfo={profile.personalInfo}
-                    currentEmail={profile.email}
-                    currentNickname={profile.nickname}
-                    onUpdate={onUpdate}
-                >
-                    <Button size="sm" variant="outline">
-                        <Edit className="h-4 w-4 mr-2" />
-                        Editar
-                    </Button>
-                </PersonalInfoModal>
-            </CardHeader>
+            <SectionHeader
+                title="Información Personal"
+                icon={User}
+                completionPercentage={completionPercentage}
+                showProgress={true}
+                actionButton={
+                    <PersonalInfoModal
+                        personalInfo={profile.personalInfo}
+                        currentEmail={profile.email}
+                        currentNickname={profile.nickname}
+                        onUpdate={onUpdate}
+                    >
+                        <Button size="sm" variant="outline">
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar
+                        </Button>
+                    </PersonalInfoModal>
+                }
+            />
 
             <CardContent className="space-y-4">
                 {profile.personalInfo ? (
                     <>
-                        {/* Grid compacto con toda la información */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {/* Email */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">Email</p>
-                                    <p className="text-sm font-medium truncate">{profile.email}</p>
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="Email"
+                                value={profile.email}
+                                icon={Mail}
+                                isComplete={true}
+                                showStatus={true}
+                            />
 
-                            {/* Nickname */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <AtSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">Nickname</p>
-                                    {profile.nickname ? (
-                                        <p className="text-sm font-medium">@{profile.nickname}</p>
-                                    ) : (
-                                        <p className="text-sm text-muted-foreground italic">No establecido</p>
-                                    )}
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="Nickname"
+                                value={profile.nickname ? `@${profile.nickname}` : "No establecido"}
+                                icon={AtSign}
+                                isComplete={!!profile.nickname}
+                                showStatus={true}
+                            />
 
-                            {/* Nombres */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">Nombres</p>
-                                    <p className="text-sm font-medium">{profile.personalInfo.firstName}</p>
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="Nombres"
+                                value={profile.personalInfo.firstName}
+                                icon={User}
+                                isComplete={true}
+                                showStatus={true}
+                            />
 
-                            {/* Apellidos */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">Apellidos</p>
-                                    <p className="text-sm font-medium">{profile.personalInfo.lastName}</p>
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="Apellidos"
+                                value={profile.personalInfo.lastName}
+                                icon={User}
+                                isComplete={true}
+                                showStatus={true}
+                            />
 
-                            {/* Documento */}
                             <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <IdCard className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                <IdCard className="h-4 w-4 text-primary flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs text-muted-foreground">Documento</p>
                                     <div className="flex items-center gap-1.5">
@@ -151,24 +128,22 @@ export function PersonalInfoCard({
                                 </div>
                             </div>
 
-                            {/* Género */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">Género</p>
-                                    <p className="text-sm font-medium">{getGenderLabel(profile.personalInfo.gender)}</p>
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="Género"
+                                value={getGenderLabel(profile.personalInfo.gender)}
+                                icon={User}
+                                isComplete={true}
+                                showStatus={true}
+                            />
                         </div>
 
-                        {/* Fecha de nacimiento en una fila separada por ser más larga */}
-                        <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                            <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground">Fecha de Nacimiento</p>
-                                <p className="text-sm font-medium">{formatDate(profile.personalInfo.birthdate)}</p>
-                            </div>
-                        </div>
+                        <ProfileInfoField
+                            label="Fecha de Nacimiento"
+                            value={formatDate(profile.personalInfo.birthdate)}
+                            icon={Calendar}
+                            isComplete={true}
+                            showStatus={true}
+                        />
                     </>
                 ) : (
                     <div className="text-center py-8">

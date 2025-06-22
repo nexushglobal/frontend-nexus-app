@@ -1,23 +1,9 @@
 "use client";
 
 import { ResponsiveModal } from "@/components/common/ResponsiveModal";
+import { createFormField } from "@/hooks/useFormField";
 import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { documentTypes } from "@/data/general.data";
 import { PersonalInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +13,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { updatePersonalInfo } from "../../actions/profile";
 import { PersonalInfoFormData, personalInfoSchema } from "../../schemas/personal-info-schema";
-interface Props {
+import { FormSection } from "@/components/common/form/FormSection";
+
+interface PersonalInfoModalProps {
     children: React.ReactNode;
     personalInfo: PersonalInfo | null;
     currentEmail: string;
@@ -35,13 +23,23 @@ interface Props {
     onUpdate: () => void;
 }
 
+// Hook tipado específico para este formulario
+const usePersonalFormField = createFormField<PersonalInfoFormData>();
+
+// Transformar tipos de documento para el select
+const documentTypeOptions = documentTypes.map(docType => ({
+    value: docType.value,
+    label: docType.label,
+    icon: "📄"
+}));
+
 export function PersonalInfoModal({
     children,
     personalInfo,
     currentEmail,
     currentNickname,
     onUpdate
-}: Props) {
+}: PersonalInfoModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
@@ -66,14 +64,20 @@ export function PersonalInfoModal({
                 });
 
                 if (result.success) {
-                    toast.success("Información actualizada correctamente");
+                    toast.success("Información actualizada", {
+                        description: "Tu información personal se ha actualizado correctamente"
+                    });
                     setOpen(false);
                     onUpdate();
                 } else {
-                    toast.error(result.message);
+                    toast.error("Error al actualizar", {
+                        description: result.message
+                    });
                 }
             } catch (error) {
-                toast.error("Error de conexión. Intenta nuevamente.");
+                toast.error("Error de conexión", {
+                    description: "No se pudo actualizar la información. Intenta nuevamente."
+                });
             }
         });
     };
@@ -93,121 +97,60 @@ export function PersonalInfoModal({
     const formContent = (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                        Información de Contacto
-                    </h3>
-
+                <FormSection
+                    title="Información de Contacto"
+                    subtitle="Datos básicos de tu perfil"
+                    required={false}
+                >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="nickname"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nickname</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="mi_nickname"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {usePersonalFormField(form.control, "nickname", {
+                            type: "input",
+                            label: "Nickname",
+                            icon: AtSign,
+                            placeholder: "mi_nickname",
+                            disabled: isPending,
+                            helpText: "Nombre único para identificarte en la plataforma"
+                        })}
 
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                type="email"
-                                                placeholder="tu@email.com"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {usePersonalFormField(form.control, "email", {
+                            type: "input",
+                            label: "Email",
+                            icon: Mail,
+                            inputType: "email",
+                            placeholder: "tu@email.com",
+                            disabled: isPending,
+                            helpText: "Correo electrónico principal"
+                        })}
                     </div>
-                </div>
+                </FormSection>
 
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                        Información de Documento
-                    </h3>
-
+                <FormSection
+                    title="Información de Documento"
+                    subtitle="Datos de tu documento de identidad"
+                    required={false}
+                >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="documentType"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Tipo de Documento</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isPending}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <div className="flex items-center gap-2">
-                                                    <IdCard className="h-4 w-4 text-muted-foreground" />
-                                                    <SelectValue placeholder="Selecciona un tipo" />
-                                                </div>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {documentTypes.map((docType) => (
-                                                <SelectItem key={docType.value} value={docType.value}>
-                                                    {docType.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {usePersonalFormField(form.control, "documentType", {
+                            type: "select",
+                            label: "Tipo de Documento",
+                            icon: IdCard,
+                            placeholder: "Selecciona un tipo",
+                            options: documentTypeOptions,
+                            disabled: isPending
+                        })}
 
-                        <FormField
-                            control={form.control}
-                            name="documentNumber"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Número de Documento</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <CreditCard className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="12345678"
-                                                className="pl-10 font-mono"
-                                                disabled={isPending}
-                                                maxLength={20}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {usePersonalFormField(form.control, "documentNumber", {
+                            type: "input",
+                            label: "Número de Documento",
+                            icon: CreditCard,
+                            placeholder: "12345678",
+                            className: "font-mono",
+                            disabled: isPending,
+                            maxLength: 20,
+                            helpText: "Número de tu documento de identidad"
+                        })}
                     </div>
-                </div>
+                </FormSection>
             </form>
         </Form>
     );

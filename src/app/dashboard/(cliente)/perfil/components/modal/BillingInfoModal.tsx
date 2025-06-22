@@ -3,15 +3,7 @@
 import { ResponsiveModal } from "@/components/common/ResponsiveModal";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { BillingInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building, Info, MapPin, Receipt, Save, X } from "lucide-react";
@@ -20,14 +12,23 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { updateBillingInfo } from "../../actions/profile";
 import { BillingInfoFormData, billingInfoSchema } from "../../schemas/profile-schemas";
+import { createFormField } from "@/hooks/useFormField";
+import { FormSection } from "@/components/common/form/FormSection";
+import { InfoCard } from "@/components/common/card/InfoCard";
 
-interface Props {
+interface BillingInfoModalProps {
     children: React.ReactNode;
     billingInfo: BillingInfo | null;
     onUpdate: () => void;
 }
 
-export function BillingInfoModal({ children, billingInfo, onUpdate }: Props) {
+const useBillingFormField = createFormField<BillingInfoFormData>();
+
+export function BillingInfoModal({
+    children,
+    billingInfo,
+    onUpdate
+}: BillingInfoModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
@@ -79,7 +80,6 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: Props) {
         }
     };
 
-    // Contenido del formulario
     const formContent = (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -91,109 +91,58 @@ export function BillingInfoModal({ children, billingInfo, onUpdate }: Props) {
                     </AlertDescription>
                 </Alert>
 
-                {/* Información Fiscal */}
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                        Información Fiscal
-                        <span className="text-xs text-muted-foreground ml-1">(opcional)</span>
-                    </h3>
+                {/* Sección de Información Fiscal */}
+                <FormSection
+                    title="Información Fiscal"
+                    subtitle="Datos necesarios para la facturación empresarial"
+                    required={false}
+                >
+                    {useBillingFormField(form.control, "ruc", {
+                        type: "input",
+                        label: "RUC (Registro Único de Contribuyente)",
+                        icon: Receipt,
+                        placeholder: "20123456789",
+                        className: "font-mono",
+                        disabled: isPending,
+                        maxLength: 11,
+                        helpText: "11 dígitos para empresas, 8 para personas naturales con negocio"
+                    })}
 
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="ruc"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>RUC (Registro Único de Contribuyente)</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Receipt className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="20123456789"
-                                                className="pl-10 font-mono"
-                                                disabled={isPending}
-                                                maxLength={11}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <p className="text-xs text-muted-foreground">
-                                        11 dígitos para empresas, 8 para personas naturales con negocio
-                                    </p>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    {useBillingFormField(form.control, "razonSocial", {
+                        type: "input",
+                        label: "Razón Social",
+                        icon: Building,
+                        placeholder: "Mi Empresa S.A.C.",
+                        disabled: isPending,
+                        helpText: "Nombre oficial de la empresa o negocio"
+                    })}
 
-                        <FormField
-                            control={form.control}
-                            name="razonSocial"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Razón Social</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Building className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="Mi Empresa S.A.C."
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <p className="text-xs text-muted-foreground">
-                                        Nombre oficial de la empresa o negocio
-                                    </p>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    {useBillingFormField(form.control, "address", {
+                        type: "input",
+                        label: "Dirección Fiscal",
+                        icon: MapPin,
+                        placeholder: "Av. Principal 123, Distrito, Ciudad",
+                        disabled: isPending,
+                        helpText: "Dirección registrada en SUNAT para facturación"
+                    })}
+                </FormSection>
 
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dirección Fiscal</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="Av. Principal 123, Distrito, Ciudad"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <p className="text-xs text-muted-foreground">
-                                        Dirección registrada en SUNAT para facturación
-                                    </p>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                </div>
-
-                {/* Información adicional */}
-                <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
-                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                        📋 Información importante
-                    </h4>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                        <li>• Esta información es necesaria solo para facturación empresarial</li>
-                        <li>• El RUC debe estar activo y registrado en SUNAT</li>
-                        <li>• La razón social debe coincidir con el registro oficial</li>
-                        <li>• Los datos se utilizarán para generar comprobantes fiscales válidos</li>
-                    </ul>
-                </div>
+                {/* Información adicional usando InfoCard */}
+                <InfoCard
+                    title="Información importante"
+                    icon="📋"
+                    variant="default"
+                    items={[
+                        "Esta información es necesaria solo para facturación empresarial",
+                        "El RUC debe estar activo y registrado en SUNAT",
+                        "La razón social debe coincidir con el registro oficial",
+                        "Los datos se utilizarán para generar comprobantes fiscales válidos"
+                    ]}
+                />
             </form>
         </Form>
     );
 
-    // Acciones personalizadas
     const customActions = (
         <div className="flex flex-col-reverse sm:flex-row gap-3">
             <Button

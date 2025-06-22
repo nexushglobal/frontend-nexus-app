@@ -1,26 +1,20 @@
 "use client";
 
 import { ResponsiveModal } from "@/components/common/ResponsiveModal";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Camera, Info, Save, Upload, User, X } from "lucide-react";
-import { useRef, useState, useTransition } from "react";
+import { Camera, Save, Upload, User, X } from "lucide-react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { updatePhoto } from "../../actions/profile";
 import { PhotoFormData, photoSchema } from "../../schemas/profile-schemas";
+import { FileUploadWrapper } from "@/components/common/form/FileUploadWrapper";
+import { InfoCard } from "@/components/common/card/InfoCard";
 
-interface Props {
+interface PhotoUploadModalProps {
     children: React.ReactNode;
     currentPhoto: string | null;
     userName: string;
@@ -32,11 +26,10 @@ export function PhotoUploadModal({
     currentPhoto,
     userName,
     onUpdate
-}: Props) {
+}: PhotoUploadModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
     const [preview, setPreview] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const form = useForm<PhotoFormData>({
         resolver: zodResolver(photoSchema),
@@ -112,9 +105,6 @@ export function PhotoUploadModal({
     const clearPreview = () => {
         setPreview(null);
         form.setValue('photo', undefined);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
     };
 
     const getInitials = (name: string) => {
@@ -126,14 +116,15 @@ export function PhotoUploadModal({
             .slice(0, 2);
     };
 
-    // Contenido del formulario
     const formContent = (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Comparación de fotos */}
                 <div className="space-y-4">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                        Comparación de Fotos
+                    </h3>
+
                     <div className="grid grid-cols-2 gap-4">
-                        {/* Foto actual */}
                         <div className="text-center space-y-2">
                             <p className="text-sm font-medium text-muted-foreground">Foto Actual</p>
                             <Avatar className="h-20 w-20 mx-auto">
@@ -144,7 +135,6 @@ export function PhotoUploadModal({
                             </Avatar>
                         </div>
 
-                        {/* Vista previa */}
                         <div className="text-center space-y-2">
                             <p className="text-sm font-medium text-muted-foreground">
                                 {preview ? "Vista Previa" : "Nueva Foto"}
@@ -176,57 +166,40 @@ export function PhotoUploadModal({
                     </div>
                 </div>
 
-                {/* Upload field */}
+                {/* Upload field usando el nuevo wrapper */}
                 <FormField
                     control={form.control}
                     name="photo"
-                    render={({ field: { onChange, value, ...field } }) => (
-                        <FormItem>
-                            <FormLabel>Seleccionar Nueva Imagen</FormLabel>
-                            <FormControl>
-                                <div className="space-y-2">
-                                    <input
-                                        {...field}
-                                        ref={fileInputRef}
-                                        type="file"
-                                        accept="image/jpeg,image/jpg,image/png,image/webp"
-                                        onChange={(e) => {
-                                            const files = e.target.files;
-                                            onChange(files);
-                                            handleFileChange(files);
-                                        }}
-                                        className="hidden"
-                                        disabled={isPending}
-                                    />
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        disabled={isPending}
-                                        className="w-full"
-                                    >
-                                        <Upload className="mr-2 h-4 w-4" />
-                                        Elegir Archivo
-                                    </Button>
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
+                    render={({ field }) => (
+                        <FileUploadWrapper
+                            field={field}
+                            label="Seleccionar Nueva Imagen"
+                            icon={Upload}
+                            accept="image/jpeg,image/jpg,image/png,image/webp"
+                            disabled={isPending}
+                            required={true}
+                            buttonText="Elegir Archivo"
+                            helpText="Tamaño máximo: 5MB. Formatos: JPG, PNG, WebP"
+                            onFileChange={handleFileChange}
+                        />
                     )}
                 />
 
-                {/* Información sobre formatos */}
-                <Alert className="border-info/20 bg-info/5">
-                    <Info className="h-4 w-4 text-info" />
-                    <AlertDescription className="text-sm">
-                        <strong>Formatos aceptados:</strong> JPG, PNG, WebP. Tamaño máximo: 5MB.
-                    </AlertDescription>
-                </Alert>
+                <InfoCard
+                    title="Información sobre formatos"
+                    icon="📷"
+                    variant="info"
+                    items={[
+                        "Formatos aceptados: JPG, PNG, WebP",
+                        "Tamaño máximo: 5MB",
+                        "Recomendado: imágenes cuadradas para mejor visualización",
+                        "La imagen se redimensionará automáticamente"
+                    ]}
+                />
             </form>
         </Form>
     );
 
-    // Acciones personalizadas
     const customActions = (
         <div className="flex flex-col-reverse sm:flex-row gap-3">
             <Button
@@ -239,6 +212,7 @@ export function PhotoUploadModal({
                 <X className="mr-2 h-4 w-4" />
                 Cancelar
             </Button>
+
             <Button
                 type="submit"
                 onClick={form.handleSubmit(onSubmit)}

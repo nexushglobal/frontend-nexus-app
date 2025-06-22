@@ -1,23 +1,9 @@
 "use client";
 
 import { ResponsiveModal } from "@/components/common/ResponsiveModal";
+import { createFormField } from "@/hooks/useFormField";
 import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { countries } from "@/data/general.data";
 import { ContactInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,15 +13,29 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { updateContactInfo } from "../../actions/profile";
 import { ContactInfoFormData, contactInfoSchema } from "../../schemas/profile-schemas";
+import { FormSection } from "@/components/common/form/FormSection";
 
-interface Props {
+interface ContactInfoModalProps {
     children: React.ReactNode;
     contactInfo: ContactInfo | null;
     onUpdate: () => void;
 }
 
+// Hook tipado específico para este formulario
+const useContactFormField = createFormField<ContactInfoFormData>();
 
-export function ContactInfoModal({ children, contactInfo, onUpdate }: Props) {
+// Transformar países para el select
+const countryOptions = countries.map(country => ({
+    value: country.value,
+    label: country.label,
+    icon: country.flag
+}));
+
+export function ContactInfoModal({
+    children,
+    contactInfo,
+    onUpdate
+}: ContactInfoModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
@@ -90,135 +90,61 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: Props) {
         }
     };
 
-    // Contenido del formulario
     const formContent = (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Información Principal */}
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                        Información Principal
-                    </h3>
+                {/* Información Principal (Requerida) */}
+                <FormSection
+                    title="Información Principal"
+                    subtitle="Datos básicos de contacto"
+                    required={true}
+                >
+                    {useContactFormField(form.control, "phone", {
+                        type: "input",
+                        label: "Teléfono",
+                        icon: Phone,
+                        inputType: "tel",
+                        placeholder: "958920823",
+                        disabled: isPending,
+                        required: true,
+                        helpText: "Número de teléfono para contactarte"
+                    })}
 
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="phone"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        Teléfono *
-                                        <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
-                                    </FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="958920823"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    {useContactFormField(form.control, "country", {
+                        type: "select",
+                        label: "País",
+                        icon: Globe,
+                        placeholder: "Selecciona un país",
+                        options: countryOptions,
+                        disabled: isPending,
+                        required: true
+                    })}
+                </FormSection>
 
-                        <FormField
-                            control={form.control}
-                            name="country"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        País *
-                                        <span className="text-xs text-muted-foreground ml-1">(requerido)</span>
-                                    </FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isPending}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <div className="flex items-center gap-2">
-                                                    <Globe className="h-4 w-4 text-muted-foreground" />
-                                                    <SelectValue placeholder="Selecciona un país" />
-                                                </div>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {countries.map((country) => (
-                                                <SelectItem key={country.value} value={country.value}>
-                                                    <div className="flex items-center gap-2">
-                                                        <span>{country.flag}</span>
-                                                        <span>{country.label}</span>
-                                                    </div>
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                </div>
+                <FormSection
+                    title="Información Adicional"
+                    subtitle="Datos opcionales para completar tu perfil"
+                    required={false}
+                >
+                    {useContactFormField(form.control, "address", {
+                        type: "input",
+                        label: "Dirección",
+                        icon: MapPin,
+                        placeholder: "Av. Principal 123, Distrito",
+                        disabled: isPending,
+                        helpText: "Dirección completa donde residir"
+                    })}
 
-                {/* Información Adicional */}
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                        Información Adicional
-                        <span className="text-xs text-muted-foreground ml-1">(opcional)</span>
-                    </h3>
-
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dirección</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="Av. Principal 123, Distrito"
-                                                className="pl-10"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="postalCode"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Código Postal</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                placeholder="15001"
-                                                className="pl-10 font-mono"
-                                                disabled={isPending}
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                </div>
+                    {useContactFormField(form.control, "postalCode", {
+                        type: "input",
+                        label: "Código Postal",
+                        icon: Mail,
+                        placeholder: "15001",
+                        className: "font-mono",
+                        disabled: isPending,
+                        helpText: "Código postal de tu zona"
+                    })}
+                </FormSection>
             </form>
         </Form>
     );

@@ -1,15 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { BillingInfo } from "@/types/profile.types";
 import { Building, Edit, MapPin, Receipt } from "lucide-react";
 import { BillingInfoModal } from "../modal/BillingInfoModal";
+import { SectionHeader } from "@/components/common/card/SectionHeader";
+import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
+import { InfoCard } from "@/components/common/card/InfoCard";
 
-interface Props {
+interface BillingInfoCardProps {
     billingInfo: BillingInfo | null;
     onUpdate: () => void;
 }
 
-export function BillingInfoCard({ billingInfo, onUpdate }: Props) {
+export function BillingInfoCard({ billingInfo, onUpdate }: BillingInfoCardProps) {
     const getCompletionPercentage = () => {
         if (!billingInfo) return 0;
 
@@ -27,86 +30,55 @@ export function BillingInfoCard({ billingInfo, onUpdate }: Props) {
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                        <Receipt className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                        <CardTitle className="text-lg">Información de Facturación</CardTitle>
-                        <div className="flex items-center gap-2 mt-1">
-                            <div className="h-1.5 w-20 bg-muted rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-primary rounded-full transition-all duration-500"
-                                    style={{ width: `${completionPercentage}%` }}
-                                />
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                                {completionPercentage}% completo
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <BillingInfoModal billingInfo={billingInfo} onUpdate={onUpdate}>
-                    <Button size="sm" variant="outline">
-                        <Edit className="h-4 w-4 mr-2" />
-                        Editar
-                    </Button>
-                </BillingInfoModal>
-            </CardHeader>
+            <SectionHeader
+                title="Información de Facturación"
+                icon={Receipt}
+                completionPercentage={completionPercentage}
+                showProgress={true}
+                actionButton={
+                    <BillingInfoModal billingInfo={billingInfo} onUpdate={onUpdate}>
+                        <Button size="sm" variant="outline">
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar
+                        </Button>
+                    </BillingInfoModal>
+                }
+            />
 
             <CardContent className="space-y-4">
                 {billingInfo ? (
                     <>
-                        {/* Información de facturación en layout compacto */}
                         <div className="space-y-3">
-                            {/* RUC */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <Receipt className="h-4 w-4 text-primary flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">RUC</p>
-                                    {billingInfo.ruc ? (
-                                        <p className="text-sm font-medium font-mono">{billingInfo.ruc}</p>
-                                    ) : (
-                                        <p className="text-sm text-muted-foreground italic">No especificado</p>
-                                    )}
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="RUC"
+                                value={billingInfo.ruc || "No especificado"}
+                                icon={Receipt}
+                                isComplete={!!billingInfo.ruc}
+                                className="font-mono"
+                            />
 
-                            {/* Razón Social */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <Building className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">Razón Social</p>
-                                    {billingInfo.razonSocial ? (
-                                        <p className="text-sm font-medium">{billingInfo.razonSocial}</p>
-                                    ) : (
-                                        <p className="text-sm text-muted-foreground italic">No especificada</p>
-                                    )}
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="Razón Social"
+                                value={billingInfo.razonSocial || "No especificada"}
+                                icon={Building}
+                                isComplete={!!billingInfo.razonSocial}
+                            />
 
-                            {/* Dirección Fiscal */}
-                            <div className="flex items-center gap-2 p-2.5 rounded-lg border bg-card">
-                                <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs text-muted-foreground">Dirección Fiscal</p>
-                                    {billingInfo.address ? (
-                                        <p className="text-sm font-medium">{billingInfo.address}</p>
-                                    ) : (
-                                        <p className="text-sm text-muted-foreground italic">No especificada</p>
-                                    )}
-                                </div>
-                            </div>
+                            <ProfileInfoField
+                                label="Dirección Fiscal"
+                                value={billingInfo.address || "No especificada"}
+                                icon={MapPin}
+                                isComplete={!!billingInfo.address}
+                            />
                         </div>
 
-                        {/* Nota informativa */}
                         {billingInfo.ruc && (
-                            <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                                <p className="text-xs text-muted-foreground">
-                                    📄 <strong>Facturación empresarial:</strong> Esta información será utilizada para generar facturas y comprobantes fiscales.
-                                </p>
-                            </div>
+                            <InfoCard
+                                title="Facturación empresarial"
+                                icon="📄"
+                                variant="default"
+                                items={["Esta información será utilizada para generar facturas y comprobantes fiscales."]}
+                            />
                         )}
                     </>
                 ) : (

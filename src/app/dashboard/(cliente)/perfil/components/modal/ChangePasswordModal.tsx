@@ -1,36 +1,33 @@
 "use client";
 
 import { ResponsiveModal } from "@/components/common/ResponsiveModal";
+import { createFormField } from "@/hooks/useFormField";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle, Eye, EyeOff, Lock, Save, Shield, X } from "lucide-react";
+import { CheckCircle, Lock, Save, Shield, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { changePassword } from "../../actions/profile";
 import { ChangePasswordFormData, changePasswordSchema } from "../../schemas/security-schemas";
+import { FormSection } from "@/components/common/form/FormSection";
 
-interface Props {
+interface ChangePasswordModalProps {
     children: React.ReactNode;
     onUpdate: () => void;
 }
 
-export function ChangePasswordModal({ children, onUpdate }: Props) {
+// Hook tipado específico para este formulario
+const usePasswordFormField = createFormField<ChangePasswordFormData>();
+
+export function ChangePasswordModal({
+    children,
+    onUpdate
+}: ChangePasswordModalProps) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const form = useForm<ChangePasswordFormData>({
         resolver: zodResolver(changePasswordSchema),
@@ -58,6 +55,18 @@ export function ChangePasswordModal({ children, onUpdate }: Props) {
     };
 
     const passwordStrength = getPasswordStrength(watchNewPassword || "");
+
+    const getStrengthColor = (score: number) => {
+        if (score < 2) return "text-destructive";
+        if (score < 4) return "text-warning";
+        return "text-success";
+    };
+
+    const getStrengthLabel = (score: number) => {
+        if (score < 2) return "Débil";
+        if (score < 4) return "Media";
+        return "Fuerte";
+    };
 
     const onSubmit = (data: ChangePasswordFormData) => {
         startTransition(async () => {
@@ -92,39 +101,9 @@ export function ChangePasswordModal({ children, onUpdate }: Props) {
         setOpen(newOpen);
         if (!newOpen) {
             form.reset();
-            setShowCurrentPassword(false);
-            setShowNewPassword(false);
-            setShowConfirmPassword(false);
         }
     };
 
-    const togglePasswordVisibility = (field: 'current' | 'new' | 'confirm') => {
-        switch (field) {
-            case 'current':
-                setShowCurrentPassword(!showCurrentPassword);
-                break;
-            case 'new':
-                setShowNewPassword(!showNewPassword);
-                break;
-            case 'confirm':
-                setShowConfirmPassword(!showConfirmPassword);
-                break;
-        }
-    };
-
-    const getStrengthColor = (score: number) => {
-        if (score < 2) return "text-destructive";
-        if (score < 4) return "text-warning";
-        return "text-success";
-    };
-
-    const getStrengthLabel = (score: number) => {
-        if (score < 2) return "Débil";
-        if (score < 4) return "Media";
-        return "Fuerte";
-    };
-
-    // Contenido del formulario
     const formContent = (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -136,142 +115,51 @@ export function ChangePasswordModal({ children, onUpdate }: Props) {
                     </AlertDescription>
                 </Alert>
 
-                {/* Contraseña actual */}
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                        Verificación de Identidad
-                    </h3>
+                {/* Verificación de Identidad */}
+                <FormSection
+                    title="Verificación de Identidad"
+                    subtitle="Confirma tu contraseña actual para continuar"
+                    required={true}
+                >
+                    {usePasswordFormField(form.control, "currentPassword", {
+                        type: "input",
+                        label: "Contraseña Actual",
+                        icon: Lock,
+                        inputType: "password",
+                        placeholder: "Ingresa tu contraseña actual",
+                        disabled: isPending,
+                        required: true
+                    })}
+                </FormSection>
 
-                    <FormField
-                        control={form.control}
-                        name="currentPassword"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Contraseña Actual</FormLabel>
-                                <FormControl>
-                                    <div className="relative">
-                                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            {...field}
-                                            type={showCurrentPassword ? "text" : "password"}
-                                            placeholder="Ingresa tu contraseña actual"
-                                            className="pl-10 pr-10"
-                                            disabled={isPending}
-                                        />
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-muted/80 rounded-md"
-                                            onClick={() => togglePasswordVisibility('current')}
-                                            disabled={isPending}
-                                            aria-label={showCurrentPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                                        >
-                                            {showCurrentPassword ? (
-                                                <EyeOff className="h-4 w-4 text-muted-foreground" />
-                                            ) : (
-                                                <Eye className="h-4 w-4 text-muted-foreground" />
-                                            )}
-                                        </Button>
-                                    </div>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-
-                {/* Nueva contraseña */}
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                        Nueva Contraseña
-                    </h3>
-
+                {/* Nueva Contraseña */}
+                <FormSection
+                    title="Nueva Contraseña"
+                    subtitle="Crea una contraseña segura"
+                    required={true}
+                >
                     <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="newPassword"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="flex items-center justify-between">
-                                        <span>Nueva Contraseña</span>
-                                        {watchNewPassword && (
-                                            <span className={`text-xs font-medium ${getStrengthColor(passwordStrength.score)}`}>
-                                                Seguridad: {getStrengthLabel(passwordStrength.score)}
-                                            </span>
-                                        )}
-                                    </FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                type={showNewPassword ? "text" : "password"}
-                                                placeholder="Crea una contraseña segura"
-                                                className="pl-10 pr-10"
-                                                disabled={isPending}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="sm"
-                                                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-muted/80 rounded-md"
-                                                onClick={() => togglePasswordVisibility('new')}
-                                                disabled={isPending}
-                                                aria-label={showNewPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                                            >
-                                                {showNewPassword ? (
-                                                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                                                ) : (
-                                                    <Eye className="h-4 w-4 text-muted-foreground" />
-                                                )}
-                                            </Button>
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {usePasswordFormField(form.control, "newPassword", {
+                            type: "input",
+                            label: watchNewPassword ? `Nueva Contraseña (Seguridad: ${getStrengthLabel(passwordStrength.score)})` : "Nueva Contraseña",
+                            icon: Lock,
+                            inputType: "password",
+                            placeholder: "Crea una contraseña segura",
+                            disabled: isPending,
+                            required: true
+                        })}
 
-                        <FormField
-                            control={form.control}
-                            name="confirmPassword"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Confirmar Nueva Contraseña</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                {...field}
-                                                type={showConfirmPassword ? "text" : "password"}
-                                                placeholder="Confirma tu nueva contraseña"
-                                                className="pl-10 pr-10"
-                                                disabled={isPending}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="sm"
-                                                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-muted/80 rounded-md"
-                                                onClick={() => togglePasswordVisibility('confirm')}
-                                                disabled={isPending}
-                                                aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                                            >
-                                                {showConfirmPassword ? (
-                                                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                                                ) : (
-                                                    <Eye className="h-4 w-4 text-muted-foreground" />
-                                                )}
-                                            </Button>
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {usePasswordFormField(form.control, "confirmPassword", {
+                            type: "input",
+                            label: "Confirmar Nueva Contraseña",
+                            icon: Lock,
+                            inputType: "password",
+                            placeholder: "Confirma tu nueva contraseña",
+                            disabled: isPending,
+                            required: true
+                        })}
                     </div>
-                </div>
+                </FormSection>
 
                 {/* Indicador de fortaleza de contraseña */}
                 {watchNewPassword && (
@@ -290,14 +178,14 @@ export function ChangePasswordModal({ children, onUpdate }: Props) {
                                 <div key={key} className="flex items-center gap-2">
                                     <CheckCircle
                                         className={`h-3 w-3 ${passwordStrength.checks[key as keyof typeof passwordStrength.checks]
-                                            ? "text-success"
-                                            : "text-muted-foreground"
+                                                ? "text-success"
+                                                : "text-muted-foreground"
                                             }`}
                                     />
                                     <span
                                         className={`text-xs ${passwordStrength.checks[key as keyof typeof passwordStrength.checks]
-                                            ? "text-success"
-                                            : "text-muted-foreground"
+                                                ? "text-success"
+                                                : "text-muted-foreground"
                                             }`}
                                     >
                                         {label}
@@ -311,7 +199,6 @@ export function ChangePasswordModal({ children, onUpdate }: Props) {
         </Form>
     );
 
-    // Acciones personalizadas
     const customActions = (
         <div className="flex flex-col-reverse sm:flex-row gap-3">
             <Button
