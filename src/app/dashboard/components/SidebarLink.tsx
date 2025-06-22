@@ -1,4 +1,3 @@
-// src/app/dashboard/components/SidebarLink.tsx
 import {
   Collapsible,
   CollapsibleContent,
@@ -55,7 +54,7 @@ const ICON_MAPPING = {
   membership: Crown,
   "membership-plan": PlaneTakeoff,
   "my-plan": ClipboardCheck,
-  reconsumos: Award, // Para "Mis Reconsumos"
+  reconsumos: Award,
 
   // Puntos
   points: Award,
@@ -98,10 +97,30 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
   const Icon = ICON_MAPPING[item.icon as keyof typeof ICON_MAPPING] || Home;
 
   const isActive = item.url && pathname === item.url;
-
   const isChildActive = item.children?.some(
     (child) => child.url && pathname === child.url
   );
+
+  const getActiveStyles = () => {
+    if (isActive || isChildActive) {
+      return {
+        position: 'relative' as const,
+        backgroundColor: 'var(--nav-item-selected)',
+        color: 'var(--nav-item-selected-foreground)',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          height: '100%',
+          width: '4px',
+          backgroundColor: 'var(--nav-item-active)',
+          borderRadius: '0 4px 4px 0',
+        }
+      };
+    }
+    return {};
+  };
 
   const LinkContent = () => (
     <motion.div
@@ -115,10 +134,12 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
     >
       <Icon
         size={20}
-        className={cn(
-          "transition-colors duration-200",
-          isActive || isChildActive ? "text-white" : "text-gray-300"
-        )}
+        className="transition-colors duration-200"
+        style={{
+          color: isActive || isChildActive
+            ? 'var(--nav-item-selected-foreground)'
+            : 'var(--nav-item-foreground)'
+        }}
       />
       <AnimatePresence>
         {!isCollapsed && (
@@ -127,10 +148,12 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
             animate={{ opacity: 1, width: "auto" }}
             exit={{ opacity: 0, width: 0 }}
             transition={{ duration: 0.2 }}
-            className={cn(
-              "font-medium whitespace-nowrap overflow-hidden transition-colors duration-200",
-              isActive || isChildActive ? "text-white" : "text-gray-300"
-            )}
+            className="font-medium whitespace-nowrap overflow-hidden transition-colors duration-200"
+            style={{
+              color: isActive || isChildActive
+                ? 'var(--nav-item-selected-foreground)'
+                : 'var(--nav-item-foreground)'
+            }}
           >
             {item.name}
           </motion.span>
@@ -153,21 +176,17 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.2 }}
-            className={cn(
-              "text-gray-400 transition-colors",
-              (isActive || isChildActive || isOpen) && "text-white"
-            )}
+            style={{
+              color: (isActive || isChildActive || isOpen)
+                ? 'var(--nav-item-selected-foreground)'
+                : 'var(--nav-item-foreground)'
+            }}
           >
             <ChevronDown size={16} />
           </motion.div>
         )}
       </div>
     );
-
-    const activeStyles =
-      isActive || isChildActive
-        ? "before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-emerald-400 before:rounded-r-md bg-emerald-900/40 text-white"
-        : "";
 
     return (
       <Collapsible
@@ -180,26 +199,32 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
             <Tooltip>
               <div className="w-full">
                 <CollapsibleTrigger asChild>
-                  <div
-                    className={cn(
-                      "w-full p-2 rounded-r-md relative transition-all hover:bg-emerald-800/30",
-                      activeStyles
-                    )}
+                  <motion.div
+                    className="w-full p-2 rounded-r-md relative transition-all"
+                    style={{
+                      ...getActiveStyles(),
+                    }}
+                    whileHover={{
+                      backgroundColor: 'var(--nav-item-hover)',
+                    }}
                   >
                     <TooltipTrigger asChild>
                       <div className="w-full">
                         <TriggerContent />
                       </div>
                     </TooltipTrigger>
-                  </div>
+                  </motion.div>
                 </CollapsibleTrigger>
                 <TooltipContent
                   side="right"
-                  className="flex flex-col gap-1 bg-gray-900 border-gray-800"
+                  className="bg-layout-sidebar border-sidebar-border"
                 >
-                  <p className="font-medium">{item.name}</p>
-                  <div className="h-px bg-gray-800 w-full" />
-                  <div className="text-xs text-gray-400">
+                  <p className="font-medium text-layout-sidebar-foreground">{item.name}</p>
+                  <div
+                    className="h-px w-full my-1"
+                    style={{ backgroundColor: 'var(--sidebar-border)' }}
+                  />
+                  <div className="text-xs text-layout-sidebar-foreground opacity-70">
                     Submenú disponible
                   </div>
                 </TooltipContent>
@@ -207,13 +232,16 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
             </Tooltip>
           </TooltipProvider>
         ) : (
-          <CollapsibleTrigger
-            className={cn(
-              "flex w-full p-2 rounded-r-md relative hover:bg-emerald-800/30 transition-all",
-              activeStyles
-            )}
-          >
-            <TriggerContent />
+          <CollapsibleTrigger asChild>
+            <motion.button
+              className="flex w-full p-2 rounded-r-md relative transition-all"
+              style={getActiveStyles()}
+              whileHover={{
+                backgroundColor: 'var(--nav-item-hover)',
+              }}
+            >
+              <TriggerContent />
+            </motion.button>
           </CollapsibleTrigger>
         )}
         <CollapsibleContent>
@@ -227,8 +255,9 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
                 className={cn(
                   "w-full",
                   !isCollapsed && "pl-2",
-                  isCollapsed && "border-l border-gray-700"
+                  isCollapsed && "border-l"
                 )}
+                style={isCollapsed ? { borderLeftColor: 'var(--sidebar-separator)' } : {}}
               >
                 {item.children.map((child) => (
                   <SidebarLink
@@ -246,18 +275,13 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
     );
   }
 
-  const activeStyles = isActive
-    ? "before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-emerald-400 before:rounded-r-md bg-emerald-900/40 text-white"
-    : "";
-
   const linkClassName = cn(
-    "flex w-full p-2 rounded-r-md relative hover:bg-emerald-800/30 transition-all",
+    "flex w-full p-2 rounded-r-md relative transition-all",
     isCollapsed ? "justify-center" : "items-center gap-3",
     isNested && {
       "ml-2": !isCollapsed,
       "": isCollapsed,
-    },
-    activeStyles
+    }
   );
 
   const LinkWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -273,13 +297,28 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
   const MainContent = () => (
     <LinkWrapper>
       {item.url ? (
-        <Link href={item.url} className={linkClassName}>
+        <Link
+          href={item.url}
+          className={cn(
+            linkClassName,
+            "hover:bg-[var(--nav-item-hover)]"
+          )}
+          style={{
+            ...getActiveStyles(),
+          }}
+        >
           <LinkContent />
         </Link>
       ) : (
-        <div className={linkClassName}>
+        <motion.div
+          className={linkClassName}
+          style={getActiveStyles()}
+          whileHover={{
+            backgroundColor: 'var(--nav-item-hover)',
+          }}
+        >
           <LinkContent />
-        </div>
+        </motion.div>
       )}
     </LinkWrapper>
   );
@@ -294,11 +333,11 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
         </TooltipTrigger>
         <TooltipContent
           side="right"
-          className="bg-gray-900 border-gray-800 text-gray-200"
+          className="bg-layout-sidebar border-sidebar-border text-layout-sidebar-foreground"
         >
           <p>{item.name}</p>
           {isNested && (
-            <p className="text-xs text-gray-400">Elemento del submenú</p>
+            <p className="text-xs opacity-70">Elemento del submenú</p>
           )}
         </TooltipContent>
       </Tooltip>

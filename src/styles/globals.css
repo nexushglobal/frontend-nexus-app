@@ -3,196 +3,245 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Base - Verde claro neutro */
-  --background: hsl(120, 20%, 98%);
-  --foreground: hsl(160, 25%, 25%);
+  /* Base - Fondo claro con toques vibrantes */
+  --background: hsl(210, 40%, 98%);
+  --foreground: hsl(220, 25%, 15%);
 
   /* Layout */
-  --layout-sidebar: hsl(160, 35%, 18%);
+  --layout-sidebar: hsl(235, 30%, 12%);
   --layout-sidebar-foreground: hsl(0, 0%, 95%);
   --layout-topbar: hsl(0, 0%, 100%);
-  --layout-topbar-foreground: hsl(160, 35%, 25%);
-  --layout-content: hsl(120, 20%, 97%);
-  --layout-footer: hsl(160, 35%, 18%);
+  --layout-topbar-foreground: hsl(220, 25%, 15%);
+  --layout-content: hsl(210, 40%, 97%);
+  --layout-footer: hsl(235, 30%, 12%);
   --layout-footer-foreground: hsl(0, 0%, 95%);
 
-  /* Card - Verdes sutiles */
+  /* Card - Blancos brillantes */
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(160, 25%, 25%);
-  --card-hover: hsl(120, 20%, 96%);
-  --card-active: hsl(120, 20%, 94%);
+  --card-foreground: hsl(220, 25%, 15%);
+  --card-hover: hsl(210, 40%, 96%);
+  --card-active: hsl(210, 40%, 94%);
 
   /* Popover */
-  --popover: hsl(160, 20%, 95%);
-  --popover-foreground: hsl(160, 35%, 25%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(220, 25%, 15%);
 
-  /* Primary - Verde Bosque Profundo */
-  --primary: hsl(160, 80%, 30%);
-  --primary-foreground: hsl(0, 0%, 98%);
-  --primary-hover: hsl(160, 80%, 25%);
-  --primary-active: hsl(160, 80%, 20%);
+  /* Primary - Verde Lima Vibrante */
+  --primary: hsl(85, 85%, 50%);
+  --primary-foreground: hsl(235, 30%, 12%);
+  --primary-hover: hsl(85, 85%, 45%);
+  --primary-active: hsl(85, 85%, 40%);
 
-  /* Secondary - Verde Salvia */
-  --secondary: hsl(120, 30%, 90%);
-  --secondary-foreground: hsl(160, 80%, 30%);
-  --secondary-hover: hsl(120, 30%, 86%);
-  --secondary-active: hsl(120, 30%, 82%);
+  /* Secondary - Morado Brillante */
+  --secondary: hsl(270, 70%, 85%);
+  --secondary-foreground: hsl(270, 70%, 25%);
+  --secondary-hover: hsl(270, 70%, 80%);
+  --secondary-active: hsl(270, 70%, 75%);
 
   /* Navigation */
   --nav-item: transparent;
   --nav-item-foreground: hsl(0, 0%, 95%);
-  --nav-item-hover: hsl(160, 35%, 22%);
-  --nav-item-active: hsl(160, 70%, 40%);
-  --nav-item-selected: hsl(160, 35%, 24%);
+  --nav-item-hover: hsl(235, 30%, 18%);
+  --nav-item-active: hsl(85, 85%, 50%);
+  --nav-item-selected: hsl(235, 30%, 20%);
 
-  /* Muted - Verde apagado */
-  --muted: hsl(120, 15%, 90%);
-  --muted-foreground: hsl(160, 15%, 45%);
+  /* Muted - Grises sutiles */
+  --muted: hsl(220, 20%, 92%);
+  --muted-foreground: hsl(220, 15%, 45%);
 
-  /* Accent - Verde Lima */
-  --accent: hsl(80, 70%, 85%);
-  --accent-foreground: hsl(160, 80%, 25%);
+  /* Accent - Azul Eléctrico */
+  --accent: hsl(200, 95%, 85%);
+  --accent-foreground: hsl(200, 95%, 25%);
 
-  /* Destructive - Rojo adaptado */
-  --destructive: hsl(5, 75%, 55%);
+  /* Destructive - Rojo Coral Vibrante */
+  --destructive: hsl(350, 85%, 55%);
   --destructive-foreground: hsl(0, 0%, 100%);
 
   /* Borders & Inputs */
-  --border: hsl(120, 15%, 85%);
-  --input: hsl(120, 15%, 85%);
-  --ring: hsl(160, 80%, 30%);
+  --border: hsl(220, 20%, 85%);
+  --input: hsl(220, 20%, 85%);
+  --ring: hsl(85, 85%, 50%);
 
-  /* Estados propiedades */
-  --property-available: hsl(160, 80%, 35%);
-  --property-rented: hsl(80, 60%, 45%);
-  --property-sold: hsl(120, 60%, 40%);
-  --property-maintenance: hsl(40, 90%, 50%);
+  /* Estados propiedades - Colores vivos */
+  --property-available: hsl(140, 80%, 45%);
+  --property-rented: hsl(45, 95%, 55%);
+  --property-sold: hsl(15, 85%, 60%);
+  --property-maintenance: hsl(270, 70%, 60%);
 
-  /* Indicadores */
-  --indicator-low: hsl(160, 80%, 40%);
-  --indicator-medium: hsl(60, 90%, 45%);
-  --indicator-high: hsl(5, 75%, 55%);
+  /* Indicadores vibrantes */
+  --indicator-low: hsl(140, 80%, 45%);
+  --indicator-medium: hsl(45, 95%, 55%);
+  --indicator-high: hsl(350, 85%, 55%);
 
-  /* Charts - Escala verde */
-  --chart-1: hsl(160, 80%, 30%);
-  --chart-2: hsl(120, 60%, 45%);
-  --chart-3: hsl(80, 70%, 50%);
-  --chart-4: hsl(160, 60%, 55%);
-  --chart-5: hsl(40, 90%, 55%);
+  /* Charts - Paleta vibrante */
+  --chart-1: hsl(85, 85%, 50%); /* Verde lima */
+  --chart-2: hsl(270, 70%, 60%); /* Morado */
+  --chart-3: hsl(200, 95%, 55%); /* Azul eléctrico */
+  --chart-4: hsl(15, 85%, 60%); /* Naranja coral */
+  --chart-5: hsl(320, 80%, 65%); /* Rosa vibrante */
   --radius: 0.5rem;
 
-  /* Table - Adaptación completa */
-  --table-header: hsl(120, 30%, 90%);
-  --table-header-foreground: hsl(160, 35%, 25%);
+  /* Table - Adaptación con colores vivos */
+  --table-header: hsl(235, 30%, 15%);
+  --table-header-foreground: hsl(0, 0%, 95%);
   --table-row: hsl(0, 0%, 100%);
-  --table-row-foreground: hsl(160, 25%, 25%);
-  --table-row-alternate: hsl(120, 20%, 97%);
-  --table-border: hsl(120, 15%, 85%);
-  --table-row-hover: hsl(120, 20%, 96%);
-  --table-row-selected: hsl(160, 30%, 93%);
-  --table-row-selected-foreground: hsl(160, 80%, 25%);
-  --table-sort-indicator: hsl(160, 80%, 30%);
+  --table-row-foreground: hsl(220, 25%, 15%);
+  --table-row-alternate: hsl(210, 40%, 98%);
+  --table-border: hsl(220, 20%, 85%);
+  --table-row-hover: hsl(85, 85%, 95%);
+  --table-row-selected: hsl(85, 85%, 90%);
+  --table-row-selected-foreground: hsl(235, 30%, 12%);
+  --table-sort-indicator: hsl(85, 85%, 50%);
   --table-filter-background: hsl(0, 0%, 100%);
-  --table-filter-border: hsl(120, 15%, 85%);
-  --table-loading-background: hsl(120, 20%, 97%);
-  --table-empty-background: hsl(120, 20%, 97%);
-  --table-empty-foreground: hsl(160, 15%, 45%);
+  --table-filter-border: hsl(220, 20%, 85%);
+  --table-loading-background: hsl(210, 40%, 97%);
+  --table-empty-background: hsl(210, 40%, 97%);
+  --table-empty-foreground: hsl(220, 15%, 45%);
+
+  /* Nuevos colores para elementos específicos */
+  --success: hsl(140, 80%, 45%);
+  --success-foreground: hsl(0, 0%, 100%);
+  --warning: hsl(45, 95%, 55%);
+  --warning-foreground: hsl(235, 30%, 12%);
+  --info: hsl(200, 95%, 55%);
+  --info-foreground: hsl(0, 0%, 100%);
+
+  /* Sidebar - Siempre oscuro y vibrante */
+  --layout-sidebar: hsl(235, 35%, 10%);
+  --layout-sidebar-foreground: hsl(210, 40%, 90%);
+
+  /* Navegación del sidebar */
+  --nav-item: transparent;
+  --nav-item-foreground: hsl(210, 40%, 85%);
+  --nav-item-hover: hsl(235, 35%, 18%);
+  --nav-item-active: hsl(85, 95%, 60%);
+  --nav-item-selected: hsl(235, 35%, 20%);
+  --nav-item-selected-foreground: hsl(85, 95%, 80%);
+
+  /* Bordes y separadores del sidebar */
+  --sidebar-border: hsl(235, 25%, 20%);
+  --sidebar-separator: hsl(235, 25%, 25%);
 }
 
 .dark {
-  /* Base - Verde oscuro profundo */
-  --background: hsl(160, 25%, 8%);
-  --foreground: hsl(120, 20%, 90%);
+  /* Base - Fondo oscuro con acentos vibrantes */
+  --background: hsl(235, 30%, 8%);
+  --foreground: hsl(210, 40%, 90%);
 
-  /* Layout */
-  --layout-sidebar: hsl(160, 35%, 12%);
-  --layout-sidebar-foreground: hsl(120, 20%, 90%);
-  --layout-topbar: hsl(160, 35%, 12%);
-  --layout-topbar-foreground: hsl(120, 20%, 90%);
-  --layout-content: hsl(160, 25%, 8%);
-  --layout-footer: hsl(160, 35%, 12%);
-  --layout-footer-foreground: hsl(120, 20%, 90%);
+  /* Layout oscuro */
+  --layout-sidebar: hsl(235, 35%, 10%);
+  --layout-sidebar-foreground: hsl(210, 40%, 90%);
+  --layout-topbar: hsl(235, 35%, 10%);
+  --layout-topbar-foreground: hsl(210, 40%, 90%);
+  --layout-content: hsl(235, 30%, 8%);
+  --layout-footer: hsl(235, 35%, 10%);
+  --layout-footer-foreground: hsl(210, 40%, 90%);
 
-  /* Card - Verde oscuro */
-  --card: hsl(160, 35%, 12%);
-  --card-foreground: hsl(120, 20%, 90%);
-  --card-hover: hsl(160, 35%, 14%);
-  --card-active: hsl(160, 35%, 16%);
+  /* Card - Fondo oscuro elegante */
+  --card: hsl(235, 35%, 12%);
+  --card-foreground: hsl(210, 40%, 90%);
+  --card-hover: hsl(235, 35%, 15%);
+  --card-active: hsl(235, 35%, 18%);
 
   /* Popover oscuro */
-  --popover: hsl(160, 35%, 14%);
-  --popover-foreground: hsl(120, 20%, 90%);
+  --popover: hsl(235, 35%, 14%);
+  --popover-foreground: hsl(210, 40%, 90%);
 
-  /* Primary - Verde Esmeralda Brillante */
-  --primary: hsl(160, 80%, 45%);
-  --primary-foreground: hsl(160, 25%, 10%);
-  --primary-hover: hsl(160, 80%, 40%);
-  --primary-active: hsl(160, 80%, 35%);
+  /* Primary - Verde Lima Brillante (más vibrante en oscuro) */
+  --primary: hsl(85, 95%, 60%);
+  --primary-foreground: hsl(235, 30%, 10%);
+  --primary-hover: hsl(85, 95%, 55%);
+  --primary-active: hsl(85, 95%, 50%);
 
-  /* Secondary - Verde Carbón */
-  --secondary: hsl(160, 25%, 20%);
-  --secondary-foreground: hsl(160, 80%, 45%);
-  --secondary-hover: hsl(160, 25%, 24%);
-  --secondary-active: hsl(160, 25%, 28%);
+  /* Secondary - Morado Vibrante */
+  --secondary: hsl(270, 80%, 25%);
+  --secondary-foreground: hsl(270, 80%, 75%);
+  --secondary-hover: hsl(270, 80%, 30%);
+  --secondary-active: hsl(270, 80%, 35%);
 
   /* Navigation oscuro */
-  --nav-item-foreground: hsl(120, 20%, 85%);
-  --nav-item-hover: hsl(160, 35%, 18%);
-  --nav-item-active: hsl(160, 80%, 50%);
-  --nav-item-selected: hsl(160, 35%, 20%);
+  --nav-item-foreground: hsl(210, 40%, 85%);
+  --nav-item-hover: hsl(235, 35%, 18%);
+  --nav-item-active: hsl(85, 95%, 60%);
+  --nav-item-selected: hsl(235, 35%, 20%);
 
   /* Muted oscuro */
-  --muted: hsl(160, 25%, 20%);
-  --muted-foreground: hsl(120, 15%, 65%);
+  --muted: hsl(235, 25%, 20%);
+  --muted-foreground: hsl(210, 20%, 65%);
 
-  /* Accent oscuro */
-  --accent: hsl(120, 40%, 25%);
-  --accent-foreground: hsl(160, 80%, 50%);
+  /* Accent oscuro - Azul Cyber */
+  --accent: hsl(200, 95%, 25%);
+  --accent-foreground: hsl(200, 95%, 80%);
 
   /* Destructive oscuro */
-  --destructive: hsl(5, 85%, 60%);
+  --destructive: hsl(350, 90%, 65%);
   --destructive-foreground: hsl(0, 0%, 100%);
 
   /* Borders & Inputs oscuros */
-  --border: hsl(160, 25%, 20%);
-  --input: hsl(160, 25%, 20%);
-  --ring: hsl(160, 80%, 45%);
+  --border: hsl(235, 25%, 20%);
+  --input: hsl(235, 25%, 20%);
+  --ring: hsl(85, 95%, 60%);
 
-  /* Estados propiedades oscuros */
-  --property-available: hsl(160, 80%, 50%);
-  --property-rented: hsl(120, 60%, 55%);
-  --property-sold: hsl(80, 70%, 60%);
-  --property-maintenance: hsl(40, 90%, 60%);
+  /* Estados propiedades oscuros - más vibrantes */
+  --property-available: hsl(140, 85%, 55%);
+  --property-rented: hsl(45, 95%, 65%);
+  --property-sold: hsl(15, 90%, 70%);
+  --property-maintenance: hsl(270, 80%, 70%);
 
-  /* Indicadores oscuros */
-  --indicator-low: hsl(160, 80%, 50%);
-  --indicator-medium: hsl(60, 90%, 55%);
-  --indicator-high: hsl(5, 85%, 60%);
+  /* Indicadores oscuros vibrantes */
+  --indicator-low: hsl(140, 85%, 55%);
+  --indicator-medium: hsl(45, 95%, 65%);
+  --indicator-high: hsl(350, 90%, 65%);
 
-  /* Charts oscuros */
-  --chart-1: hsl(160, 80%, 45%);
-  --chart-2: hsl(120, 60%, 55%);
-  --chart-3: hsl(80, 70%, 60%);
-  --chart-4: hsl(160, 60%, 65%);
-  --chart-5: hsl(40, 90%, 65%);
+  /* Charts oscuros - paleta neón */
+  --chart-1: hsl(85, 95%, 60%); /* Verde lima neón */
+  --chart-2: hsl(270, 80%, 70%); /* Morado brillante */
+  --chart-3: hsl(200, 95%, 65%); /* Azul cyber */
+  --chart-4: hsl(15, 90%, 70%); /* Naranja neón */
+  --chart-5: hsl(320, 85%, 75%); /* Rosa neón */
 
-  /* Table oscuro */
-  --table-header: hsl(160, 35%, 16%);
-  --table-header-foreground: hsl(120, 20%, 90%);
-  --table-row: hsl(160, 35%, 12%);
-  --table-row-foreground: hsl(120, 20%, 90%);
-  --table-row-alternate: hsl(160, 35%, 14%);
-  --table-border: hsl(160, 25%, 20%);
-  --table-row-hover: hsl(160, 35%, 18%);
-  --table-row-selected: hsl(160, 40%, 25%);
-  --table-row-selected-foreground: hsl(160, 80%, 50%);
-  --table-sort-indicator: hsl(160, 80%, 45%);
-  --table-filter-background: hsl(160, 35%, 14%);
-  --table-filter-border: hsl(160, 25%, 20%);
-  --table-loading-background: hsl(160, 35%, 12%);
-  --table-empty-background: hsl(160, 35%, 12%);
-  --table-empty-foreground: hsl(120, 15%, 65%);
+  /* Table oscuro con acentos vibrantes */
+  --table-header: hsl(235, 35%, 15%);
+  --table-header-foreground: hsl(210, 40%, 90%);
+  --table-row: hsl(235, 35%, 12%);
+  --table-row-foreground: hsl(210, 40%, 90%);
+  --table-row-alternate: hsl(235, 35%, 14%);
+  --table-border: hsl(235, 25%, 20%);
+  --table-row-hover: hsl(85, 95%, 10%);
+  --table-row-selected: hsl(85, 95%, 15%);
+  --table-row-selected-foreground: hsl(85, 95%, 80%);
+  --table-sort-indicator: hsl(85, 95%, 60%);
+  --table-filter-background: hsl(235, 35%, 14%);
+  --table-filter-border: hsl(235, 25%, 20%);
+  --table-loading-background: hsl(235, 35%, 12%);
+  --table-empty-background: hsl(235, 35%, 12%);
+  --table-empty-foreground: hsl(210, 20%, 65%);
+
+  /* Colores específicos oscuros */
+  --success: hsl(140, 85%, 55%);
+  --success-foreground: hsl(235, 30%, 10%);
+  --warning: hsl(45, 95%, 65%);
+  --warning-foreground: hsl(235, 30%, 10%);
+  --info: hsl(200, 95%, 65%);
+  --info-foreground: hsl(235, 30%, 10%);
+
+  /* Sidebar - Mismo estilo en modo oscuro */
+  --layout-sidebar: hsl(235, 35%, 10%);
+  --layout-sidebar-foreground: hsl(210, 40%, 90%);
+
+  /* Navegación del sidebar (igual) */
+  --nav-item: transparent;
+  --nav-item-foreground: hsl(210, 40%, 85%);
+  --nav-item-hover: hsl(235, 35%, 18%);
+  --nav-item-active: hsl(85, 95%, 60%);
+  --nav-item-selected: hsl(235, 35%, 20%);
+  --nav-item-selected-foreground: hsl(85, 95%, 80%);
+
+  /* Bordes y separadores del sidebar (igual) */
+  --sidebar-border: hsl(235, 25%, 20%);
+  --sidebar-separator: hsl(235, 25%, 25%);
 }
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -258,10 +307,22 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* Shadows */
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
+  /* Nuevos colores de estado */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Shadows - Más dramáticas */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
   /* Radios */
   --radius-sm: calc(var(--radius) - 2px);
@@ -285,6 +346,18 @@
   --color-table-loading-background: var(--table-loading-background);
   --color-table-empty-background: var(--table-empty-background);
   --color-table-empty-foreground: var(--table-empty-foreground);
+
+  /* Sidebar colors */
+  --color-layout-sidebar: var(--layout-sidebar);
+  --color-layout-sidebar-foreground: var(--layout-sidebar-foreground);
+  --color-nav-item: var(--nav-item);
+  --color-nav-item-foreground: var(--nav-item-foreground);
+  --color-nav-item-hover: var(--nav-item-hover);
+  --color-nav-item-active: var(--nav-item-active);
+  --color-nav-item-selected: var(--nav-item-selected);
+  --color-nav-item-selected-foreground: var(--nav-item-selected-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-separator: var(--sidebar-separator);
 }
 
 @layer base {
@@ -293,5 +366,42 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Animaciones adicionales para elementos vibrantes */
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 5px currentColor;
+    }
+    to {
+      box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+  }
+
+  /* Gradientes vibrantes personalizados */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--primary), var(--chart-3));
+  }
+
+  .gradient-secondary {
+    background: linear-gradient(135deg, var(--secondary), var(--chart-5));
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+  }
+
+  /* Efectos de hover más vibrantes */
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
 }

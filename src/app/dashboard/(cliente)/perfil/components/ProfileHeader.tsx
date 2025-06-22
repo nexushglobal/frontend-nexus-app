@@ -17,7 +17,7 @@ const ProfileHeader = ({ profile, onUpdate }: Props) => {
     };
 
     return (
-        <Card className="mb-6">
+        <Card className="mb-6 ">
             <CardContent className="pt-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                     <div className="relative">
