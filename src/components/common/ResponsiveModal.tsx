@@ -121,21 +121,30 @@ export function ResponsiveModal({
     );
 
     const ModalContent = () => (
-        <div className="space-y-6">
-            <ScrollArea className={isMobile ? mobileHeight : desktopHeight}>
-                <div className="pr-4">
+        <div className="flex flex-col h-full">
+            {/* Scrollable content area */}
+            <div
+                className={`flex-1 overflow-y-auto overflow-x-hidden ${isMobile ? mobileHeight : desktopHeight}`}
+                style={{
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: 'hsl(var(--border)) transparent'
+                }}
+            >
+                <div className="pr-2">
                     {content}
                 </div>
-            </ScrollArea>
+            </div>
 
-            {/* Footer */}
-            {customFooter || (actions && !customFooter) ? (
-                <div className="pt-4 border-t bg-background">
-                    {customFooter || actions}
-                </div>
-            ) : (
-                <DefaultFooter />
-            )}
+            {/* Fixed footer */}
+            <div className="flex-shrink-0">
+                {customFooter || (actions && !customFooter) ? (
+                    <div className="pt-4 border-t bg-background">
+                        {customFooter || actions}
+                    </div>
+                ) : (
+                    <DefaultFooter />
+                )}
+            </div>
         </div>
     );
 

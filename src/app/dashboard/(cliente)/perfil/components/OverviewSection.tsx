@@ -1,21 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileData } from "@/types/profile.types";
 import {
+    AlertCircle,
+    Building,
+    CheckCircle,
     FileText,
-    Share2,
-    User,
-    Mail,
-    Phone,
     Globe,
     IdCard,
-    Calendar,
-    MapPin,
-    Building,
     Landmark,
+    Mail,
+    MapPin,
+    Phone,
+    Share2,
     TrendingUp,
-    CheckCircle,
-    AlertCircle
+    User
 } from "lucide-react";
 
 interface Props {

@@ -1,23 +1,21 @@
 "use client";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion } from "framer-motion";
 import {
+    AlertTriangle,
+    ArrowRight,
+    CheckCircle,
     FileText,
     Landmark,
     Phone,
-    Receipt,
-    Share2,
-    Shield,
-    User,
-    AlertTriangle,
-    CheckCircle,
-    ArrowRight
+    Receipt
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useProfile } from "../hooks/useProfile";
+import { menuSections } from "../utils/menu.utils";
 import { OverviewSection } from "./OverviewSection";
 import { BankInfoCard } from "./ProfileCards/BankInfoCard";
 import { BillingInfoCard } from "./ProfileCards/BillingInfoCard";
@@ -28,50 +26,7 @@ import { SecurityCard } from "./ProfileCards/SecurityCard";
 import ProfileHeader from "./ProfileHeader";
 import { ProfilePageSkeleton } from "./ProfilePageSkeleton";
 
-const menuSections = [
-    {
-        id: "overview",
-        label: "Resumen",
-        icon: User,
-        description: "Vista general del perfil"
-    },
-    {
-        id: "personal",
-        label: "Personal",
-        icon: FileText,
-        description: "Información personal y documentos"
-    },
-    {
-        id: "contact",
-        label: "Contacto",
-        icon: Phone,
-        description: "Información de contacto"
-    },
-    {
-        id: "billing",
-        label: "Facturación",
-        icon: Receipt,
-        description: "Datos de facturación"
-    },
-    {
-        id: "banking",
-        label: "Bancario",
-        icon: Landmark,
-        description: "Información bancaria"
-    },
-    {
-        id: "referrals",
-        label: "Referencias",
-        icon: Share2,
-        description: "Códigos de referido"
-    },
-    {
-        id: "security",
-        label: "Seguridad",
-        icon: Shield,
-        description: "Contraseña y seguridad"
-    }
-];
+
 
 export function ProfilePageContent() {
     const { profile, loading, error, refetch } = useProfile();
@@ -258,8 +213,8 @@ export function ProfilePageContent() {
                                     key={tabId}
                                     onClick={() => setActiveSection(tabId)}
                                     className={`px-3 py-2 text-xs font-medium rounded-md transition-colors ${isActive
-                                            ? "bg-background text-foreground shadow-sm"
-                                            : "text-muted-foreground hover:text-foreground"
+                                        ? "bg-background text-foreground shadow-sm"
+                                        : "text-muted-foreground hover:text-foreground"
                                         }`}
                                 >
                                     {tabId === "overview" && "Resumen"}
@@ -389,7 +344,6 @@ export function ProfilePageContent() {
                     </Card>
                 </div>
 
-                {/* Main Content */}
                 <div className="col-span-9">
                     <motion.div
                         key={activeSection}

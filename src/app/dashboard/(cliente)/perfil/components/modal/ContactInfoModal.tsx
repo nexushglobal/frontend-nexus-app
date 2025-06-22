@@ -1,5 +1,6 @@
 "use client";
 
+import { ResponsiveModal } from "@/components/common/ResponsiveModal";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -17,37 +18,24 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { countries } from "@/data/general.data";
 import { ContactInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Globe, Mail, MapPin, Phone, Save, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ContactInfoFormData, contactInfoSchema } from "../../schemas/profile-schemas";
 import { updateContactInfo } from "../../actions/profile";
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
+import { ContactInfoFormData, contactInfoSchema } from "../../schemas/profile-schemas";
 
-interface ContactInfoModalProps {
+interface Props {
     children: React.ReactNode;
     contactInfo: ContactInfo | null;
     onUpdate: () => void;
 }
 
-const countries = [
-    { value: "Peru", label: "Perú", flag: "🇵🇪" },
-    { value: "Colombia", label: "Colombia", flag: "🇨🇴" },
-    { value: "Ecuador", label: "Ecuador", flag: "🇪🇨" },
-    { value: "Bolivia", label: "Bolivia", flag: "🇧🇴" },
-    { value: "Chile", label: "Chile", flag: "🇨🇱" },
-    { value: "Argentina", label: "Argentina", flag: "🇦🇷" },
-    { value: "Uruguay", label: "Uruguay", flag: "🇺🇾" },
-    { value: "Paraguay", label: "Paraguay", flag: "🇵🇾" },
-    { value: "Venezuela", label: "Venezuela", flag: "🇻🇪" },
-    { value: "Mexico", label: "México", flag: "🇲🇽" },
-    { value: "España", label: "España", flag: "🇪🇸" },
-];
 
-export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInfoModalProps) {
+export function ContactInfoModal({ children, contactInfo, onUpdate }: Props) {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
@@ -235,7 +223,6 @@ export function ContactInfoModal({ children, contactInfo, onUpdate }: ContactInf
         </Form>
     );
 
-    // Acciones personalizadas
     const customActions = (
         <div className="flex flex-col-reverse sm:flex-row gap-3">
             <Button

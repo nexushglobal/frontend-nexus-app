@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from "@/components/ui/card";
 import { ProfileData } from '@/types/profile.types';
-import { Camera, AtSign } from 'lucide-react';
+import { AtSign, Camera } from 'lucide-react';
 import { PhotoUploadModal } from './modal/PhotoUploadModal';
 
 type Props = {
