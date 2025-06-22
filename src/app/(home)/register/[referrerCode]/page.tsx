@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RegisterPageContent } from "./RegisterPageContent";
+import { RegisterPageContent } from "./components/RegisterPageContent";
 
 interface RegisterPageProps {
   params: Promise<{ referrerCode: string }>;

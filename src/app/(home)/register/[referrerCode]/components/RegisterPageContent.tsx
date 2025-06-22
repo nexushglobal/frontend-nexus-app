@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Users } from "lucide-react";
-import { RegisterForm } from "./components/RegisterForm";
+import { RegisterForm } from "./RegisterForm";
 
 interface RegisterPageContentProps {
     referrerCode: string;
