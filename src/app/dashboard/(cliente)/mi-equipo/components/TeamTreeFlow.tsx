@@ -26,6 +26,7 @@ interface TeamTreeFlowProps {
     viewingUserId: string;
     onSelectMember: (member: TeamMember) => void;
     onNavigateToUser: (userId: string) => void;
+    currentDepth?: number;
 }
 
 const nodeTypes = {
@@ -38,6 +39,7 @@ export function TeamTreeFlow({
     viewingUserId,
     onSelectMember,
     onNavigateToUser,
+    currentDepth
 }: TeamTreeFlowProps) {
     const { theme } = useTheme();
     const isDarkMode = theme === "dark";
@@ -107,7 +109,7 @@ export function TeamTreeFlow({
             }
 
             // Procesar hijos
-            const horizontalSpacing = calculateHorizontalSpacing(level, 3);
+            const horizontalSpacing = calculateHorizontalSpacing(level, currentDepth || 2);
             const verticalSpacing = 220;
 
             if (node.children?.left) {

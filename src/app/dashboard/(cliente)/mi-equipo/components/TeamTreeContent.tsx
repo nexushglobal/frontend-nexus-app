@@ -76,6 +76,7 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
                 viewingUserId={currentViewUserId}
                 onSelectMember={handleSelectMember}
                 onNavigateToUser={handleNavigateToUser}
+                currentDepth={currentDepth}
             />
 
             {/* Sheet de detalles */}
