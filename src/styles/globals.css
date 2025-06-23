@@ -646,4 +646,122 @@
     @apply bg-primary dark:bg-primary dark:shadow-md;
     border-radius: 4px;
   }
+
+  .dashboard-layout {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Mejoras para el scrollbar en el sidebar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thumb-sidebar-border {
+    scrollbar-color: var(--sidebar-border) transparent;
+  }
+
+  .scrollbar-track-transparent {
+    scrollbar-track-color: transparent;
+  }
+
+  /* Webkit scrollbar para navegadores que lo soporten */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--sidebar-border);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: var(--nav-item-hover);
+  }
+
+  /* Asegurar que el navbar se mantenga fijo */
+  .navbar-fixed {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Mejorar la transición del sidebar */
+  .sidebar-transition {
+    transition: width 0.2s ease-in-out;
+  }
+
+  /* Asegurar altura completa del contenedor */
+  .dashboard-container {
+    min-height: 100vh;
+    max-height: 100vh;
+  }
+
+  /* Mejorar el contenido principal */
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 64px); /* 64px es la altura del navbar */
+  }
+
+  /* Animaciones suaves para elementos del dashboard */
+  .dashboard-element {
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Sombra sutil para el navbar */
+  .navbar-shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  /* Asegurar que el contenido no se oculte detrás del navbar */
+  .content-offset {
+    padding-top: 0; /* Ya no necesitamos offset porque el navbar es sticky */
+  }
+
+  /* Mejorar la visualización en móviles */
+  @media (max-width: 768px) {
+    .dashboard-layout {
+      flex-direction: column;
+    }
+
+    .navbar-fixed {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .main-content {
+      height: calc(100vh - 64px);
+      margin-top: 64px;
+    }
+  }
+
+  /* Asegurar que los elementos del sidebar tengan el espaciado correcto */
+  .sidebar-logo-section {
+    height: 64px; /* Mismo height que el navbar */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  /* Mejorar la alineación vertical */
+  .navbar-content {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+  }
 }

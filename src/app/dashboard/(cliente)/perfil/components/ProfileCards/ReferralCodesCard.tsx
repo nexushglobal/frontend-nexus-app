@@ -86,7 +86,6 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
             />
 
             <CardContent className="space-y-4">
-                {/* Código de referido principal */}
                 <ProfileInfoField
                     label="Tu Código de Referido"
                     value={referralCode}
@@ -95,11 +94,8 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
                     className="font-mono"
                 />
 
-                {/* Tabs mejorados para mejor visibilidad */}
                 <div className="w-full">
-                    {/* Custom TabsList */}
                     <div className="inline-flex w-full rounded-md bg-muted p-1 text-muted-foreground dark:bg-gray-800/50">
-                        {/* Custom TabsTrigger para Izquierda */}
                         <button
                             onClick={() => setActiveTab("izquierda")}
                             className={cn(
@@ -112,13 +108,11 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
                             <ArrowLeft className="h-3.5 w-3.5" />
                             <span>Izquierda</span>
 
-                            {/* Indicador visual para el tab activo */}
                             {activeTab === "izquierda" && (
                                 <span className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1/4 h-0.5 bg-primary rounded-full dark:bg-primary dark:shadow-[0_0_5px_rgba(var(--primary),0.8)]" />
                             )}
                         </button>
 
-                        {/* Custom TabsTrigger para Derecha */}
                         <button
                             onClick={() => setActiveTab("derecha")}
                             className={cn(
@@ -140,13 +134,57 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
                     <div className="mt-4">
                         {activeTab === "izquierda" && (
                             <div className="space-y-3 animate-in fade-in-50 duration-300">
-                                {/* URL del lado izquierdo */}
+                                <ProfileInfoField
+                                    label="Enlace de Referido - Izquierda"
+                                    value={getShareUrl("izquierda")}
+                                    icon={LinkIcon}
+                                    isComplete={true}
+                                    className="text-xs font-mono"
+                                />
+
+                                <div className="grid grid-cols-3 gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => copyToClipboard("izquierda")}
+                                        disabled={copying}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <Copy className="h-3.5 w-3.5" />
+                                        Copiar
+                                    </Button>
+
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => shareReferral("izquierda")}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <Share className="h-3.5 w-3.5" />
+                                        Compartir
+                                    </Button>
+
+                                    <Button
+                                        variant="default"
+                                        size="sm"
+                                        onClick={() => openReferralLink("izquierda")}
+                                        className="flex items-center gap-1.5"
+                                    >
+                                        <ExternalLink className="h-3.5 w-3.5" />
+                                        Abrir
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === "derecha" && (
+                            <div className="space-y-3 animate-in fade-in-50 duration-300">
                                 <ProfileInfoField
                                     label="Enlace de Referido - Derecha"
                                     value={getShareUrl("derecha")}
                                     icon={LinkIcon}
                                     isComplete={true}
-                                    className="text-xs font-mono truncate"
+                                    className="text-xs font-mono"
                                 />
 
                                 <div className="grid grid-cols-3 gap-2">
