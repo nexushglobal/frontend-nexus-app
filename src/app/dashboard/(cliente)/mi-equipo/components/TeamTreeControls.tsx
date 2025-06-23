@@ -28,7 +28,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TeamSearchModal } from './modal/TeamSearchModal';
 
 interface TeamTreeControlsProps {
     canGoUp: boolean;
@@ -126,22 +125,7 @@ export function TeamTreeControls({
                             </Tooltip>
 
                             {/* Search Button */}
-                            <TeamSearchModal onSelectUser={onNavigateToUser}>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="h-8 px-3 border-border/60 hover:border-primary/40"
-                                        >
-                                            <Search className="h-3.5 w-3.5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Buscar miembro</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TeamSearchModal>
+
                         </div>
 
                         {/* Center Section - Status */}
@@ -286,16 +270,7 @@ export function TeamTreeControls({
                                     <RefreshCw className="h-4 w-4" />
                                 </Button>
 
-                                {/* Search Button - Mobile */}
-                                <TeamSearchModal onSelectUser={onNavigateToUser}>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="h-8 w-8 p-0"
-                                    >
-                                        <Search className="h-4 w-4" />
-                                    </Button>
-                                </TeamSearchModal>
+
                             </div>
 
                             {/* Status Badge */}
