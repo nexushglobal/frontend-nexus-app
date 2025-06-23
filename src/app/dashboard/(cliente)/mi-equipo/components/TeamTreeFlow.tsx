@@ -151,7 +151,6 @@ export function TeamTreeFlow({
         [currentUserId, viewingUserId, onSelectMember, onNavigateToUser]
     );
 
-    // Actualizar nodos y edges cuando cambie el árbol
     useEffect(() => {
         const { nodes: newNodes, edges: newEdges } = transformTreeToFlow(tree);
         setNodes(newNodes);
@@ -167,13 +166,10 @@ export function TeamTreeFlow({
                 onEdgesChange={onEdgesChange}
                 nodeTypes={nodeTypes}
                 fitView
-                fitViewOptions={{
-                    padding: 0.2,
-                    minZoom: 0.1,
-                    maxZoom: 1.5,
-                }}
+
                 minZoom={0.1}
                 maxZoom={2}
+                defaultViewport={{ x: 0, y: 0, zoom: 1 }}
                 attributionPosition="bottom-left"
                 nodesDraggable={false}
                 nodesConnectable={false}

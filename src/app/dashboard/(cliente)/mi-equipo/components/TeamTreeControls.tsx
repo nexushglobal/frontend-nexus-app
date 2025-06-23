@@ -1,5 +1,4 @@
-"use client";
-
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +8,27 @@ import {
     RefreshCw,
     ZoomIn,
     ZoomOut,
-    Info
+    Layers,
+    Navigation,
+    ChevronDown,
+    TrendingUp,
+    Search
 } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuSeparator,
+    DropdownMenuLabel
+} from "@/components/ui/dropdown-menu";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TeamSearchModal } from './modal/TeamSearchModal';
 
 interface TeamTreeControlsProps {
     canGoUp: boolean;
@@ -20,6 +38,7 @@ interface TeamTreeControlsProps {
     onNavigateToParent: () => void;
     onChangeDepth: (depth: number) => void;
     onRefresh: () => void;
+    onNavigateToUser: (userId: string) => void;
 }
 
 export function TeamTreeControls({
@@ -30,113 +49,366 @@ export function TeamTreeControls({
     onNavigateToParent,
     onChangeDepth,
     onRefresh,
+    onNavigateToUser,
 }: TeamTreeControlsProps) {
-    const handleZoomIn = () => {
-        if (currentDepth < 5) {
-            onChangeDepth(currentDepth + 1);
-        }
-    };
+    const depthOptions = [
+        { value: 1, label: "1 Nivel", shortLabel: "1N", description: "Vista básica" },
+        { value: 2, label: "2 Niveles", shortLabel: "2N", description: "Vista estándar" },
+        { value: 3, label: "3 Niveles", shortLabel: "3N", description: "Vista extendida" },
+        { value: 4, label: "4 Niveles", shortLabel: "4N", description: "Vista amplia" },
+        { value: 5, label: "5 Niveles", shortLabel: "5N", description: "Vista completa" },
+    ];
 
-    const handleZoomOut = () => {
-        if (currentDepth > 1) {
-            onChangeDepth(currentDepth - 1);
-        }
-    };
+    const currentDepthOption = depthOptions.find(opt => opt.value === currentDepth);
 
     return (
-        <Card>
-            <CardContent className="p-4">
-                <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-                    {/* Navegación */}
-                    <div className="flex flex-wrap gap-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={onNavigateToRoot}
-                            disabled={isAtRoot}
-                            className="flex items-center gap-2"
-                        >
-                            <Home className="h-4 w-4" />
-                            Mi Raíz
-                        </Button>
+        <TooltipProvider>
+            <Card className="border border-border/40 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-3">
+                    {/* Desktop Layout */}
+                    <div className="hidden md:flex items-center justify-between gap-4">
+                        {/* Left Section - Navigation */}
+                        <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 border border-border/60 rounded-lg p-1 bg-background/80">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={onNavigateToRoot}
+                                            disabled={isAtRoot}
+                                            className="h-8 px-3 text-xs font-medium disabled:opacity-40"
+                                        >
+                                            <Home className="h-3.5 w-3.5 mr-1.5" />
+                                            Inicio
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Ir a tu nodo raíz</p>
+                                    </TooltipContent>
+                                </Tooltip>
 
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={onNavigateToParent}
-                            disabled={!canGoUp}
-                            className="flex items-center gap-2"
-                        >
-                            <ArrowUp className="h-4 w-4" />
-                            Subir
-                        </Button>
+                                <div className="w-px h-5 bg-border/40" />
 
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={onRefresh}
-                            className="flex items-center gap-2"
-                        >
-                            <RefreshCw className="h-4 w-4" />
-                            Actualizar
-                        </Button>
-                    </div>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={onNavigateToParent}
+                                            disabled={!canGoUp}
+                                            className="h-8 px-3 text-xs font-medium disabled:opacity-40"
+                                        >
+                                            <ArrowUp className="h-3.5 w-3.5 mr-1.5" />
+                                            Subir
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Navegar al nodo padre</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
 
-                    {/* Info y controles de profundidad */}
-                    <div className="flex flex-wrap items-center gap-3">
-                        {/* Información actual */}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Info className="h-4 w-4" />
-                            <span>Profundidad:</span>
-                            <Badge variant="outline">{currentDepth}</Badge>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={onRefresh}
+                                        className="h-8 px-3 border-border/60 hover:border-primary/40"
+                                    >
+                                        <RefreshCw className="h-3.5 w-3.5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Actualizar árbol</p>
+                                </TooltipContent>
+                            </Tooltip>
+
+                            {/* Search Button */}
+                            <TeamSearchModal onSelectUser={onNavigateToUser}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8 px-3 border-border/60 hover:border-primary/40"
+                                        >
+                                            <Search className="h-3.5 w-3.5" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Buscar miembro</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TeamSearchModal>
                         </div>
 
-                        {/* Controles de zoom */}
-                        <div className="flex gap-1">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleZoomOut}
-                                disabled={currentDepth <= 1}
-                                className="h-8 w-8 p-0"
-                                title="Reducir profundidad"
-                            >
-                                <ZoomOut className="h-4 w-4" />
-                            </Button>
+                        {/* Center Section - Status */}
+                        <div className="flex items-center gap-3">
+                            {/* Status indicators */}
+                            <div className="flex items-center gap-2 text-xs">
+                                {isAtRoot && (
+                                    <Badge variant="secondary" className="h-5 px-2 text-xs font-medium bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
+                                        <Navigation className="h-3 w-3 mr-1" />
+                                        Vista Raíz
+                                    </Badge>
+                                )}
 
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleZoomIn}
-                                disabled={currentDepth >= 5}
-                                className="h-8 w-8 p-0"
-                                title="Aumentar profundidad"
-                            >
-                                <ZoomIn className="h-4 w-4" />
-                            </Button>
+                                {!canGoUp && !isAtRoot && (
+                                    <Badge variant="outline" className="h-5 px-2 text-xs font-medium border-orange-200 text-orange-700 dark:border-orange-800 dark:text-orange-400">
+                                        <TrendingUp className="h-3 w-3 mr-1" />
+                                        Nivel Superior
+                                    </Badge>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Right Section - Depth Controls */}
+                        <div className="flex items-center gap-2">
+                            {/* Quick zoom controls */}
+                            <div className="flex items-center gap-1 border border-border/60 rounded-lg p-1 bg-background/80">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => onChangeDepth(Math.max(1, currentDepth - 1))}
+                                            disabled={currentDepth <= 1}
+                                            className="h-7 w-7 p-0 disabled:opacity-40"
+                                        >
+                                            <ZoomOut className="h-3.5 w-3.5" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Reducir profundidad</p>
+                                    </TooltipContent>
+                                </Tooltip>
+
+                                <div className="w-px h-4 bg-border/40" />
+
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => onChangeDepth(Math.min(5, currentDepth + 1))}
+                                            disabled={currentDepth >= 5}
+                                            className="h-7 w-7 p-0 disabled:opacity-40"
+                                        >
+                                            <ZoomIn className="h-3.5 w-3.5" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Aumentar profundidad</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
+
+                            {/* Depth selector */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-8 px-3 min-w-[100px] justify-between border-border/60 hover:border-primary/40"
+                                    >
+                                        <div className="flex items-center gap-1.5">
+                                            <Layers className="h-3.5 w-3.5" />
+                                            <span className="text-xs font-medium">
+                                                {currentDepthOption?.label}
+                                            </span>
+                                        </div>
+                                        <ChevronDown className="h-3 w-3 opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48">
+                                    <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+                                        Profundidad del Árbol
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    {depthOptions.map((option) => (
+                                        <DropdownMenuItem
+                                            key={option.value}
+                                            onClick={() => onChangeDepth(option.value)}
+                                            className="flex items-center justify-between text-xs"
+                                        >
+                                            <div className="flex flex-col">
+                                                <span className={`font-medium ${currentDepth === option.value ? 'text-primary' : ''}`}>
+                                                    {option.label}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {option.description}
+                                                </span>
+                                            </div>
+                                            {currentDepth === option.value && (
+                                                <div className="w-2 h-2 bg-primary rounded-full" />
+                                            )}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
-                </div>
 
-                {/* Indicadores de estado */}
-                <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 text-xs text-muted-foreground">
-                    {isAtRoot && (
-                        <Badge variant="secondary" className="text-xs">
-                            📍 Vista desde tu usuario raíz
-                        </Badge>
+                    {/* Mobile Layout */}
+                    <div className="md:hidden space-y-3">
+                        {/* Top Row - Navigation and Status */}
+                        <div className="flex items-center justify-between gap-2">
+                            {/* Navigation */}
+                            <div className="flex items-center gap-1">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={onNavigateToRoot}
+                                    disabled={isAtRoot}
+                                    className="h-8 w-8 p-0 disabled:opacity-40"
+                                >
+                                    <Home className="h-4 w-4" />
+                                </Button>
+
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={onNavigateToParent}
+                                    disabled={!canGoUp}
+                                    className="h-8 w-8 p-0 disabled:opacity-40"
+                                >
+                                    <ArrowUp className="h-4 w-4" />
+                                </Button>
+
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={onRefresh}
+                                    className="h-8 w-8 p-0"
+                                >
+                                    <RefreshCw className="h-4 w-4" />
+                                </Button>
+
+                                {/* Search Button - Mobile */}
+                                <TeamSearchModal onSelectUser={onNavigateToUser}>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-8 w-8 p-0"
+                                    >
+                                        <Search className="h-4 w-4" />
+                                    </Button>
+                                </TeamSearchModal>
+                            </div>
+
+                            {/* Status Badge */}
+                            <div className="flex items-center gap-1">
+                                {isAtRoot && (
+                                    <Badge variant="secondary" className="h-6 px-2 text-xs bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
+                                        <Navigation className="h-3 w-3 mr-1" />
+                                        Raíz
+                                    </Badge>
+                                )}
+
+                                {!canGoUp && !isAtRoot && (
+                                    <Badge variant="outline" className="h-6 px-2 text-xs border-orange-200 text-orange-700 dark:border-orange-800 dark:text-orange-400">
+                                        <TrendingUp className="h-3 w-3 mr-1" />
+                                        Top
+                                    </Badge>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Bottom Row - Depth Controls */}
+                        <div className="flex items-center justify-between gap-2">
+                            {/* Quick Zoom */}
+                            <div className="flex items-center gap-1 border border-border/60 rounded-lg p-1 bg-background/80">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => onChangeDepth(Math.max(1, currentDepth - 1))}
+                                    disabled={currentDepth <= 1}
+                                    className="h-7 w-7 p-0 disabled:opacity-40"
+                                >
+                                    <ZoomOut className="h-3.5 w-3.5" />
+                                </Button>
+
+                                <div className="px-2 text-xs font-medium min-w-[24px] text-center">
+                                    {currentDepth}
+                                </div>
+
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => onChangeDepth(Math.min(5, currentDepth + 1))}
+                                    disabled={currentDepth >= 5}
+                                    className="h-7 w-7 p-0 disabled:opacity-40"
+                                >
+                                    <ZoomIn className="h-3.5 w-3.5" />
+                                </Button>
+                            </div>
+
+                            {/* Depth Selector (Compact) */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-8 px-3 flex-1 justify-between border-border/60 hover:border-primary/40"
+                                    >
+                                        <div className="flex items-center gap-1.5">
+                                            <Layers className="h-3.5 w-3.5" />
+                                            <span className="text-xs font-medium">
+                                                {currentDepthOption?.shortLabel || currentDepthOption?.label}
+                                            </span>
+                                        </div>
+                                        <ChevronDown className="h-3 w-3 opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-40">
+                                    <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+                                        Profundidad
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    {depthOptions.map((option) => (
+                                        <DropdownMenuItem
+                                            key={option.value}
+                                            onClick={() => onChangeDepth(option.value)}
+                                            className="flex items-center justify-between text-xs"
+                                        >
+                                            <span className={`font-medium ${currentDepth === option.value ? 'text-primary' : ''}`}>
+                                                {option.label}
+                                            </span>
+                                            {currentDepth === option.value && (
+                                                <div className="w-2 h-2 bg-primary rounded-full" />
+                                            )}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    </div>
+
+                    {/* Bottom indicator - only show if needed */}
+                    {(currentDepth >= 5 || (!canGoUp && !isAtRoot)) && (
+                        <div className="mt-3 pt-2 border-t border-border/40">
+                            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs text-muted-foreground">
+                                {currentDepth >= 5 && (
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
+                                        <span className="hidden sm:inline">Profundidad máxima alcanzada</span>
+                                        <span className="sm:hidden">Máximo alcanzado</span>
+                                    </div>
+                                )}
+                                {!canGoUp && !isAtRoot && (
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                                        <span className="hidden sm:inline">En el nivel más alto disponible</span>
+                                        <span className="sm:hidden">Nivel superior</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     )}
-                    {!canGoUp && !isAtRoot && (
-                        <Badge variant="outline" className="text-xs">
-                            🔝 En el nivel más alto disponible
-                        </Badge>
-                    )}
-                    {currentDepth >= 5 && (
-                        <Badge variant="outline" className="text-xs">
-                            🔍 Profundidad máxima alcanzada
-                        </Badge>
-                    )}
-                </div>
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+        </TooltipProvider>
     );
 }

@@ -67,6 +67,7 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
                 onNavigateToParent={navigateToParent}
                 onChangeDepth={changeDepth}
                 onRefresh={refresh}
+                onNavigateToUser={handleNavigateToUser}
             />
 
             {/* Flow Diagram */}
