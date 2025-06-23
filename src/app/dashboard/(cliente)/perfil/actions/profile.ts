@@ -9,14 +9,6 @@ import {
 } from "@/types/profile.types";
 import { ActionResponse } from "@/types/user.types";
 
-// Tipo para la actualización de información personal
-interface PersonalInfoRequest {
-  nickname?: string;
-  email?: string;
-  documentType?: "DNI" | "CE" | "PAS";
-  documentNumber?: string;
-}
-
 export async function getProfile(): Promise<ActionResponse<ProfileData>> {
   try {
     const apiResponse = await httpClient<ProfileData>("/api/user/profile", {
