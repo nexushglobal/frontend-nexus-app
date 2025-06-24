@@ -1,3 +1,4 @@
+// src/app/dashboard/(cliente)/mi-equipo/components/TeamTreeControls.tsx
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,6 +29,9 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { TeamSearchModal } from "./TeamSearchModal";
+// Importación alternativa si el modal principal no funciona:
+// import { SimpleTeamSearchModal as TeamSearchModal } from "./SimpleTeamSearchModal";
 
 interface TeamTreeControlsProps {
     canGoUp: boolean;
@@ -107,14 +111,37 @@ export function TeamTreeControls({
                                     </TooltipContent>
                                 </Tooltip>
                             </div>
+                        </div>
 
+                        {/* Center Section - Search and Refresh */}
+                        <div className="flex items-center gap-2">
+                            {/* Search Button */}
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <TeamSearchModal onNavigateToUser={onNavigateToUser}>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8 px-3 text-xs font-medium border-border/60 hover:border-primary/40"
+                                        >
+                                            <Search className="h-3.5 w-3.5 mr-1.5" />
+                                            Buscar
+                                        </Button>
+                                    </TeamSearchModal>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Buscar miembros del equipo</p>
+                                </TooltipContent>
+                            </Tooltip>
+
+                            {/* Refresh Button */}
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={onRefresh}
-                                        className="h-8 px-3 border-border/60 hover:border-primary/40"
+                                        className="h-8 w-8 p-0 border-border/60"
                                     >
                                         <RefreshCw className="h-3.5 w-3.5" />
                                     </Button>
@@ -123,92 +150,57 @@ export function TeamTreeControls({
                                     <p>Actualizar árbol</p>
                                 </TooltipContent>
                             </Tooltip>
-
-                            {/* Search Button */}
-
-                        </div>
-
-                        {/* Center Section - Status */}
-                        <div className="flex items-center gap-3">
-                            {/* Status indicators */}
-                            <div className="flex items-center gap-2 text-xs">
-                                {isAtRoot && (
-                                    <Badge variant="secondary" className="h-5 px-2 text-xs font-medium bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
-                                        <Navigation className="h-3 w-3 mr-1" />
-                                        Vista Raíz
-                                    </Badge>
-                                )}
-
-                                {!canGoUp && !isAtRoot && (
-                                    <Badge variant="outline" className="h-5 px-2 text-xs font-medium border-orange-200 text-orange-700 dark:border-orange-800 dark:text-orange-400">
-                                        <TrendingUp className="h-3 w-3 mr-1" />
-                                        Nivel Superior
-                                    </Badge>
-                                )}
-                            </div>
                         </div>
 
                         {/* Right Section - Depth Controls */}
                         <div className="flex items-center gap-2">
-                            {/* Quick zoom controls */}
+                            {/* Quick Zoom */}
                             <div className="flex items-center gap-1 border border-border/60 rounded-lg p-1 bg-background/80">
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => onChangeDepth(Math.max(1, currentDepth - 1))}
-                                            disabled={currentDepth <= 1}
-                                            className="h-7 w-7 p-0 disabled:opacity-40"
-                                        >
-                                            <ZoomOut className="h-3.5 w-3.5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Reducir profundidad</p>
-                                    </TooltipContent>
-                                </Tooltip>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => onChangeDepth(Math.max(1, currentDepth - 1))}
+                                    disabled={currentDepth <= 1}
+                                    className="h-7 w-7 p-0 disabled:opacity-40"
+                                >
+                                    <ZoomOut className="h-3.5 w-3.5" />
+                                </Button>
 
-                                <div className="w-px h-4 bg-border/40" />
+                                <div className="px-2 text-xs font-medium min-w-[24px] text-center">
+                                    {currentDepth}
+                                </div>
 
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => onChangeDepth(Math.min(5, currentDepth + 1))}
-                                            disabled={currentDepth >= 5}
-                                            className="h-7 w-7 p-0 disabled:opacity-40"
-                                        >
-                                            <ZoomIn className="h-3.5 w-3.5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Aumentar profundidad</p>
-                                    </TooltipContent>
-                                </Tooltip>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => onChangeDepth(Math.min(5, currentDepth + 1))}
+                                    disabled={currentDepth >= 5}
+                                    className="h-7 w-7 p-0 disabled:opacity-40"
+                                >
+                                    <ZoomIn className="h-3.5 w-3.5" />
+                                </Button>
                             </div>
 
-                            {/* Depth selector */}
+                            {/* Depth Selector */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="h-8 px-3 min-w-[100px] justify-between border-border/60 hover:border-primary/40"
+                                        className="h-8 px-3 flex-1 justify-between border-border/60 hover:border-primary/40"
                                     >
                                         <div className="flex items-center gap-1.5">
                                             <Layers className="h-3.5 w-3.5" />
                                             <span className="text-xs font-medium">
-                                                {currentDepthOption?.label}
+                                                {currentDepthOption?.shortLabel || currentDepthOption?.label}
                                             </span>
                                         </div>
                                         <ChevronDown className="h-3 w-3 opacity-50" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-48">
+                                <DropdownMenuContent align="end" className="w-40">
                                     <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
-                                        Profundidad del Árbol
+                                        Profundidad
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     {depthOptions.map((option) => (
@@ -217,29 +209,40 @@ export function TeamTreeControls({
                                             onClick={() => onChangeDepth(option.value)}
                                             className="flex items-center justify-between text-xs"
                                         >
-                                            <div className="flex flex-col">
-                                                <span className={`font-medium ${currentDepth === option.value ? 'text-primary' : ''}`}>
-                                                    {option.label}
-                                                </span>
-                                                <span className="text-xs text-muted-foreground">
-                                                    {option.description}
-                                                </span>
-                                            </div>
+                                            <span className={`font-medium ${currentDepth === option.value ? 'text-primary' : ''}`}>
+                                                {option.label}
+                                            </span>
                                             {currentDepth === option.value && (
-                                                <div className="w-2 h-2 bg-primary rounded-full" />
+                                                <div className="w-2 h-2 rounded-full bg-primary" />
                                             )}
                                         </DropdownMenuItem>
                                     ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
+
+                            {/* Status Badge */}
+                            <div className="flex items-center gap-1">
+                                {isAtRoot && (
+                                    <Badge variant="secondary" className="h-6 px-2 text-xs bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
+                                        <Navigation className="h-3 w-3 mr-1" />
+                                        Raíz
+                                    </Badge>
+                                )}
+
+                                {!canGoUp && !isAtRoot && (
+                                    <Badge variant="outline" className="h-6 px-2 text-xs border-orange-200 text-orange-700 dark:border-orange-800 dark:text-orange-400">
+                                        <TrendingUp className="h-3 w-3 mr-1" />
+                                        Top
+                                    </Badge>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {/* Mobile Layout */}
                     <div className="md:hidden space-y-3">
-                        {/* Top Row - Navigation and Status */}
+                        {/* Top Row - Navigation and Search */}
                         <div className="flex items-center justify-between gap-2">
-                            {/* Navigation */}
                             <div className="flex items-center gap-1">
                                 <Button
                                     variant="outline"
@@ -260,6 +263,20 @@ export function TeamTreeControls({
                                 >
                                     <ArrowUp className="h-4 w-4" />
                                 </Button>
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                                {/* Search Button */}
+                                <TeamSearchModal onNavigateToUser={onNavigateToUser}>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-8 px-3 text-xs font-medium"
+                                    >
+                                        <Search className="h-3.5 w-3.5 mr-1.5" />
+                                        Buscar
+                                    </Button>
+                                </TeamSearchModal>
 
                                 <Button
                                     variant="outline"
@@ -269,8 +286,6 @@ export function TeamTreeControls({
                                 >
                                     <RefreshCw className="h-4 w-4" />
                                 </Button>
-
-
                             </div>
 
                             {/* Status Badge */}
@@ -352,7 +367,7 @@ export function TeamTreeControls({
                                                 {option.label}
                                             </span>
                                             {currentDepth === option.value && (
-                                                <div className="w-2 h-2 bg-primary rounded-full" />
+                                                <div className="w-2 h-2 rounded-full bg-primary" />
                                             )}
                                         </DropdownMenuItem>
                                     ))}
@@ -360,28 +375,6 @@ export function TeamTreeControls({
                             </DropdownMenu>
                         </div>
                     </div>
-
-                    {/* Bottom indicator - only show if needed */}
-                    {(currentDepth >= 5 || (!canGoUp && !isAtRoot)) && (
-                        <div className="mt-3 pt-2 border-t border-border/40">
-                            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs text-muted-foreground">
-                                {currentDepth >= 5 && (
-                                    <div className="flex items-center gap-1.5">
-                                        <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
-                                        <span className="hidden sm:inline">Profundidad máxima alcanzada</span>
-                                        <span className="sm:hidden">Máximo alcanzado</span>
-                                    </div>
-                                )}
-                                {!canGoUp && !isAtRoot && (
-                                    <div className="flex items-center gap-1.5">
-                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                                        <span className="hidden sm:inline">En el nivel más alto disponible</span>
-                                        <span className="sm:hidden">Nivel superior</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
                 </CardContent>
             </Card>
         </TooltipProvider>

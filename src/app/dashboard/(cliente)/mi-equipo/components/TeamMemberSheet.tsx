@@ -4,17 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
 import {
     Mail,
-    Hash,
     GitBranch,
-    Activity,
     Copy,
     Eye,
     ArrowLeft,
     ArrowRight,
-    Users
+    Users,
+    Navigation
 } from "lucide-react";
 import { toast } from "sonner";
 import { TeamMember } from "../actions/teamTree";
@@ -64,8 +63,9 @@ export function TeamMemberSheet({
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <SheetContent className="w-full sm:max-w-md overflow-y-auto">
-                <SheetHeader className="text-left pb-6">
+            <SheetContent className="w-full sm:max-w-md flex flex-col">
+                {/* Header with proper padding - Fixed */}
+                <SheetHeader className="px-6 pt-6 pb-4 text-left flex-shrink-0">
                     <div className="flex items-center gap-4">
                         <Avatar className="h-16 w-16">
                             <AvatarImage src="" alt={member.fullName} />
@@ -74,176 +74,191 @@ export function TeamMemberSheet({
                             </AvatarFallback>
                         </Avatar>
 
-                        <div className="space-y-2">
-                            <SheetTitle className="text-xl">
+                        <div className="space-y-2 flex-1 min-w-0">
+                            <SheetTitle className="text-xl truncate">
                                 {member.fullName || member.email.split("@")[0]}
                             </SheetTitle>
                             <div className="flex items-center gap-2">
-                                <Badge variant={member.isActive ? "default" : "secondary"}>
-                                    {member.isActive ? "Activo" : "Inactivo"}
-                                </Badge>
-                                <Badge variant="outline">
+                                <Badge variant="outline" className="text-xs">
                                     Nivel {member.depth}
                                 </Badge>
+                                {member.position && (
+                                    <Badge variant="secondary" className="text-xs">
+                                        {member.position === "LEFT" ? "Izquierda" : "Derecha"}
+                                    </Badge>
+                                )}
                             </div>
                         </div>
                     </div>
                 </SheetHeader>
 
-                <div className="space-y-6">
-                    {/* Información principal */}
-                    <div className="space-y-4">
-                        <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-                            Información Principal
-                        </h3>
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto px-6 pb-6">
+                    <div className="space-y-6">
+                        {/* Contact Information */}
+                        <div className="space-y-3">
+                            <h3 className="text-sm font-medium text-muted-foreground">
+                                Información de Contacto
+                            </h3>
 
-                        {/* Email */}
-                        <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                            <Mail className="h-4 w-4 text-primary" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground">Email</p>
-                                <p className="font-medium text-sm truncate">{member.email}</p>
-                            </div>
+                            <Card>
+                                <CardContent className="flex items-center gap-3">
+                                    <div className="p-2 rounded-lg bg-primary/10">
+                                        <Mail className="h-4 w-4 text-primary" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-muted-foreground mb-1">Email</p>
+                                        <p className="font-medium text-sm truncate">{member.email}</p>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => copyToClipboard(member.email, "Email")}
+                                        className="h-8 w-8 p-0 shrink-0"
+                                    >
+                                        <Copy className="h-4 w-4" />
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Network Information */}
+                        <div className="space-y-3">
+                            <h3 className="text-sm font-medium text-muted-foreground">
+                                Posición en la Red
+                            </h3>
+
+                            <Card>
+                                <CardContent className="flex items-center gap-3">
+                                    <div className="p-2 rounded-lg bg-primary/10">
+                                        <GitBranch className="h-4 w-4 text-primary" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-xs text-muted-foreground mb-1">Ubicación</p>
+                                        <p className="font-medium text-sm">
+                                            {member.position === "LEFT"
+                                                ? "Lado Izquierdo"
+                                                : member.position === "RIGHT"
+                                                    ? "Lado Derecho"
+                                                    : "Nodo Raíz"
+                                            } - Nivel {member.depth}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Primary Action */}
+                        <div className="space-y-3">
                             <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => copyToClipboard(member.email, "Email")}
-                                className="h-8 w-8 p-0"
+                                onClick={handleNavigateToMember}
+                                className="w-full h-11"
+                                size="lg"
                             >
-                                <Copy className="h-4 w-4" />
+                                <Navigation className="h-4 w-4 mr-2" />
+                                Ver árbol de este usuario
                             </Button>
                         </div>
 
-                        {/* Código de referido */}
-                        <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                            <Hash className="h-4 w-4 text-primary" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground">Código de Referido</p>
-                                <p className="font-medium text-sm font-mono">{member.referralCode}</p>
-                            </div>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => copyToClipboard(member.referralCode, "Código")}
-                                className="h-8 w-8 p-0"
-                            >
-                                <Copy className="h-4 w-4" />
-                            </Button>
-                        </div>
-
-                        {/* Posición */}
-                        <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                            <GitBranch className="h-4 w-4 text-primary" />
-                            <div className="flex-1">
-                                <p className="text-xs text-muted-foreground">Posición en la Red</p>
-                                <p className="font-medium text-sm">
-                                    {member.position === "LEFT"
-                                        ? "Lado Izquierdo"
-                                        : member.position === "RIGHT"
-                                            ? "Lado Derecho"
-                                            : "Nodo Raíz"
-                                    }
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Estado */}
-                        <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                            <Activity className="h-4 w-4 text-primary" />
-                            <div className="flex-1">
-                                <p className="text-xs text-muted-foreground">Estado</p>
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${member.isActive ? "bg-green-500" : "bg-gray-400"}`} />
-                                    <p className="font-medium text-sm">
-                                        {member.isActive ? "Usuario activo" : "Usuario inactivo"}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <Separator />
-
-                    {/* Acción principal */}
-                    <div className="space-y-3">
-                        <Button
-                            onClick={handleNavigateToMember}
-                            className="w-full h-12"
-                        >
-                            <Eye className="h-4 w-4 mr-2" />
-                            Ver árbol de este usuario
-                        </Button>
-                    </div>
-
-                    {/* Navegación a hijos */}
-                    {hasChildren && (
-                        <>
-                            <Separator />
+                        {/* Children Navigation */}
+                        {hasChildren && (
                             <div className="space-y-3">
-                                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                                <h3 className="text-sm font-medium text-muted-foreground">
                                     Hijos Directos
                                 </h3>
 
-                                <div className="grid gap-2">
+                                <div className="space-y-2">
                                     {member.children?.left && (
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => {
-                                                onNavigateToUser(member.children!.left!.id);
-                                                onClose();
-                                            }}
-                                            className="justify-start h-auto p-3"
-                                        >
-                                            <div className="flex items-center gap-3 w-full">
-                                                <ArrowLeft className="h-4 w-4 text-blue-500" />
-                                                <div className="text-left flex-1">
-                                                    <p className="font-medium text-sm">
-                                                        {member.children.left.fullName || member.children.left.email.split("@")[0]}
-                                                    </p>
-                                                    <p className="text-xs text-muted-foreground">Hijo Izquierdo</p>
-                                                </div>
-                                            </div>
-                                        </Button>
+                                        <Card className="overflow-hidden">
+                                            <Button
+                                                variant="ghost"
+                                                onClick={() => {
+                                                    onNavigateToUser(member.children!.left!.id);
+                                                    onClose();
+                                                }}
+                                                className="w-full h-auto p-0 justify-start"
+                                            >
+                                                <CardContent className="flex items-center gap-3 w-full">
+                                                    <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                                                        <ArrowLeft className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                                    </div>
+                                                    <div className="text-left flex-1 min-w-0">
+                                                        <p className="font-medium text-sm truncate">
+                                                            {member.children.left.fullName || member.children.left.email.split("@")[0]}
+                                                        </p>
+                                                        <p className="text-xs text-muted-foreground">Hijo Izquierdo</p>
+                                                    </div>
+                                                    <Navigation className="h-4 w-4 text-muted-foreground shrink-0" />
+                                                </CardContent>
+                                            </Button>
+                                        </Card>
                                     )}
 
                                     {member.children?.right && (
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => {
-                                                onNavigateToUser(member.children!.right!.id);
-                                                onClose();
-                                            }}
-                                            className="justify-start h-auto p-3"
-                                        >
-                                            <div className="flex items-center gap-3 w-full">
-                                                <ArrowRight className="h-4 w-4 text-green-500" />
-                                                <div className="text-left flex-1">
-                                                    <p className="font-medium text-sm">
-                                                        {member.children.right.fullName || member.children.right.email.split("@")[0]}
-                                                    </p>
-                                                    <p className="text-xs text-muted-foreground">Hijo Derecho</p>
-                                                </div>
-                                            </div>
-                                        </Button>
+                                        <Card className="overflow-hidden">
+                                            <Button
+                                                variant="ghost"
+                                                onClick={() => {
+                                                    onNavigateToUser(member.children!.right!.id);
+                                                    onClose();
+                                                }}
+                                                className="w-full h-auto p-0 justify-start"
+                                            >
+                                                <CardContent className="flex items-center gap-3 w-full">
+                                                    <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/20">
+                                                        <ArrowRight className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                                    </div>
+                                                    <div className="text-left flex-1 min-w-0">
+                                                        <p className="font-medium text-sm truncate">
+                                                            {member.children.right.fullName || member.children.right.email.split("@")[0]}
+                                                        </p>
+                                                        <p className="text-xs text-muted-foreground">Hijo Derecho</p>
+                                                    </div>
+                                                    <Navigation className="h-4 w-4 text-muted-foreground shrink-0" />
+                                                </CardContent>
+                                            </Button>
+                                        </Card>
                                     )}
                                 </div>
                             </div>
-                        </>
-                    )}
+                        )}
 
-                    {/* Información adicional */}
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-2">
-                        <div className="flex items-center gap-2">
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">Estadísticas</span>
-                        </div>
-                        <div className="text-xs text-muted-foreground space-y-1">
-                            <p>• Profundidad en la red: Nivel {member.depth}</p>
-                            <p>• Posición: {member.position === "LEFT" ? "Izquierda" : member.position === "RIGHT" ? "Derecha" : "Raíz"}</p>
-                            <p>• Estado: {member.isActive ? "Activo" : "Inactivo"}</p>
-                            {hasChildren && (
-                                <p>• Hijos directos: {(member.children?.left ? 1 : 0) + (member.children?.right ? 1 : 0)}</p>
-                            )}
+                        {/* Team Statistics */}
+                        <div className="space-y-3">
+                            <h3 className="text-sm font-medium text-muted-foreground">
+                                Información del Equipo
+                            </h3>
+
+                            <Card>
+                                <CardContent className="flex items-center gap-3">
+                                    <div className="p-2 rounded-lg bg-primary/10">
+                                        <Users className="h-4 w-4 text-primary" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-xs text-muted-foreground mb-1">Estructura</p>
+                                        <div className="space-y-1">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-muted-foreground">Nivel en la red:</span>
+                                                <span className="font-medium">{member.depth}</span>
+                                            </div>
+                                            {hasChildren && (
+                                                <div className="flex items-center justify-between text-sm">
+                                                    <span className="text-muted-foreground">Hijos directos:</span>
+                                                    <span className="font-medium">
+                                                        {(member.children?.left ? 1 : 0) + (member.children?.right ? 1 : 0)}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-muted-foreground">Posición:</span>
+                                                <span className="font-medium">
+                                                    {member.position === "LEFT" ? "Izquierda" : member.position === "RIGHT" ? "Derecha" : "Raíz"}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
                 </div>

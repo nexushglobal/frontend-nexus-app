@@ -31,12 +31,10 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
         findMemberById,
     } = useTeamTree(currentUserId);
 
-    // Seleccionar miembro para ver detalles
     const handleSelectMember = (member: TeamMember) => {
         setSelectedMember(member);
     };
 
-    // Navegación con cierre del sheet
     const handleNavigateToUser = (userId: string) => {
         navigateToUser(userId);
         setSelectedMember(null);
@@ -58,7 +56,6 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
 
     return (
         <div className="space-y-6">
-            {/* Controles */}
             <TeamTreeControls
                 canGoUp={canGoUp}
                 isAtRoot={isAtRoot}
@@ -70,7 +67,6 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
                 onNavigateToUser={handleNavigateToUser}
             />
 
-            {/* Flow Diagram */}
             <TeamTreeFlow
                 tree={treeData.tree}
                 currentUserId={currentUserId}
@@ -80,7 +76,6 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
                 currentDepth={currentDepth}
             />
 
-            {/* Sheet de detalles */}
             <TeamMemberSheet
                 member={selectedMember}
                 isOpen={!!selectedMember}

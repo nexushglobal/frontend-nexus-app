@@ -57,7 +57,7 @@ export function TeamMemberNode({ data, selected }: TeamMemberNodeProps) {
 
             <Card
                 className={cn(
-                    "w-[200px] h-[160px] transition-all duration-200 hover:shadow-lg cursor-pointer relative border-2",
+                    "w-[200px] h-[160px] transition-all duration-200 hover:shadow-lg cursor-pointer relative border-2 py-3",
                     isCurrentUser && "border-green-500 bg-green-50 dark:bg-green-950/20",
                     isViewingUser && "border-primary bg-primary/5",
                     selected && "border-blue-500 bg-blue-50 dark:bg-blue-950/20",
