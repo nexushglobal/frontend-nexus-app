@@ -8,6 +8,7 @@ export async function GET() {
     const content = readFileSync(filePath, "utf8");
     return NextResponse.json({ content });
   } catch (error) {
+    console.error("Error al cargar los términos y condiciones:", error);
     return NextResponse.json(
       { error: "No se pudo cargar los términos y condiciones" },
       { status: 500 }
