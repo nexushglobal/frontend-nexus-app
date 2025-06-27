@@ -2,12 +2,15 @@
 
 import { httpClient } from "@/lib/api/http-client";
 import { UserMenuResponse } from "@/types/menu.types";
-
+const USER_MENU_CACHE_TAG = "user-menu";
 export async function getUserMenu() {
   try {
     const response = await httpClient<UserMenuResponse>("/api/user/menu", {
       method: "GET",
-      cache: "no-store",
+      next: {
+        tags: [USER_MENU_CACHE_TAG],
+        revalidate: 300,
+      },
     });
 
     if (response.success && response.data) {
