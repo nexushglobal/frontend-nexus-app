@@ -3,17 +3,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
-    Mail,
-    GitBranch,
-    Copy,
-    Eye,
     ArrowLeft,
     ArrowRight,
-    Users,
-    Navigation
+    Copy,
+    GitBranch,
+    Mail,
+    Navigation,
+    Users
 } from "lucide-react";
 import { toast } from "sonner";
 import { TeamMember } from "../actions/teamTree";
@@ -64,7 +63,6 @@ export function TeamMemberSheet({
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <SheetContent className="w-full sm:max-w-md flex flex-col">
-                {/* Header with proper padding - Fixed */}
                 <SheetHeader className="px-6 pt-6 pb-4 text-left flex-shrink-0">
                     <div className="flex items-center gap-4">
                         <Avatar className="h-16 w-16">
@@ -92,10 +90,8 @@ export function TeamMemberSheet({
                     </div>
                 </SheetHeader>
 
-                {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto px-6 pb-6">
                     <div className="space-y-6">
-                        {/* Contact Information */}
                         <div className="space-y-3">
                             <h3 className="text-sm font-medium text-muted-foreground">
                                 Información de Contacto
@@ -122,7 +118,6 @@ export function TeamMemberSheet({
                             </Card>
                         </div>
 
-                        {/* Network Information */}
                         <div className="space-y-3">
                             <h3 className="text-sm font-medium text-muted-foreground">
                                 Posición en la Red
@@ -148,7 +143,6 @@ export function TeamMemberSheet({
                             </Card>
                         </div>
 
-                        {/* Primary Action */}
                         <div className="space-y-3">
                             <Button
                                 onClick={handleNavigateToMember}
@@ -160,7 +154,6 @@ export function TeamMemberSheet({
                             </Button>
                         </div>
 
-                        {/* Children Navigation */}
                         {hasChildren && (
                             <div className="space-y-3">
                                 <h3 className="text-sm font-medium text-muted-foreground">
@@ -223,7 +216,6 @@ export function TeamMemberSheet({
                             </div>
                         )}
 
-                        {/* Team Statistics */}
                         <div className="space-y-3">
                             <h3 className="text-sm font-medium text-muted-foreground">
                                 Información del Equipo

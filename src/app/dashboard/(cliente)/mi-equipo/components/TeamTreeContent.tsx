@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useTeamTree } from "../hooks/useTeamTree";
 import { TeamMember } from "../actions/teamTree";
-import { TeamTreeSkeleton } from "./TeamTreeSkeleton";
+import { useTeamTree } from "../hooks/useTeamTree";
+import { TeamMemberSheet } from "./TeamMemberSheet";
 import { TeamTreeControls } from "./TeamTreeControls";
 import { TeamTreeFlow } from "./TeamTreeFlow";
-import { TeamMemberSheet } from "./TeamMemberSheet";
+import { TeamTreeSkeleton } from "./TeamTreeSkeleton";
 
 interface TeamTreeContentProps {
     currentUserId: string;
@@ -28,7 +28,6 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
         navigateToParent,
         changeDepth,
         refresh,
-        findMemberById,
     } = useTeamTree(currentUserId);
 
     const handleSelectMember = (member: TeamMember) => {
