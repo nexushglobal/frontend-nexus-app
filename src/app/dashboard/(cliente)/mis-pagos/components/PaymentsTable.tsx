@@ -1,4 +1,3 @@
-// src/app/dashboard/(cliente)/mis-pagos/components/PaymentsTable.tsx
 'use client';
 
 import TableTemplate from '@/components/common/table/TableTemplate';

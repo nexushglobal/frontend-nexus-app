@@ -1,4 +1,3 @@
-// src/app/dashboard/(cliente)/mis-pagos/components/PaymentsTableSkeleton.tsx
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card } from '@/components/ui/card';
 import {

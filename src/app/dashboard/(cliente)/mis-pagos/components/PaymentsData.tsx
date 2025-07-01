@@ -58,8 +58,8 @@ export default async function PaymentsData({
 
     return (
         <div className="space-y-6">
-            <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <CardContent className="p-6">
+            <Card className="shadow-sm ">
+                <CardContent>
                     <PaymentsTableFilters
                         search={search}
                         status={status}
@@ -75,7 +75,7 @@ export default async function PaymentsData({
 
             <div className="hidden md:block">
                 <Card className="border-gray-200 shadow-sm dark:border-gray-800">
-                    <CardContent className="p-0">
+                    <CardContent >
                         <PaymentsTable data={data} />
                     </CardContent>
                 </Card>

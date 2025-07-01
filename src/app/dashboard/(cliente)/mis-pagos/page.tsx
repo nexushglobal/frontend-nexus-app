@@ -1,8 +1,7 @@
-// src/app/dashboard/(cliente)/mis-pagos/page.tsx
+import { PageHeader } from '@/components/common/PageHeader';
 import { Suspense } from 'react';
-// import { PageHeader } from '@/components/common/PageHeader';
-import PaymentsTableSkeleton from './components/PaymentsTableSkeleton';
 import PaymentsData from './components/PaymentsData';
+import PaymentsTableSkeleton from './components/PaymentsTableSkeleton';
 
 export default async function PaymentsPage({
     searchParams
@@ -13,12 +12,12 @@ export default async function PaymentsPage({
 
     return (
         <div className="container py-8">
-            {/* <PageHeader
+            <PageHeader
                 title="Mis Pagos"
                 subtitle="Gestiona y revisa el historial de tus pagos realizados"
                 className="mb-6"
                 variant="gradient"
-            /> */}
+            />
 
             <Suspense fallback={<PaymentsTableSkeleton />}>
                 <PaymentsData searchParams={filters} />

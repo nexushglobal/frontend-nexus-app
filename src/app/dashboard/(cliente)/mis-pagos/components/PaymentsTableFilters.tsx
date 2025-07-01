@@ -1,4 +1,3 @@
-// src/app/dashboard/(cliente)/mis-pagos/components/PaymentsTableFilters.tsx
 'use client';
 
 import { Badge } from '@/components/ui/badge';
@@ -19,16 +18,18 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
     Calendar,
-    FilterX,
+    ChevronDown,
+    ChevronUp,
+    CreditCard,
+    Filter,
+    RotateCcw,
     Search,
+    Settings2,
     SortAsc,
     SortDesc,
-    X,
-    CreditCard,
-    DollarSign
+    X
 } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { usePaymentFilters } from '../hooks/usePaymentFilters';
 
 interface PaymentsTableFiltersProps {
     search: string;
@@ -41,343 +42,265 @@ interface PaymentsTableFiltersProps {
     paymentConfigs: PaymentConfig[];
 }
 
-export function PaymentsTableFilters({
-    search: initialSearch,
-    status: initialStatus,
-    paymentConfigId: initialPaymentConfigId,
-    startDate: initialStartDate,
-    endDate: initialEndDate,
-    sortBy: initialSortBy,
-    sortOrder: initialSortOrder,
-    paymentConfigs
-}: PaymentsTableFiltersProps) {
-    const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
+const statusLabels: Record<PaymentStatus, string> = {
+    [PaymentStatus.PENDING]: 'Pendiente',
+    [PaymentStatus.APPROVED]: 'Aprobado',
+    [PaymentStatus.REJECTED]: 'Rechazado',
+    [PaymentStatus.COMPLETED]: 'Completado',
+};
 
-    // Estados locales para controlar los inputs
-    const [searchValue, setSearchValue] = useState(initialSearch);
-    const [statusValue, setStatusValue] = useState<string>(
-        initialStatus || 'all'
-    );
-    const [paymentConfigValue, setPaymentConfigValue] = useState<string>(
-        initialPaymentConfigId?.toString() || 'all'
-    );
-    const [sortByValue, setSortByValue] = useState<string>(initialSortBy);
-    const [sortOrderValue, setSortOrderValue] = useState<'ASC' | 'DESC'>(initialSortOrder);
+const sortOptions = [
+    { value: 'createdAt', label: 'Fecha' },
+    { value: 'amount', label: 'Monto' },
+    { value: 'status', label: 'Estado' },
+    { value: 'updatedAt', label: 'Actualización' },
+];
 
-    const [dateRange, setDateRange] = useState<{
-        from: Date | undefined;
-        to: Date | undefined;
-    }>({
-        from: initialStartDate ? new Date(initialStartDate) : undefined,
-        to: initialEndDate ? new Date(initialEndDate) : undefined
-    });
-
-    const hasActiveFilters =
-        searchValue ||
-        statusValue !== 'all' ||
-        paymentConfigValue !== 'all' ||
-        dateRange.from ||
-        dateRange.to ||
-        sortOrderValue !== 'DESC' ||
-        sortByValue !== 'createdAt';
-
-    // Función para crear query string actualizado
-    const createQueryString = useCallback(
-        (updates: { [key: string]: string }) => {
-            const params = new URLSearchParams(searchParams.toString());
-
-            Object.entries(updates).forEach(([name, value]) => {
-                if (value === '' || value === 'all') {
-                    params.delete(name);
-                } else {
-                    params.set(name, value);
-                }
-            });
-
-            // Siempre resetear a página 1 cuando se aplican filtros
-            params.set('page', '1');
-
-            return params.toString();
-        },
-        [searchParams]
-    );
-
-    // Debounce para búsqueda
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSearchValue(value);
-
-        const timeoutId = setTimeout(() => {
-            router.push(`${pathname}?${createQueryString({ search: value })}`);
-        }, 500);
-
-        return () => clearTimeout(timeoutId);
-    };
-
-    const handleStatusChange = (value: string) => {
-        setStatusValue(value);
-        router.push(`${pathname}?${createQueryString({ status: value === 'all' ? '' : value })}`);
-    };
-
-    const handlePaymentConfigChange = (value: string) => {
-        setPaymentConfigValue(value);
-        router.push(`${pathname}?${createQueryString({ paymentConfigId: value === 'all' ? '' : value })}`);
-    };
-
-    const handleSortByChange = (value: string) => {
-        setSortByValue(value);
-        router.push(`${pathname}?${createQueryString({ sortBy: value })}`);
-    };
-
-    const handleSortOrderChange = (value: 'ASC' | 'DESC') => {
-        setSortOrderValue(value);
-        router.push(`${pathname}?${createQueryString({ sortOrder: value })}`);
-    };
-
-    const handleCalendarChange = (range: { from?: Date; to?: Date }) => {
-        setDateRange({
-            from: range.from ?? undefined,
-            to: range.to ?? undefined
-        });
-
-        const updates: { [key: string]: string } = {};
-        if (range.from) updates.startDate = range.from.toISOString().split('T')[0];
-        if (range.to) updates.endDate = range.to.toISOString().split('T')[0];
-
-        router.push(`${pathname}?${createQueryString(updates)}`);
-    };
-
-    const resetFilters = () => {
-        setSearchValue('');
-        setStatusValue('all');
-        setPaymentConfigValue('all');
-        setSortByValue('createdAt');
-        setSortOrderValue('DESC');
-        setDateRange({ from: undefined, to: undefined });
-        router.push(pathname);
-    };
-
-    const clearDateRange = () => {
-        setDateRange({ from: undefined, to: undefined });
-        router.push(`${pathname}?${createQueryString({ startDate: '', endDate: '' })}`);
-    };
-
-    // Función para obtener el label del status
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'PENDING': return 'Pendiente';
-            case 'APPROVED': return 'Aprobado';
-            case 'REJECTED': return 'Rechazado';
-            case 'COMPLETED': return 'Completado';
-            default: return status;
-        }
-    };
-
-    // Función para obtener el label del campo de ordenamiento
-    const getSortByLabel = (sortBy: string) => {
-        switch (sortBy) {
-            case 'createdAt': return 'Fecha de creación';
-            case 'amount': return 'Monto';
-            case 'status': return 'Estado';
-            case 'updatedAt': return 'Fecha de actualización';
-            default: return sortBy;
-        }
-    };
+export function PaymentsTableFilters(props: PaymentsTableFiltersProps) {
+    const {
+        searchValue,
+        statusValue,
+        paymentConfigValue,
+        sortByValue,
+        sortOrderValue,
+        dateRange,
+        hasActiveFilters,
+        showAdvancedFilters,
+        setStatusValue,
+        setPaymentConfigValue,
+        setDateRange,
+        setShowAdvancedFilters,
+        applyFilters,
+        resetFilters,
+        handleSearchChange,
+        handleSortChange,
+    } = usePaymentFilters(props);
 
     return (
-        <div className="space-y-4">
-            {/* Header */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-2">
-                    <FilterX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                        Filtros de búsqueda
-                    </h3>
-                    {hasActiveFilters && (
-                        <Badge
-                            variant="secondary"
-                            className="ml-2 border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
-                        >
-                            Filtros activos
-                        </Badge>
-                    )}
-                </div>
-
-                {hasActiveFilters && (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={resetFilters}
-                        className="h-8 px-3 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                    >
-                        <X className="mr-1 h-3.5 w-3.5" />
-                        Limpiar filtros
-                    </Button>
-                )}
-            </div>
-
-            {/* Filters Grid */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
-                {/* Search Input */}
-                <div className="relative lg:col-span-2">
-                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <div className="w-full space-y-3">
+            <div className="p-3 sm:p-4   space-y-3">
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <Input
                         placeholder="Buscar pagos..."
                         value={searchValue}
                         onChange={handleSearchChange}
-                        className="pl-9 transition-colors focus:border-blue-500 focus:ring-blue-500"
+                        className="pl-10"
                     />
                 </div>
 
-                {/* Status Filter */}
-                <Select value={statusValue} onValueChange={handleStatusChange}>
-                    <SelectTrigger className="transition-colors focus:border-blue-500 focus:ring-blue-500">
-                        <div className="flex items-center">
-                            <CreditCard className="mr-2 h-4 w-4 text-gray-400" />
-                            <SelectValue placeholder="Estado" />
-                        </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Todos los estados</SelectItem>
-                        <SelectItem value="PENDING">
-                            <div className="flex items-center gap-2">
-                                <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                                Pendiente
-                            </div>
-                        </SelectItem>
-                        <SelectItem value="APPROVED">
-                            <div className="flex items-center gap-2">
-                                <div className="h-2 w-2 rounded-full bg-green-500" />
-                                Aprobado
-                            </div>
-                        </SelectItem>
-                        <SelectItem value="REJECTED">
-                            <div className="flex items-center gap-2">
-                                <div className="h-2 w-2 rounded-full bg-red-500" />
-                                Rechazado
-                            </div>
-                        </SelectItem>
-                        <SelectItem value="COMPLETED">
-                            <div className="flex items-center gap-2">
-                                <div className="h-2 w-2 rounded-full bg-blue-500" />
-                                Completado
-                            </div>
-                        </SelectItem>
-                    </SelectContent>
-                </Select>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                    <div className="flex gap-2 sm:contents">
+                        <Select value={statusValue} onValueChange={setStatusValue}>
+                            <SelectTrigger className="flex-1 sm:w-[130px]">
+                                <SelectValue placeholder="Estado" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Todos</SelectItem>
+                                {Object.values(PaymentStatus).map((status) => (
+                                    <SelectItem key={status} value={status}>
+                                        {statusLabels[status]}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-                {/* Payment Config Filter */}
-                <Select value={paymentConfigValue} onValueChange={handlePaymentConfigChange}>
-                    <SelectTrigger className="transition-colors focus:border-blue-500 focus:ring-blue-500">
-                        <div className="flex items-center">
-                            <DollarSign className="mr-2 h-4 w-4 text-gray-400" />
-                            <SelectValue placeholder="Tipo de pago" />
-                        </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Todos los tipos</SelectItem>
-                        {paymentConfigs.map((config) => (
-                            <SelectItem key={config.id} value={config.id.toString()}>
-                                {config.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-
-                {/* Date Range Filter */}
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className={cn(
-                                'w-full justify-start text-left font-normal transition-colors focus:border-blue-500 focus:ring-blue-500',
-                                (dateRange.from || dateRange.to) &&
-                                'border-blue-500 text-blue-600 dark:text-blue-400'
-                            )}
-                        >
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {dateRange.from ? (
-                                dateRange.to ? (
-                                    <>
-                                        {format(dateRange.from, 'dd/MM/yy', { locale: es })} -{' '}
-                                        {format(dateRange.to, 'dd/MM/yy', { locale: es })}
-                                    </>
+                        <div className="flex items-center border rounded-md flex-1 sm:w-auto">
+                            <Select value={sortByValue} onValueChange={(value) => handleSortChange(value)}>
+                                <SelectTrigger className="border-0 focus:ring-0 text-sm">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {sortOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleSortChange(sortByValue)}
+                                className="h-8 w-8 p-0 border-l rounded-l-none shrink-0"
+                            >
+                                {sortOrderValue === 'ASC' ? (
+                                    <SortAsc className="h-3.5 w-3.5" />
                                 ) : (
-                                    format(dateRange.from, 'dd/MM/yyyy', { locale: es })
-                                )
-                            ) : (
-                                'Rango de fechas'
-                            )}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                        <CalendarComponent
-                            initialFocus
-                            mode="range"
-                            defaultMonth={dateRange.from}
-                            selected={dateRange}
-                            onSelect={(range) =>
-                                handleCalendarChange(range ?? { from: undefined, to: undefined })
-                            }
-                            numberOfMonths={2}
-                            locale={es}
-                            className="rounded-md border"
-                        />
-                        <div className="flex justify-between gap-2 border-t p-3">
-                            <Button variant="outline" size="sm" onClick={clearDateRange} className="text-sm">
-                                <X className="mr-1 h-3 w-3" />
-                                Limpiar
+                                    <SortDesc className="h-3.5 w-3.5" />
+                                )}
                             </Button>
                         </div>
-                    </PopoverContent>
-                </Popover>
+                    </div>
 
-                {/* Sort By Filter */}
-                <Select value={sortByValue} onValueChange={handleSortByChange}>
-                    <SelectTrigger className="transition-colors focus:border-blue-500 focus:ring-blue-500">
-                        <SelectValue placeholder="Ordenar por" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="createdAt">Fecha de creación</SelectItem>
-                        <SelectItem value="amount">Monto</SelectItem>
-                        <SelectItem value="status">Estado</SelectItem>
-                        <SelectItem value="updatedAt">Fecha de actualización</SelectItem>
-                    </SelectContent>
-                </Select>
-
-                {/* Sort Order Filter */}
-                <Select
-                    value={sortOrderValue}
-                    onValueChange={(value: 'ASC' | 'DESC') => handleSortOrderChange(value)}
-                >
-                    <SelectTrigger className="transition-colors focus:border-blue-500 focus:ring-blue-500">
-                        <div className="flex items-center">
-                            {sortOrderValue === 'DESC' ? (
-                                <SortDesc className="mr-2 h-4 w-4 text-gray-400" />
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                            className="relative flex-1 sm:flex-initial"
+                        >
+                            <Settings2 className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Filtros</span>
+                            {showAdvancedFilters ? (
+                                <ChevronUp className="h-4 w-4 ml-1" />
                             ) : (
-                                <SortAsc className="mr-2 h-4 w-4 text-gray-400" />
+                                <ChevronDown className="h-4 w-4 ml-1" />
                             )}
-                            <SelectValue placeholder="Orden" />
-                        </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="DESC">
-                            <div className="flex items-center gap-2">
-                                <SortDesc className="h-4 w-4" />
-                                Más recientes primero
-                            </div>
-                        </SelectItem>
-                        <SelectItem value="ASC">
-                            <div className="flex items-center gap-2">
-                                <SortAsc className="h-4 w-4" />
-                                Más antiguos primero
-                            </div>
-                        </SelectItem>
-                    </SelectContent>
-                </Select>
+                            {hasActiveFilters && (
+                                <Badge
+                                    variant="secondary"
+                                    className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-blue-600 text-white"
+                                >
+                                    {Object.values({
+                                        search: searchValue.trim() !== '',
+                                        status: statusValue !== 'all',
+                                        config: paymentConfigValue !== 'all',
+                                        date: dateRange.from || dateRange.to
+                                    }).filter(Boolean).length}
+                                </Badge>
+                            )}
+                        </Button>
+
+                        <Button onClick={applyFilters} size="sm" className="flex-1 sm:flex-initial">
+                            <Filter className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Aplicar</span>
+                        </Button>
+
+                        {hasActiveFilters && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={resetFilters}
+                                className="hidden sm:flex"
+                            >
+                                <RotateCcw className="h-4 w-4" />
+                            </Button>
+                        )}
+                    </div>
+                </div>
             </div>
+
+            {showAdvancedFilters && (
+                <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border space-y-3">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Settings2 className="h-4 w-4 text-gray-600" />
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Filtros avanzados
+                            </span>
+                        </div>
+                        <div className="sm:hidden">
+                            {hasActiveFilters && (
+                                <Button variant="ghost" size="sm" onClick={resetFilters}>
+                                    <RotateCcw className="h-4 w-4" />
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="space-y-3 sm:space-y-4">
+                        <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                                    Configuración
+                                </label>
+                                <Select value={paymentConfigValue} onValueChange={setPaymentConfigValue}>
+                                    <SelectTrigger>
+                                        <CreditCard className="mr-2 h-4 w-4" />
+                                        <SelectValue placeholder="Todas" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">Todas las configuraciones</SelectItem>
+                                        {props.paymentConfigs.map((config) => (
+                                            <SelectItem key={config.id} value={config.id.toString()}>
+                                                {config.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                                    Rango de fechas
+                                </label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className={cn(
+                                                'w-full justify-start text-left font-normal',
+                                                !dateRange.from && 'text-muted-foreground'
+                                            )}
+                                        >
+                                            <Calendar className="mr-2 h-4 w-4 shrink-0" />
+                                            <span className="truncate">
+                                                {dateRange.from ? (
+                                                    dateRange.to ? (
+                                                        <>
+                                                            {format(dateRange.from, 'dd/MM/yy', { locale: es })} -{' '}
+                                                            {format(dateRange.to, 'dd/MM/yy', { locale: es })}
+                                                        </>
+                                                    ) : (
+                                                        format(dateRange.from, 'dd/MM/yyyy', { locale: es })
+                                                    )
+                                                ) : (
+                                                    'Seleccionar'
+                                                )}
+                                            </span>
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <CalendarComponent
+                                            initialFocus
+                                            mode="range"
+                                            defaultMonth={dateRange.from}
+                                            selected={dateRange}
+                                            onSelect={() => setDateRange}
+                                            numberOfMonths={window.innerWidth < 640 ? 1 : 2}
+                                            locale={es}
+                                        />
+                                        {(dateRange.from || dateRange.to) && (
+                                            <div className="p-3 border-t">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => setDateRange({ from: undefined, to: undefined })}
+                                                    className="w-full"
+                                                >
+                                                    <X className="mr-2 h-4 w-4" />
+                                                    Limpiar fechas
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end pt-3 border-t">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={resetFilters}
+                                className="w-full sm:w-auto order-2 sm:order-1"
+                            >
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Restablecer todo
+                            </Button>
+                            <Button
+                                size="sm"
+                                onClick={applyFilters}
+                                className="w-full sm:w-auto order-1 sm:order-2"
+                            >
+                                <Filter className="mr-2 h-4 w-4" />
+                                Aplicar filtros
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

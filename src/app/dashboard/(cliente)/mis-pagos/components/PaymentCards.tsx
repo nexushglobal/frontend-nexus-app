@@ -6,14 +6,14 @@ import { Payment, PaymentMethod, PaymentStatus } from '@/types/payments/payments
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
+    AlertCircle,
     Calendar,
+    CheckCircle,
+    Clock,
     CreditCard,
     DollarSign,
     Package,
-    Clock,
-    CheckCircle,
-    XCircle,
-    AlertCircle
+    XCircle
 } from 'lucide-react';
 
 type Props = {
