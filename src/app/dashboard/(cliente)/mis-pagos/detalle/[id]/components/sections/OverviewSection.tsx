@@ -9,7 +9,11 @@ import {
     CreditCard,
     Package,
     DollarSign,
-    Receipt
+    Receipt,
+    Hash,
+    Archive,
+    Eye,
+    Calendar
 } from "lucide-react";
 import { formatCurrency, formatDateTime } from "@/lib/formatters";
 
@@ -23,30 +27,30 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
             case "APPROVED":
                 return {
                     label: "Aprobado",
-                    variant: "default" as const,
-                    className: "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800",
+                    className: "bg-success text-success-foreground",
                     icon: CheckCircle,
+                    color: "text-success"
                 };
             case "PENDING":
                 return {
                     label: "Pendiente",
-                    variant: "secondary" as const,
-                    className: "bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800",
+                    className: "bg-warning text-warning-foreground",
                     icon: Clock,
+                    color: "text-warning"
                 };
             case "REJECTED":
                 return {
                     label: "Rechazado",
-                    variant: "destructive" as const,
-                    className: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800",
+                    className: "bg-destructive text-destructive-foreground",
                     icon: XCircle,
+                    color: "text-destructive"
                 };
             default:
                 return {
                     label: status,
-                    variant: "outline" as const,
-                    className: "bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700",
+                    className: "bg-muted text-muted-foreground",
                     icon: AlertTriangle,
+                    color: "text-muted-foreground"
                 };
         }
     };
@@ -57,25 +61,25 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                 return {
                     label: "Puntos",
                     icon: Package,
-                    className: "text-blue-600 dark:text-blue-400",
+                    color: "text-info"
                 };
             case "VOUCHER":
                 return {
                     label: "Comprobante",
                     icon: Receipt,
-                    className: "text-green-600 dark:text-green-400",
+                    color: "text-success"
                 };
             case "PAYMENT_GATEWAY":
                 return {
                     label: "Pasarela de Pago",
                     icon: CreditCard,
-                    className: "text-purple-600 dark:text-purple-400",
+                    color: "text-primary"
                 };
             default:
                 return {
                     label: method,
                     icon: DollarSign,
-                    className: "text-gray-600 dark:text-gray-400",
+                    color: "text-muted-foreground"
                 };
         }
     };
@@ -87,70 +91,89 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
 
     return (
         <div className="space-y-6">
-            {/* Payment Header */}
+            {/* Payment Status Header - Destacado */}
             <Card>
-                <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <CardTitle className="flex items-center gap-2">
-                                <MethodIcon className={`h-6 w-6 ${methodConfig.className}`} />
-                                {payment.paymentConfig.name}
-                            </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                {payment.paymentConfig.description}
-                            </p>
+                <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-4">
+                            <div className={`p-4 rounded-xl ${statusConfig.className}`}>
+                                <StatusIcon className="h-8 w-8 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-foreground">
+                                    {payment.paymentConfig.name}
+                                </h2>
+                                <p className="text-muted-foreground">Pago #{payment.id}</p>
+                            </div>
                         </div>
-                        <Badge className={statusConfig.className}>
-                            <StatusIcon className="h-3 w-3 mr-1" />
+                        <Badge className={`${statusConfig.className} text-base px-4 py-2 shadow-sm`}>
+                            <StatusIcon className="h-5 w-5 mr-2" />
                             {statusConfig.label}
                         </Badge>
                     </div>
-                </CardHeader>
 
-                <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                        <div>
-                            <p className="text-sm text-muted-foreground">Monto</p>
-                            <p className="text-lg font-semibold">{formatCurrency(payment.amount)}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">Método</p>
-                            <p className="text-lg font-medium">{methodConfig.label}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">Creado</p>
-                            <p className="text-lg font-medium">{formatDateTime(payment.createdAt)}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">Items</p>
-                            <p className="text-lg font-semibold">{payment.items.length}</p>
+                    <div className="flex items-center justify-center p-6 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20">
+                        <div className="text-center">
+                            <p className="text-sm font-medium text-muted-foreground mb-2">Monto Total</p>
+                            <p className="text-4xl font-bold text-primary">{formatCurrency(payment.amount)}</p>
                         </div>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Payment Config Info */}
+            {/* Payment Details */}
             <Card>
-                <CardHeader>
-                    <CardTitle className="text-lg">Información del Pago</CardTitle>
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                            <MethodIcon className={`h-5 w-5 ${methodConfig.color}`} />
+                        </div>
+                        {payment.paymentConfig.name}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground ml-11">
+                        {payment.paymentConfig.description}
+                    </p>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="text-sm font-medium text-muted-foreground">ID del Pago</label>
-                            <p className="font-mono text-sm bg-muted px-2 py-1 rounded">#{payment.id}</p>
+                <CardContent>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="info-field">
+                            <div className="p-2 rounded-lg bg-primary/10">
+                                <MethodIcon className={`field-icon ${methodConfig.color}`} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="section-title">Método de Pago</p>
+                                <p className="text-sm font-medium text-foreground">
+                                    {methodConfig.label}
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <label className="text-sm font-medium text-muted-foreground">Código de Configuración</label>
-                            <p className="font-mono text-sm bg-muted px-2 py-1 rounded">{payment.paymentConfig.code}</p>
+
+                        <div className="info-field">
+                            <div className="p-2 rounded-lg bg-info/10">
+                                <Calendar className="field-icon text-info" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="section-title">Fecha de Creación</p>
+                                <p className="text-sm font-medium text-foreground">
+                                    {formatDateTime(payment.createdAt)}
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <label className="text-sm font-medium text-muted-foreground">Entidad Relacionada</label>
-                            <p className="text-sm">{payment.relatedEntityType} #{payment.relatedEntityId}</p>
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium text-muted-foreground">Archivado</label>
-                            <p className="text-sm">{payment.isArchived ? "Sí" : "No"}</p>
+
+                        <div className="info-field">
+                            <div className="p-2 rounded-lg bg-warning/10">
+                                {payment.isArchived ? (
+                                    <Archive className="field-icon text-warning" />
+                                ) : (
+                                    <Eye className="field-icon text-success" />
+                                )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="section-title">Estado</p>
+                                <p className={`text-sm font-medium ${payment.isArchived ? 'text-warning' : 'text-success'}`}>
+                                    {payment.isArchived ? 'Archivado' : 'Activo'}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </CardContent>

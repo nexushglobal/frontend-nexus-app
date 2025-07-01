@@ -1,14 +1,21 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { PaymentDetailResponse } from "../../actions";
-import { CreditCard, Image as ImageIcon, Package, Eye, ZoomIn } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency, formatDateTime } from "@/lib/formatters";
+import {
+    Building2,
+    Calendar,
+    Eye,
+    Hash,
+    Image as ImageIcon,
+    Package,
+    Receipt
+} from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { PaymentDetailResponse } from "../../actions";
 import { ImageModal } from "../ImageModal";
-import { formatCurrency, formatDateTime } from "@/lib/formatters";
 
 interface ItemsSectionProps {
     payment: PaymentDetailResponse;
@@ -29,128 +36,151 @@ export function ItemsSection({ payment }: ItemsSectionProps) {
 
     const hasImages = payment.items.some(item => item.url || payment.paymentMethod === "POINTS");
 
+    const totalAmount = payment.items.reduce((sum, item) => sum + item.amount, 0);
+
     return (
         <div className="space-y-6">
+
+
             <Card>
-                <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                        <CreditCard className="h-5 w-5" />
-                        Elementos del Pago ({payment.items.length})
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-3 text-card-foreground">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                            <Package className="h-5 w-5 text-primary" />
+                        </div>
+                        Elementos del Pago
+                        <div className="text-right ml-auto">
+                            <p className="text-3xl font-bold text-primary">
+                                {formatCurrency(totalAmount)}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Monto total
+                            </p>
+                        </div>
+
                     </CardTitle>
                     {hasImages && (
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground mt-2">
                             Haz clic en cualquier imagen para verla en detalle
                         </p>
                     )}
                 </CardHeader>
                 <CardContent>
                     {payment.items.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground">
-                            <Package className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                            <p>No hay elementos asociados a este pago</p>
+                        <div className="text-center py-12 text-muted-foreground">
+                            <div className="p-4 rounded-full bg-muted/30 w-fit mx-auto mb-4">
+                                <Package className="h-8 w-8 text-muted-foreground/50" />
+                            </div>
+                            <h3 className="font-medium text-foreground mb-1">Sin elementos</h3>
+                            <p className="text-sm">No hay elementos asociados a este pago</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
                             {payment.items.map((item, index) => (
-                                <Card key={item.id} className="border-l-4 border-l-primary">
-                                    <CardContent className="p-4">
-                                        <div className="flex items-start gap-4">
+                                <Card key={item.id} className="bg-muted/20 border-muted">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-start gap-6">
                                             {/* Image Section */}
                                             <div className="flex-shrink-0">
                                                 {item.url || payment.paymentMethod === "POINTS" ? (
-                                                    <div className="relative group">
-                                                        <div
-                                                            className="w-16 h-16 bg-muted rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105"
-                                                            onClick={() => handleImageClick(index)}
-                                                        >
+                                                    <div
+                                                        className="relative group cursor-pointer"
+                                                        onClick={() => handleImageClick(index)}
+                                                    >
+                                                        <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-muted bg-muted/50 transition-all duration-200 group-hover:border-primary/50 group-hover:shadow-md">
                                                             <Image
-                                                                src={item.url || getDefaultImage(payment.paymentMethod) || "/imgs/logo.png"}
-                                                                alt={`Item ${index + 1}`}
-                                                                width={64}
-                                                                height={64}
-                                                                className="w-full h-full object-cover"
+                                                                src={item.url || getDefaultImage(payment.paymentMethod) || "/imgs/placeholder.png"}
+                                                                alt={`Comprobante ${index + 1}`}
+                                                                width={96}
+                                                                height={96}
+                                                                className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                                                                 onError={(e) => {
                                                                     const target = e.target as HTMLImageElement;
-                                                                    target.src = "/imgs/logo.png";
+                                                                    target.src = "/imgs/placeholder.png";
                                                                 }}
                                                             />
                                                         </div>
-
-                                                        {/* Hover Overlay */}
-                                                        <div
-                                                            className="absolute inset-0 bg-black/60 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center cursor-pointer"
-                                                            onClick={() => handleImageClick(index)}
-                                                        >
-                                                            <ZoomIn className="h-5 w-5 text-white" />
+                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+                                                            <div className="bg-white/90 dark:bg-black/90 rounded-full p-2">
+                                                                <Eye className="h-4 w-4 text-foreground" />
+                                                            </div>
                                                         </div>
-
-                                                        {/* Image indicator badge */}
-                                                        <Badge
-                                                            variant="secondary"
-                                                            className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs"
-                                                        >
-                                                            {index + 1}
-                                                        </Badge>
                                                     </div>
                                                 ) : (
-                                                    <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
-                                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                                    <div className="w-24 h-24 rounded-lg border-2 border-dashed border-muted-foreground/20 bg-muted/30 flex items-center justify-center">
+                                                        <ImageIcon className="h-8 w-8 text-muted-foreground/40" />
                                                     </div>
                                                 )}
                                             </div>
 
-                                            {/* Item Details */}
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex justify-between items-start mb-3">
-                                                    <div className="flex items-center gap-2">
-                                                        <Badge variant="outline" className="text-xs">
-                                                            {item.itemType}
-                                                        </Badge>
-                                                        {(item.url || payment.paymentMethod === "POINTS") && (
+                                            {/* Content Section */}
+                                            <div className="flex-1 min-w-0 space-y-4">
+                                                {/* Header with Amount */}
+                                                <div className="flex items-start justify-between gap-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 rounded-lg bg-success/10">
+                                                            <Receipt className="h-4 w-4 text-success" />
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="font-semibold text-foreground">Elemento #{index + 1}</h4>
+                                                            <p className="text-sm text-muted-foreground">ID: {item.id}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="text-right">
+                                                        <p className="text-xl font-bold text-success">
+                                                            {formatCurrency(item.amount)}
+                                                        </p>
+                                                        {item.url && (
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
                                                                 onClick={() => handleImageClick(index)}
-                                                                className="h-6 px-2 text-xs"
+                                                                className="h-auto px-2 py-1 text-xs text-primary hover:text-primary"
                                                             >
                                                                 <Eye className="h-3 w-3 mr-1" />
-                                                                Ver imagen
+                                                                Ver comprobante
                                                             </Button>
                                                         )}
                                                     </div>
-                                                    <div className="text-right">
-                                                        <p className="text-lg font-semibold text-green-600 dark:text-green-400">
-                                                            {formatCurrency(item.amount)}
-                                                        </p>
-                                                    </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                {/* Details Grid */}
+                                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                                     {item.pointsTransactionId && (
-                                                        <div>
-                                                            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                                                ID de Transacción de Puntos
-                                                            </label>
-                                                            <p className=" font-mono bg-muted px-2 py-1 rounded text-xs">
-                                                                {item.pointsTransactionId}
-                                                            </p>
+                                                        <div className="info-field">
+                                                            <div className="p-2 rounded-lg bg-warning/10">
+                                                                <Hash className="field-icon text-warning" />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="section-title">ID de Transacción de Puntos</p>
+                                                                <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
+                                                                    {item.pointsTransactionId}
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     )}
 
                                                     {item.bankName && (
-                                                        <div>
-                                                            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                                                Banco
-                                                            </label>
-                                                            <p className="text-sm">{item.bankName}</p>
+                                                        <div className="info-field">
+                                                            <div className="p-2 rounded-lg bg-secondary/10">
+                                                                <Building2 className="field-icon text-secondary" />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="section-title">Banco</p>
+                                                                <p className="text-sm font-medium text-foreground">{item.bankName}</p>
+                                                            </div>
                                                         </div>
                                                     )}
 
-                                                    <div className="md:col-span-2">
-                                                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                                            Fecha de Transacción
-                                                        </label>
-                                                        <p className="text-sm">{formatDateTime(item.transactionDate)}</p>
+                                                    <div className="info-field lg:col-span-2">
+                                                        <div className="p-2 rounded-lg bg-info/10">
+                                                            <Calendar className="field-icon text-info" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="section-title">Fecha de Transacción</p>
+                                                            <p className="text-sm font-medium text-foreground">{formatDateTime(item.transactionDate)}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PaymentDetailResponse } from "../actions";
@@ -61,7 +61,7 @@ export function PaymentDetailContent({ payment, paymentId }: PaymentDetailConten
                 {/* Mobile Header */}
                 <Card>
                     <CardHeader>
-                        <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center gap-3 mb-2">
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -72,40 +72,83 @@ export function PaymentDetailContent({ payment, paymentId }: PaymentDetailConten
                                 Volver
                             </Button>
                         </div>
-                        <CardTitle>Detalle del Pago #{paymentId}</CardTitle>
+                        <CardTitle className="text-xl">Pago #{paymentId}</CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                            {payment.paymentConfig.name}
+                        </p>
                     </CardHeader>
                 </Card>
 
-                {/* Mobile Menu */}
-                <Card>
-                    <CardContent className="p-2">
-                        <div className="flex gap-1 overflow-x-auto">
-                            {paymentDetailMenuSections.map((section) => (
-                                <Button
-                                    key={section.id}
-                                    variant={activeSection === section.id ? "default" : "ghost"}
-                                    size="sm"
-                                    onClick={() => setActiveSection(section.id)}
-                                    className="whitespace-nowrap flex-shrink-0"
-                                >
-                                    <section.icon className="h-4 w-4 mr-1" />
-                                    {section.label}
-                                </Button>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
+                {/* Navegación mobile mejorada */}
+                <div className="space-y-4">
+                    {/* Tabs principales */}
+                    <div className="grid grid-cols-4 w-full gap-1 bg-muted p-1 rounded-lg">
+                        {["overview", "items", "timeline", "more"].map((tabId) => {
+                            const isActive = activeSection === tabId ||
+                                (tabId === "more" && !["overview", "items", "timeline"].includes(activeSection));
 
-                {/* Mobile Content */}
-                <motion.div
-                    key={activeSection}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    {renderSection()}
-                </motion.div>
+                            return (
+                                <button
+                                    key={tabId}
+                                    onClick={() => setActiveSection(tabId)}
+                                    className={`px-3 py-2 text-xs font-medium rounded-md transition-colors ${isActive
+                                        ? "bg-background text-foreground shadow-sm"
+                                        : "text-muted-foreground hover:text-foreground"
+                                        }`}
+                                >
+                                    {tabId === "overview" && "Resumen"}
+                                    {tabId === "items" && "Elementos"}
+                                    {tabId === "timeline" && "Historial"}
+                                    {tabId === "more" && "Más"}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Contenido de las secciones */}
+                    <motion.div
+                        key={activeSection}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {activeSection === "more" ? (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-lg flex items-center gap-2">
+                                        <MoreHorizontal className="h-5 w-5" />
+                                        Más opciones
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                    {paymentDetailMenuSections
+                                        .filter(section => !["overview", "items", "timeline"].includes(section.id))
+                                        .map((section) => (
+                                            <button
+                                                key={section.id}
+                                                onClick={() => setActiveSection(section.id)}
+                                                className="w-full text-left p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="p-2 rounded-lg bg-primary/10">
+                                                        <section.icon className="h-4 w-4 text-primary" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h4 className="font-medium">{section.label}</h4>
+                                                        <p className="text-sm text-muted-foreground">
+                                                            {section.description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))}
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            renderSection()
+                        )}
+                    </motion.div>
+                </div>
             </div>
         );
     }

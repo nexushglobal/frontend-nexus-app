@@ -7,7 +7,8 @@ import {
     Clock,
     Plus,
     Edit,
-    User
+    User,
+    History
 } from "lucide-react";
 import { formatDateTime } from "@/lib/formatters";
 
@@ -21,7 +22,7 @@ export function TimelineSection({ payment }: TimelineSectionProps) {
             id: 1,
             type: "created",
             title: "Pago Creado",
-            description: `Pago #${payment.id} creado con método ${payment.paymentMethod}`,
+            description: `Pago iniciado con método ${payment.paymentMethod}`,
             timestamp: payment.createdAt,
             icon: Plus,
             status: "completed"
@@ -29,8 +30,8 @@ export function TimelineSection({ payment }: TimelineSectionProps) {
         ...(payment.updatedAt !== payment.createdAt ? [{
             id: 2,
             type: "updated",
-            title: "Pago Actualizado",
-            description: "Información del pago actualizada",
+            title: "Información Actualizada",
+            description: "Los datos del pago fueron modificados",
             timestamp: payment.updatedAt,
             icon: Edit,
             status: "completed"
@@ -39,32 +40,50 @@ export function TimelineSection({ payment }: TimelineSectionProps) {
             id: 3,
             type: "reviewed",
             title: payment.status === "APPROVED" ? "Pago Aprobado" : payment.status === "REJECTED" ? "Pago Rechazado" : "Pago Revisado",
-            description: `Revisado por ${payment.reviewedByEmail}`,
+            description: `Revisado por ${payment.reviewedByEmail || 'Sistema'}`,
             timestamp: payment.reviewedAt,
             icon: payment.status === "APPROVED" ? CheckCircle : payment.status === "REJECTED" ? XCircle : User,
             status: payment.status === "APPROVED" ? "success" : payment.status === "REJECTED" ? "error" : "info"
         }] : [])
     ].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
-    const getStatusColor = (status: string) => {
+    const getStatusConfig = (status: string) => {
         switch (status) {
             case "completed":
             case "success":
-                return "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/20";
+                return {
+                    bgColor: "bg-success/10",
+                    iconColor: "text-success",
+                    borderColor: "border-success/20"
+                };
             case "error":
-                return "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20";
+                return {
+                    bgColor: "bg-destructive/10",
+                    iconColor: "text-destructive",
+                    borderColor: "border-destructive/20"
+                };
             case "info":
-                return "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20";
+                return {
+                    bgColor: "bg-info/10",
+                    iconColor: "text-info",
+                    borderColor: "border-info/20"
+                };
             default:
-                return "text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800";
+                return {
+                    bgColor: "bg-muted/10",
+                    iconColor: "text-muted-foreground",
+                    borderColor: "border-muted/20"
+                };
         }
     };
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                    <Clock className="h-5 w-5" />
+            <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                        <History className="h-5 w-5 text-primary" />
+                    </div>
                     Cronología del Pago
                 </CardTitle>
             </CardHeader>
@@ -73,35 +92,81 @@ export function TimelineSection({ payment }: TimelineSectionProps) {
                     {timelineEvents.map((event, index) => {
                         const Icon = event.icon;
                         const isLast = index === timelineEvents.length - 1;
+                        const statusConfig = getStatusConfig(event.status);
 
                         return (
                             <div key={event.id} className="relative flex gap-4">
                                 {/* Timeline Line */}
                                 {!isLast && (
-                                    <div className="absolute left-5 top-10 w-0.5 h-full bg-border"></div>
+                                    <div className="absolute left-6 top-12 w-0.5 h-full bg-border/50"></div>
                                 )}
 
                                 {/* Icon */}
-                                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border-2 ${getStatusColor(event.status)}`}>
-                                    <Icon className="h-4 w-4" />
+                                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center border-2 ${statusConfig.bgColor} ${statusConfig.borderColor}`}>
+                                    <Icon className={`h-5 w-5 ${statusConfig.iconColor}`} />
                                 </div>
 
                                 {/* Content */}
                                 <div className="flex-1 pb-6">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h4 className="font-medium">{event.title}</h4>
-                                        <Badge variant="outline" className="text-xs">
+                                    <div className="flex items-start justify-between gap-4 mb-2">
+                                        <div>
+                                            <h4 className="font-semibold text-foreground">{event.title}</h4>
+                                            <p className="text-sm text-muted-foreground">{event.description}</p>
+                                        </div>
+                                        <Badge variant="outline" className="text-xs whitespace-nowrap">
                                             {formatDateTime(event.timestamp)}
                                         </Badge>
                                     </div>
-                                    <p className="text-sm text-muted-foreground">{event.description}</p>
+
+                                    {/* Additional context for review events */}
+                                    {event.type === "reviewed" && payment.rejectionReason && (
+                                        <div className="mt-3 p-3 bg-destructive/5 border border-destructive/10 rounded-lg">
+                                            <p className="text-sm text-destructive font-medium mb-1">Motivo del rechazo:</p>
+                                            <p className="text-sm text-destructive/80">{payment.rejectionReason}</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );
                     })}
                 </div>
+
+                {/* Current Status Summary */}
+                <div className="mt-6 pt-4 border-t">
+                    <div className="flex items-center gap-3 p-4 bg-card rounded-lg border">
+                        <div className={`p-2 rounded-lg ${getStatusConfig(
+                            payment.status === "APPROVED" ? "success" :
+                                payment.status === "REJECTED" ? "error" : "info"
+                        ).bgColor}`}>
+                            {payment.status === "APPROVED" ? (
+                                <CheckCircle className="h-5 w-5 text-success" />
+                            ) : payment.status === "REJECTED" ? (
+                                <XCircle className="h-5 w-5 text-destructive" />
+                            ) : (
+                                <Clock className="h-5 w-5 text-warning" />
+                            )}
+                        </div>
+                        <div className="flex-1">
+                            <p className="font-medium text-foreground">Estado Actual</p>
+                            <p className="text-sm text-muted-foreground">
+                                {payment.status === "APPROVED" ? "El pago ha sido aprobado exitosamente" :
+                                    payment.status === "REJECTED" ? "El pago fue rechazado y requiere atención" :
+                                        "El pago está pendiente de revisión"}
+                            </p>
+                        </div>
+                        <Badge className={`${getStatusConfig(
+                            payment.status === "APPROVED" ? "success" :
+                                payment.status === "REJECTED" ? "error" : "info"
+                        ).bgColor} ${getStatusConfig(
+                            payment.status === "APPROVED" ? "success" :
+                                payment.status === "REJECTED" ? "error" : "info"
+                        ).iconColor} border-0`}>
+                            {payment.status === "APPROVED" ? "Aprobado" :
+                                payment.status === "REJECTED" ? "Rechazado" : "Pendiente"}
+                        </Badge>
+                    </div>
+                </div>
             </CardContent>
         </Card>
     );
 }
-

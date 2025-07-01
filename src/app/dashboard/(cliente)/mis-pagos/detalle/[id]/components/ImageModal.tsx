@@ -11,7 +11,8 @@ import {
   Download,
   ChevronLeft,
   ChevronRight,
-  Maximize2
+  Maximize2,
+  Minimize2
 } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -45,7 +46,6 @@ export function ImageModal({
   useEffect(() => {
     setScale(1);
     setRotation(0);
-    setIsFullscreen(false);
   }, [currentIndex]);
 
   // Reset when modal opens
@@ -58,17 +58,10 @@ export function ImageModal({
     }
   }, [isOpen, initialIndex]);
 
-  const handleZoomIn = () => {
-    setScale(prev => Math.min(prev + 0.25, 3));
-  };
-
-  const handleZoomOut = () => {
-    setScale(prev => Math.max(prev - 0.25, 0.5));
-  };
-
-  const handleRotate = () => {
-    setRotation(prev => (prev + 90) % 360);
-  };
+  const handleZoomIn = () => setScale(prev => Math.min(prev + 0.25, 3));
+  const handleZoomOut = () => setScale(prev => Math.max(prev - 0.25, 0.5));
+  const handleRotate = () => setRotation(prev => (prev + 90) % 360);
+  const toggleFullscreen = () => setIsFullscreen(prev => !prev);
 
   const handleDownload = async () => {
     try {
@@ -116,6 +109,10 @@ export function ImageModal({
       case 'R':
         handleRotate();
         break;
+      case 'f':
+      case 'F':
+        toggleFullscreen();
+        break;
       case 'Escape':
         onClose();
         break;
@@ -134,177 +131,195 @@ export function ImageModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className={`${isFullscreen ? 'max-w-screen max-h-screen w-screen h-screen' : 'max-w-4xl max-h-[90vh]'} p-0 overflow-hidden`}
+        className={`${isFullscreen
+            ? 'max-w-screen max-h-screen w-screen h-screen border-0 rounded-none'
+            : 'max-w-5xl max-h-[90vh] w-[90vw]'
+          } p-0 overflow-hidden flex flex-col`}
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         {/* Header */}
-        <DialogHeader className="p-4 pb-2 border-b">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <DialogTitle className="text-lg font-semibold">
-                Elemento del Pago {currentIndex + 1} de {items.length}
-              </DialogTitle>
-              <Badge variant="outline" className="text-xs">
-                {currentItem.itemType}
-              </Badge>
+        <DialogHeader className="flex flex-row items-center justify-between p-4 border-b bg-card space-y-0">
+          <div className="flex items-center gap-4">
+            <div>
+              <DialogTitle className="text-lg font-semibold">Comprobante de Pago</DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                Elemento {currentIndex + 1} de {items.length}
+              </p>
             </div>
+            <Badge variant="secondary" className="text-xs">
+              {currentItem.itemType || 'Comprobante'}
+            </Badge>
+          </div>
 
-            {/* Navigation and Controls */}
-            <div className="flex items-center gap-2">
-              {items.length > 1 && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handlePrevious}
-                    className="h-8 w-8 p-0"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <span className="text-sm text-muted-foreground px-2">
-                    {currentIndex + 1} / {items.length}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleNext}
-                    className="h-8 w-8 p-0"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </>
-              )}
+          <div className="flex items-center gap-2">
+            {items.length > 1 && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePrevious}
+                  className="h-8 w-8 p-0"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNext}
+                  className="h-8 w-8 p-0"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <div className="w-px h-6 bg-border mx-1" />
+              </>
+            )}
 
-              <div className="h-4 w-px bg-border mx-1" />
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleZoomOut}
-                className="h-8 w-8 p-0"
-                disabled={scale <= 0.5}
-              >
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-
-              <span className="text-xs text-muted-foreground min-w-[3rem] text-center">
-                {Math.round(scale * 100)}%
-              </span>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleZoomIn}
-                className="h-8 w-8 p-0"
-                disabled={scale >= 3}
-              >
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRotate}
-                className="h-8 w-8 p-0"
-              >
-                <RotateCw className="h-4 w-4" />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsFullscreen(!isFullscreen)}
-                className="h-8 w-8 p-0"
-              >
-                <Maximize2 className="h-4 w-4" />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownload}
-                className="h-8 w-8 p-0"
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownload}
+              className="h-8 w-8 p-0"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleFullscreen}
+              className="h-8 w-8 p-0"
+            >
+              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            </Button>
           </div>
         </DialogHeader>
 
-        {/* Image Container */}
-        <div className="flex-1 overflow-hidden bg-black/5 dark:bg-black/20 relative">
+        {/* Content - Image */}
+        <div className="flex-1 flex items-center justify-center bg-muted/20 p-6 min-h-0">
           <div
-            className="w-full h-full flex items-center justify-center p-4"
-            style={{ minHeight: isFullscreen ? 'calc(100vh - 140px)' : '500px' }}
+            className="relative transition-transform duration-200 ease-out select-none"
+            style={{
+              transform: `scale(${scale}) rotate(${rotation}deg)`,
+              transformOrigin: 'center center'
+            }}
           >
-            <div
-              className="relative transition-transform duration-200 ease-out cursor-grab active:cursor-grabbing"
-              style={{
-                transform: `scale(${scale}) rotate(${rotation}deg)`,
-                transformOrigin: 'center center'
+            <Image
+              src={currentImageUrl}
+              alt={`Item ${currentIndex + 1}`}
+              width={700}
+              height={500}
+              className="max-w-full max-h-full object-contain rounded-lg shadow-lg border"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/imgs/logo.png";
               }}
-            >
-              <Image
-                src={currentImageUrl}
-                alt={`Item ${currentIndex + 1}`}
-                width={600}
-                height={400}
-                className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = "/imgs/logo.png";
-                }}
-                priority
-                unoptimized
-              />
-            </div>
+              priority
+              unoptimized
+            />
           </div>
         </div>
 
-        {/* Item Details Footer */}
-        <div className="p-4 border-t bg-muted/30">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Monto
-              </label>
-              <p className="font-semibold text-green-600 dark:text-green-400">
-                {formatCurrency(currentItem.amount)}
-              </p>
-            </div>
+        {/* Footer */}
+        <div className="border-t bg-card">
+          {/* Controls */}
+          <div className="flex items-center justify-center gap-2 p-3 border-b">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleZoomOut}
+              disabled={scale <= 0.5}
+              className="h-8 px-3"
+            >
+              <ZoomOut className="h-4 w-4 mr-1" />
+              Alejar
+            </Button>
+            <span className="text-sm text-muted-foreground px-3 min-w-[60px] text-center">
+              {Math.round(scale * 100)}%
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleZoomIn}
+              disabled={scale >= 3}
+              className="h-8 px-3"
+            >
+              <ZoomIn className="h-4 w-4 mr-1" />
+              Acercar
+            </Button>
+            <div className="w-px h-6 bg-border mx-2" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRotate}
+              className="h-8 px-3"
+            >
+              <RotateCw className="h-4 w-4 mr-1" />
+              Rotar
+            </Button>
+          </div>
 
-            {currentItem.pointsTransactionId && (
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  ID Transacción
-                </label>
-                <p className="font-mono text-xs bg-background px-2 py-1 rounded">
-                  {currentItem.pointsTransactionId}
+          {/* Item Details */}
+          <div className="p-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="p-3 rounded-lg bg-success/10 w-fit mx-auto mb-2">
+                  <Download className="h-5 w-5 text-success" />
+                </div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                  Monto
+                </p>
+                <p className="text-lg font-bold text-success">
+                  {formatCurrency(currentItem.amount)}
                 </p>
               </div>
-            )}
 
-            {currentItem.bankName && (
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Banco
-                </label>
-                <p>{currentItem.bankName}</p>
+              {currentItem.pointsTransactionId && (
+                <div className="text-center">
+                  <div className="p-3 rounded-lg bg-warning/10 w-fit mx-auto mb-2">
+                    <Download className="h-5 w-5 text-warning" />
+                  </div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                    ID Transacción
+                  </p>
+                  <p className="font-mono text-sm bg-muted/50 px-2 py-1 rounded border">
+                    {currentItem.pointsTransactionId}
+                  </p>
+                </div>
+              )}
+
+              {currentItem.bankName && (
+                <div className="text-center">
+                  <div className="p-3 rounded-lg bg-secondary/10 w-fit mx-auto mb-2">
+                    <Download className="h-5 w-5 text-secondary" />
+                  </div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                    Banco
+                  </p>
+                  <p className="text-sm font-semibold">
+                    {currentItem.bankName}
+                  </p>
+                </div>
+              )}
+
+              <div className="text-center">
+                <div className="p-3 rounded-lg bg-info/10 w-fit mx-auto mb-2">
+                  <Download className="h-5 w-5 text-info" />
+                </div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                  Fecha
+                </p>
+                <p className="text-sm font-semibold">
+                  {formatDateTime(currentItem.transactionDate)}
+                </p>
               </div>
-            )}
+            </div>
 
-            <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Fecha
-              </label>
-              <p>{formatDateTime(currentItem.transactionDate)}</p>
+            {/* Keyboard shortcuts */}
+            <div className="mt-4 pt-3 border-t">
+              <p className="text-xs text-muted-foreground text-center">
+                ⌨️ Atajos: ← → (navegar) • + - (zoom) • R (rotar) • F (pantalla completa) • ESC (cerrar)
+              </p>
             </div>
           </div>
-        </div>
-
-        {/* Keyboard shortcuts hint */}
-        <div className="absolute bottom-2 left-4 text-xs text-muted-foreground">
-          <p>⌨️ Teclas: ← → (navegar) | + - (zoom) | R (rotar) | ESC (cerrar)</p>
         </div>
       </DialogContent>
     </Dialog>
