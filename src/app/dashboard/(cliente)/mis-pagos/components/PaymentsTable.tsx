@@ -2,6 +2,7 @@
 
 import TableTemplate from '@/components/common/table/TableTemplate';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Payment, PaymentMethod, PaymentStatus } from '@/types/payments/payments.types';
 import {
     ColumnDef,
@@ -20,15 +21,18 @@ import {
     Clock,
     CheckCircle,
     XCircle,
-    AlertCircle
+    AlertCircle,
+    Eye
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     data: Payment[];
 };
 
 const PaymentsTable = ({ data }: Props) => {
+    const router = useRouter();
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
         id: false,
         updatedAt: false,
@@ -121,6 +125,10 @@ const PaymentsTable = ({ data }: Props) => {
         }
     };
 
+    const handleViewDetail = (paymentId: number) => {
+        router.push(`/dashboard/mis-pagos/detalle/${paymentId}`);
+    };
+
     const columns = useMemo<ColumnDef<Payment>[]>(
         () => [
             {
@@ -166,22 +174,20 @@ const PaymentsTable = ({ data }: Props) => {
                     return (
                         <div className="flex items-center gap-2">
                             <DollarSign className="h-4 w-4 text-gray-400" />
-                            <div className="flex flex-col">
-                                <span className="text-sm font-medium">
-                                    {formatAmount(amount)}
-                                </span>
-                            </div>
+                            <span className="font-medium">
+                                {formatAmount(amount)}
+                            </span>
                         </div>
                     );
                 },
                 enableHiding: false
             },
             {
-                id: 'status',
+                accessorKey: 'status',
                 header: 'Estado',
                 cell: ({ row }) => {
-                    const payment = row.original;
-                    const statusConfig = getStatusConfig(payment.status);
+                    const status = row.getValue('status') as PaymentStatus;
+                    const statusConfig = getStatusConfig(status);
                     const StatusIcon = statusConfig.icon;
 
                     return (
@@ -192,22 +198,6 @@ const PaymentsTable = ({ data }: Props) => {
                     );
                 },
                 enableHiding: false
-            },
-            {
-                accessorKey: 'paymentMethod',
-                header: 'Método de Pago',
-                cell: ({ row }) => {
-                    const method = row.getValue('paymentMethod') as PaymentMethod;
-                    const PaymentIcon = getPaymentMethodIcon(method);
-
-                    return (
-                        <div className="flex items-center gap-2">
-                            <PaymentIcon className="h-4 w-4 text-gray-400" />
-                            <span className="text-sm">{getPaymentMethodLabel(method)}</span>
-                        </div>
-                    );
-                },
-                enableHiding: true
             },
             {
                 accessorKey: 'createdAt',
@@ -244,9 +234,29 @@ const PaymentsTable = ({ data }: Props) => {
                     </div>
                 ),
                 enableHiding: true
+            },
+            {
+                id: 'actions',
+                header: 'Acciones',
+                cell: ({ row }) => {
+                    const payment = row.original;
+
+                    return (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewDetail(payment.id)}
+                            className="flex items-center gap-2"
+                        >
+                            <Eye className="h-4 w-4" />
+                            Ver detalle
+                        </Button>
+                    );
+                },
+                enableHiding: false
             }
         ],
-        []
+        [router]
     );
 
     const table = useReactTable({

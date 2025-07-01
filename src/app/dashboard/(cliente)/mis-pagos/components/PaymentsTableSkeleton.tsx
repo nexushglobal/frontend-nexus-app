@@ -49,7 +49,7 @@ export default function PaymentsTableSkeleton() {
                                     <Skeleton className="h-5 w-24" />
                                 </TableHead>
                                 <TableHead>
-                                    <Skeleton className="h-5 w-24" />
+                                    <Skeleton className="h-5 w-20" />
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -86,13 +86,7 @@ export default function PaymentsTableSkeleton() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <Skeleton className="h-4 w-4" />
-                                                <div className="space-y-1">
-                                                    <Skeleton className="h-4 w-24" />
-                                                    <Skeleton className="h-3 w-16" />
-                                                </div>
-                                            </div>
+                                            <Skeleton className="h-8 w-24" />
                                         </TableCell>
                                     </TableRow>
                                 ))}

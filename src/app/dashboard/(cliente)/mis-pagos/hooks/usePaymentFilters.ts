@@ -1,7 +1,6 @@
-// hooks/usePaymentFilters.ts
 import { PaymentConfig, PaymentStatus } from "@/types/payments/payments.types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 
 interface UsePaymentFiltersProps {
   search: string;
@@ -30,6 +29,10 @@ export function usePaymentFilters({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  // Estados para loading
+  const [isPending, startTransition] = useTransition();
+  const [isApplyingFilters, setIsApplyingFilters] = useState(false);
 
   // Estados locales
   const [searchValue, setSearchValue] = useState(initialSearch);
@@ -67,8 +70,10 @@ export function usePaymentFilters({
     [searchParams]
   );
 
-  // Función para aplicar filtros
+  // Función para aplicar filtros con loading
   const applyFilters = useCallback(() => {
+    setIsApplyingFilters(true);
+
     const params: Record<string, string | null> = {
       search: searchValue.trim() || null,
       status: statusValue === "all" ? null : statusValue,
@@ -81,7 +86,14 @@ export function usePaymentFilters({
     };
 
     const queryString = createQueryString(params);
-    router.push(`${pathname}?${queryString}`);
+
+    startTransition(() => {
+      router.push(`${pathname}?${queryString}`);
+      // Reset loading state after a brief delay to allow navigation to complete
+      setTimeout(() => {
+        setIsApplyingFilters(false);
+      }, 100);
+    });
   }, [
     searchValue,
     statusValue,
@@ -94,15 +106,22 @@ export function usePaymentFilters({
     pathname,
   ]);
 
-  // Función para resetear filtros
+  // Función para resetear filtros con loading
   const resetFilters = useCallback(() => {
+    setIsApplyingFilters(true);
     setSearchValue("");
     setStatusValue("all");
     setPaymentConfigValue("all");
     setDateRange({ from: undefined, to: undefined });
     setSortByValue("createdAt");
     setSortOrderValue("DESC");
-    router.push(pathname);
+
+    startTransition(() => {
+      router.push(pathname);
+      setTimeout(() => {
+        setIsApplyingFilters(false);
+      }, 100);
+    });
   }, [router, pathname]);
 
   // Función para manejar cambio de búsqueda
@@ -134,6 +153,9 @@ export function usePaymentFilters({
     dateRange.from ||
     dateRange.to;
 
+  // Estado de loading combinado
+  const isLoading = isPending || isApplyingFilters;
+
   return {
     // Estados
     searchValue,
@@ -144,6 +166,7 @@ export function usePaymentFilters({
     dateRange,
     hasActiveFilters,
     showAdvancedFilters,
+    isLoading, // Nuevo estado de loading
 
     // Setters
     setSearchValue,

@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Payment, PaymentMethod, PaymentStatus } from '@/types/payments/payments.types';
 import { format } from 'date-fns';
@@ -12,15 +13,19 @@ import {
     Clock,
     CreditCard,
     DollarSign,
+    Eye,
     Package,
     XCircle
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     data: Payment[];
 };
 
 const PaymentCards = ({ data }: Props) => {
+    const router = useRouter();
+
     const formatDate = (dateString: string) => {
         return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
     };
@@ -102,6 +107,10 @@ const PaymentCards = ({ data }: Props) => {
         }
     };
 
+    const handleViewDetail = (paymentId: number) => {
+        router.push(`/dashboard/mis-pagos/detalle/${paymentId}`);
+    };
+
     if (!data.length) {
         return (
             <Card className="border-dashed">
@@ -181,6 +190,19 @@ const PaymentCards = ({ data }: Props) => {
                                         <span>Actualizado: {formatDate(payment.updatedAt)} a las {formatTime(payment.updatedAt)}</span>
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Botón Ver detalle */}
+                            <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleViewDetail(payment.id)}
+                                    className="w-full flex items-center justify-center gap-2"
+                                >
+                                    <Eye className="h-4 w-4" />
+                                    Ver detalle
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>
