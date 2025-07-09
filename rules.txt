@@ -1,0 +1,616 @@
+# 📋 Guía de Arquitectura y Patrones de Archivos - Next.js Feature-based
+
+## 🎯 Estructura Base del Proyecto
+
+```
+src/
+├── app/                    # App Router - Solo routing y metadata
+├── features/               # Feature-based organization  
+├── components/             # shadcn/ui components
+├── lib/                    # Configuraciones globales
+├── types/                  # Declaraciones globales
+└── styles/                 # Estilos globales
+```
+
+## 🌐 API WRAPPER CENTRALIZADO
+
+### **Configuración obligatoria:**
+
+**API Response estándar del backend:**
+```typescript
+// features/shared/types/api.types.ts
+export interface ApiResponse<T = any> {
+  success: boolean
+  data: T | null
+  message: string | string[]
+  errors: string | string[] | null
+}
+
+export class ApiError extends Error {
+  public success: boolean
+  public errors: string | string[] | null
+  public statusCode: number
+}
+```
+
+**Wrapper centralizado:**
+```typescript
+// features/shared/services/api.ts
+import { env } from '@/lib/env'
+
+class ApiClient {
+  async call<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
+    const response = await fetch(`${env.apiUrl}${endpoint}`, options)
+    const result: ApiResponse<T> = await response.json()
+    
+    if (!result.success) {
+      throw new ApiError(result.message, result.errors, response.status)
+    }
+    
+    return result.data as T // Solo retorna la data
+  }
+  
+  async get<T>(endpoint: string, options = {}): Promise<T> {
+    return this.call<T>(endpoint, { ...options, method: 'GET' })
+  }
+  
+  async post<T>(endpoint: string, data?: any, options = {}): Promise<T> {
+    return this.call<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+    })
+  }
+}
+
+export const api = new ApiClient()
+
+// Para Server Components con optimizaciones Next.js
+export const serverApi = {
+  static: <T>(endpoint: string) => api.get<T>(endpoint, { cache: 'force-cache' }),
+  revalidate: <T>(endpoint: string, seconds: number) => 
+    api.get<T>(endpoint, { next: { revalidate: seconds } }),
+  fresh: <T>(endpoint: string) => api.get<T>(endpoint, { cache: 'no-store' }),
+}
+```
+
+### **Uso en Actions vs Services:**
+
+**En Server Actions:**
+```typescript
+'use server'
+import { api } from '@/features/shared/services/api'
+
+export async function createSaleAction(formData: FormData) {
+  // Validación server-side obligatoria
+  const title = formData.get('title') as string
+  if (!title) return { success: false, error: 'Title required' }
+  
+  try {
+    // api.post() ya maneja la estructura ApiResponse<T>
+    const response = await api.post<{message: string}>('/sales', { title })
+    
+    return {
+      success: true,
+      message: response.message // response solo contiene la data
+    }
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return { success: false, error: error.message, errors: error.errors }
+    }
+    return { success: false, error: 'Error interno' }
+  }
+}
+```
+
+**En Services (Client):**
+```typescript
+import { api } from '@/features/shared/services/api'
+
+export class SalesService {
+  static async getSales(): Promise<Sale[]> {
+    return api.get<Sale[]>('/sales') // Ya maneja ApiResponse automáticamente
+  }
+}
+```
+
+**En Server Components:**
+```typescript
+export default async function Page() {
+  try {
+    const users = await serverApi.revalidate<User[]>('/users', 300) // 5 min cache
+    return <UsersList users={users} />
+  } catch (error) {
+    return <ErrorPage error={error} />
+  }
+}
+```
+
+## 📁 REGLAS DE ESTRUCTURA DE CARPETAS
+
+### 1. **APP ROUTER** (`src/app/`)
+**Propósito:** Solo routing, layouts y metadata. NO lógica de negocio.
+
+**Estructura:**
+```
+app/
+├── (auth)/                 # Route groups
+├── (dashboard)/            
+├── (admin)/
+├── api/                    # API Routes
+├── layout.tsx              # Root layout
+├── page.tsx                # Landing page
+├── loading.tsx             # Global loading
+├── error.tsx               # Global error
+└── not-found.tsx           # 404 page
+```
+
+**Reglas:**
+- ✅ Solo imports de features: `import { SalesPage } from '@/features/sales'`
+- ✅ Máximo 15 líneas por page.tsx
+- ✅ Solo metadata, params extraction, y return del componente
+- ❌ NO useState, useEffect, o lógica de negocio
+- ❌ NO llamadas directas a APIs
+
+### 2. **FEATURES** (`src/features/`)
+**Propósito:** Organización por dominio de negocio. Auto-contenidos.
+
+**Estructura por feature:**
+```
+features/[feature-name]/
+├── components/             # UI components del feature
+├── hooks/                  # Custom hooks
+├── services/               # API services (cliente)
+├── actions/                # Server actions (servidor)
+├── types/                  # TypeScript types
+├── constants/              # Constantes del feature
+```
+
+**Reglas:**
+- ✅ Auto-contenido: todo lo del dominio junto
+- ✅ Reutilizable en múltiples páginas
+- ❌ NO dependencias circulares entre features
+- ❌ NO imports directos `../other-feature/`
+
+### 3. **SHARED** (`src/features/shared/`)
+**Propósito:** Código compartido entre múltiples features.
+
+**Estructura:**
+```
+features/shared/
+├── components/
+│   ├── layout/             # Header, Sidebar, Footer
+│   ├── business/           # UserAvatar, StatusBadge, etc.
+│   └── forms/              # Form wrappers
+├── hooks/                  # useApi, usePagination, etc.
+├── services/               # api.ts, notifications.ts
+├── utils/                  # format.ts, validation.ts
+├── types/                  # common.types.ts, api.types.ts
+└── constants/              # Global constants
+```
+
+### 4. **COMPONENTS** (`src/components/`)
+**Propósito:** shadcn/ui components y componentes personalizados.
+
+**Estructura:**
+```
+components/
+├── ui/                     # shadcn components (no modificar)
+│   ├── button.tsx          # npx shadcn-ui@latest add button
+│   ├── input.tsx
+│   └── ...
+└── custom/                 # Componentes personalizados complejos
+    ├── data-table.tsx
+    ├── file-upload.tsx
+    └── ...
+```
+
+---
+
+## 🔧 REGLAS DE ACTIONS vs SERVICES
+
+### **ACTIONS** (`features/*/actions/`)
+**Cuándo usar:** Server Actions con `'use server'` que llaman a APIs externas/backend
+
+**Características:**
+- ✅ Formularios simples con progressive enhancement
+- ✅ Llamadas a tu backend API usando wrapper centralizado
+- ✅ Validaciones server-side obligatorias (nunca confiar en cliente)
+- ✅ Transformación de respuestas backend → formato componente
+- ✅ Un archivo por action compleja
+- ✅ Reciben FormData (estándar Next.js) pero pueden tener wrappers directos
+
+**Estructura:**
+```typescript
+'use server'
+import { api } from '@/features/shared/services/api'
+
+export async function createSaleAction(formData: FormData) {
+  // 1. Extraer datos de FormData
+  const title = formData.get('title') as string
+  
+  // 2. Validación server-side OBLIGATORIA
+  if (!title) return { success: false, error: 'Title required' }
+  
+  // 3. Llamada a backend usando wrapper
+  const response = await api.post('/sales', { title })
+  
+  // 4. Transformar respuesta para componente
+  return { success: true, message: response.message }
+}
+
+// Wrapper opcional para uso directo
+export async function createSale(title: string) {
+  const formData = new FormData()
+  formData.append('title', title)
+  return createSaleAction(formData)
+}
+```
+
+### **SERVICES** (`features/*/services/`)
+**Cuándo usar:** API calls desde cliente para interactividad compleja
+
+**Características:**
+- ✅ Llamadas HTTP desde client components
+- ✅ Interactividad compleja con estados
+- ✅ Refetch dinámico y cache management
+- ✅ Múltiples services en un archivo
+- ✅ Usado en hooks para manejo de estado
+- ✅ Usa el mismo wrapper de API
+
+**Estructura:**
+```typescript
+import { api } from '@/features/shared/services/api'
+
+export class SalesService {
+  static async getSales(): Promise<Sale[]> {
+    return api.get<Sale[]>('/sales')
+  }
+  
+  static async updateSale(id: string, data: UpdateSaleData): Promise<Sale> {
+    return api.put<Sale>(`/sales/${id}`, data)
+  }
+}
+```
+
+---
+
+## 📦 REGLAS DE IMPORTS Y EXPORTS
+
+### **Path Mapping:**
+```json
+{
+  "paths": {
+    "@/*": ["./src/*"],
+    "@/features/*": ["./src/features/*"],
+    "@/shared/*": ["./src/features/shared/*"],
+    "@/components/*": ["./src/components/*"]
+  }
+}
+```
+
+
+### **Imports Correctos:**
+```typescript
+// ✅ CORRECTO
+import { SalesPage, useSales } from '@/features/sales'
+import { Button } from '@/components/ui/button'
+import { UserAvatar } from '@/shared/components/business'
+
+// ❌ INCORRECTO
+import { SalesPage } from '../../../features/sales/components/SalesPage'
+import { useSales } from '@/features/sales/hooks/useSales'
+```
+
+---
+
+## 📋 REGLAS DE NOMENCLATURA
+
+### **Carpetas:**
+- kebab-case: `user-management`, `payment-methods`
+- Singular para types: `type/user.types.ts`
+- Plural para data: `components/`, `services/`
+
+### **Archivos:**
+- Components: PascalCase: `SalesPage.tsx`
+- Hooks: camelCase: `useSales.ts`
+- Services: camelCase: `salesApi.ts`
+- Actions: kebab-case: `create-sale.ts`
+- Types: kebab-case: `sale.types.ts`
+- Constants: kebab-case: `sales.constants.ts`
+
+### **Exports:**
+- Components: Named exports 
+- Functions: Named exports
+- Constants: Named exports como const assertions
+
+---
+
+## 🎯 PATRONES DE CÓDIGO
+
+### **Page.tsx Pattern:**
+```typescript
+// app/sales/page.tsx
+import { SalesPage } from '@/features/sales'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Sales | CRM'
+}
+
+export default function Page() {
+  return <SalesPage />
+}
+```
+
+### **Component Pattern:**
+```typescript
+// features/sales/components/SalesPage.tsx
+'use client'
+import { Button } from '@/components/ui/button'
+import { useSales } from '../hooks/useSales'
+
+export const SalesPage = () => {
+  const { sales, loading } = useSales()
+  // Lógica del componente aquí
+  return <div>...</div>
+}
+```
+
+### **Hook Pattern:**
+```typescript
+// features/sales/hooks/useSales.ts
+import { useState, useEffect } from 'react'
+import { SalesService } from '@/sales/services/salesApi'
+
+export const useSales = (filters?: SaleFilters) => {
+  const [sales, setSales] = useState<Sale[]>([])
+  const [loading, setLoading] = useState(false)
+  
+  // Lógica del hook
+  return { sales, loading, refetch }
+}
+```
+
+### **Types Pattern:**
+```typescript
+// features/sales/types/sale.types.ts
+export interface Sale {
+  id: string
+  amount: number
+  status: SaleStatus
+}
+
+export type SaleStatus = 'pending' | 'approved' | 'rejected'
+
+export interface CreateSaleData {
+  amount: number
+  customerId: string
+}
+```
+
+---
+
+## ✅ CHECKLIST DE VALIDACIÓN
+
+### **Antes de crear un componente:**
+- [ ] ¿Es específico de un feature? → `features/[feature]/components/`
+- [ ] ¿Es compartido entre features? → `features/shared/components/`
+- [ ] ¿Es un UI primitive? → `@/ui/` (shadcn)
+- [ ] ¿Es complejo y personalizado? → `@/ui/custom/`
+
+### **Antes de crear una función:**
+- [ ] ¿Es server-side con `'use server'`? → `actions/`
+- [ ] ¿Es client-side API call? → `services/`
+- [ ] ¿Maneja estado React? → `hooks/`
+- [ ] ¿Es utilidad pura? → `utils/`
+
+### **Antes de crear un type:**
+- [ ] ¿Es específico del feature? → `features/[feature]/types/`
+- [ ] ¿Se usa en 2+ features? → `features/shared/types/`
+- [ ] ¿Es declaración global? → `src/types/`
+
+---
+
+## 🚨 ERRORES COMUNES A EVITAR
+
+### **❌ NO hacer:**
+```typescript
+// Server Action sin validación server-side
+export async function createSale(formData: FormData) {
+  'use server'
+  // ❌ NUNCA confíes solo en validación cliente
+  const data = formData.get('data') as string
+  await api.post('/sales', data) // Sin validar
+}
+
+// Imports relativos largos en lugar de path mapping
+import { Sale } from '../../../types/sale' // ❌
+import { LoginModal } from '../../../../auth/components/LoginModal' // ❌
+
+// Dependencia circular entre features
+// features/sales imports features/users
+// features/users imports features/sales // ❌
+
+// Usar axios en Server Components
+import axios from 'axios' // ❌ No aprovecha optimizaciones Next.js
+export default async function Page() {
+  const data = await axios.get('/api/data') // ❌
+}
+
+// Llamar API directamente sin wrapper
+const response = await fetch('/api/data') // ❌ Sin error handling estandarizado
+```
+
+### **✅ Hacer:**
+```typescript
+// Server Action con validación completa
+'use server'
+export async function createSaleAction(formData: FormData) {
+  const title = formData.get('title') as string
+  
+  // ✅ Validación server-side obligatoria
+  if (!title?.trim()) return { success: false, error: 'Title required' }
+  
+  try {
+    const response = await api.post<Sale>('/sales', { title })
+    return { success: true, message: response.message }
+  } catch (error) {
+    // ✅ Error handling estandarizado
+    if (error instanceof ApiError) {
+      return { success: false, error: error.message, errors: error.errors }
+    }
+    return { success: false, error: 'Error interno' }
+  }
+}
+
+// Imports limpios y directos
+import { Sale } from '@/sales/types/sale.types' // ✅
+import { LoginModal } from '@/auth/components/LoginModal' // ✅
+import { api } from '@/shared/services/api' // ✅
+
+// fetch() en Server Components
+export default async function Page() {
+  const data = await serverApi.revalidate<Data>('/data', 3600) // ✅
+  return <Component data={data} />
+}
+
+// Usar wrapper centralizado
+const sales = await api.get<Sale[]>('/sales') // ✅ Error handling automático
+```
+
+---
+
+## 📖 EJEMPLOS DE FEATURES COMPLETOS
+
+### **Feature pequeño (auth):**
+```
+features/auth/
+├── components/
+│   ├── LoginForm.tsx
+│   ├── LoginPage.tsx
+│   └── index.ts
+├── hooks/
+│   ├── useAuth.ts
+│   └── index.ts
+├── services/
+│   └── authApi.ts
+├── actions/
+│   └── login.ts
+├── types/
+│   └── auth.types.ts
+└── index.ts
+```
+
+### **Feature complejo (payments):**
+```
+features/payments/
+├── components/
+│   ├── PaymentsPage.tsx
+│   ├── PaymentDetailsPage.tsx
+│   ├── AdminPaymentsPage.tsx
+│   ├── PaymentsList.tsx
+│   ├── PaymentCard.tsx
+│   ├── PaymentForm.tsx
+│   └── index.ts
+├── hooks/
+│   ├── usePayments.ts
+│   ├── usePayment.ts
+│   └── usePaymentActions.ts
+├── services/
+│   ├── paymentsApi.ts
+│   └── stripeService.ts
+├── actions/
+│   ├── create-payment.ts
+│   └── approve-payment.ts
+├── types/
+│   ├── payment.types.ts
+│   └── payment-api.types.ts
+├── constants/
+│   └── payments.constants.ts
+└── index.ts
+```
+
+---
+
+## 🎯 COMANDOS ÚTILES
+
+### **Crear feature nuevo:**
+```bash
+mkdir -p src/features/[feature-name]/{components,hooks,services,actions,types,constants}
+```
+
+### **Instalar componente shadcn:**
+```bash
+bunx shadcn-ui@latest add button
+bunx shadcn-ui@latest add input
+bunx shadcn-ui@latest add table
+```
+
+### **Comandos de desarrollo:**
+```bash
+# Instalar dependencias
+bun install
+
+# Desarrollo
+bun dev
+
+# Build
+bun run build
+
+# Lint
+bun run lint
+
+# Test
+bun test
+```
+
+### **Estructura de import típica:**
+```typescript
+// External libraries
+import { useState } from 'react'
+import { NextResponse } from 'next/server'
+
+// shadcn components  
+import { Button } from '@/ui/button'
+
+// Shared components
+import { UserAvatar } from '@/shared/components/business/UserAvatar'
+
+// Feature imports
+import { useSales } from '@/sales/hooks/useSales'
+import { SalesService } from '@/sales/services/salesApi'
+import type { Sale } from '@/sales/types/sale.types'
+
+// Local imports (mismo feature)
+import { SaleCard } from './SaleCard'
+```
+
+---
+
+## 🔄 PRINCIPIOS FUNDAMENTALES
+
+### **1. Server Actions vs Services:**
+- **Server Actions** → Formularios, mutaciones, llamadas a backend API
+- **Services** → Interactividad cliente, estados complejos, refetch dinámico
+- **Ambos usan el mismo wrapper de API centralizado**
+
+### **2. Validación obligatoria:**
+- **Cliente** → UX inmediata (mostrar errores al usuario)
+- **Server Actions** → Seguridad (validación server-side OBLIGATORIA)
+- **Backend** → Lógica de negocio (validaciones de dominio)
+
+### **3. Imports y estructura:**
+- **Imports directos** → Mejor performance, tree shaking
+- **Features auto-contenidos** → Todo lo del dominio junto
+- **API wrapper centralizado** → Consistencia en todas las llamadas
+
+### **4. Separación de responsabilidades:**
+- **app/** → Solo routing, layouts, metadata (máximo 15 líneas por page)
+- **features/** → Lógica de negocio organizada por dominio
+- **lib/** → Configuraciones globales (env, db, auth)
+- **components/** → shadcn/ui components y customs complejos
+
+---
+
+**Toda implementación debe seguir estos principios y patrones establecidos.**

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Mail, Lock, ArrowLeft, Check, Loader2, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -9,13 +8,16 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-import { requestPasswordReset, resetPassword, validatePasswordResetToken } from "../actions/password-reset";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-opt";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, Check, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { requestPasswordResetAction } from "../actions/request-password-reset";
+import { validateResetTokenAction } from "../actions/validate-reset-token";
+import { resetPasswordAction } from "../actions/reset-password";
 
 interface PasswordResetModalProps {
     children: React.ReactNode;
@@ -86,7 +88,7 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
 
         setErrors({});
         startTransition(async () => {
-            const result = await requestPasswordReset(email);
+            const result = await requestPasswordResetAction(email);
 
             if (result.success) {
                 toast.success("Código enviado", {
@@ -110,7 +112,7 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
 
         setErrors({});
         startTransition(async () => {
-            const result = await validatePasswordResetToken(email, code);
+            const result = await validateResetTokenAction(email, code);
 
             if (result.success) {
                 toast.success("Código válido", {
@@ -139,7 +141,7 @@ export function PasswordResetModal({ children }: PasswordResetModalProps) {
 
         setErrors({});
         startTransition(async () => {
-            const result = await resetPassword(email, code, newPassword);
+            const result = await resetPasswordAction(email, code, newPassword);
 
             if (result.success) {
                 toast.success("¡Contraseña restablecida!", {

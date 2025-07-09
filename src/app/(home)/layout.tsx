@@ -1,5 +1,4 @@
-import React from "react";
-import { NavbarLanding } from "./components/NavbarLanding";
+import { NavbarLanding } from "@/features/landing/components/NavbarLanding";
 export default function LayoutLanding({
     children,
 }: {

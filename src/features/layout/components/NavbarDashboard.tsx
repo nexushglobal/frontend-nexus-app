@@ -1,8 +1,8 @@
 "use client";
 
-import ThemeSwitch from "@/components/common/ThemeSwich";
-import { UserMenu } from "@/components/common/UserMenu";
 import { Separator } from "@/components/ui/separator";
+import ThemeSwitch from "@/features/shared/components/ThemeSwich";
+import { UserMenu } from "@/features/user/components/UserMenu";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
 

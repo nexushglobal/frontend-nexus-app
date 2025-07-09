@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { LoginModal } from "./LoginModal";
-import ThemeSwitch from "@/components/common/ThemeSwich";
-import { UserMenu } from "@/components/common/UserMenu";
+import { LoginModal } from "@/features/auth/components/LoginModal";
+import ThemeSwitch from "@/features/shared/components/ThemeSwich";
+import { UserMenu } from "@/features/user/components/UserMenu";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
 
 export function NavbarLanding() {
     const { data: session, status } = useSession();
