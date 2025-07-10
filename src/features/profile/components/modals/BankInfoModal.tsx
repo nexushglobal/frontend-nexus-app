@@ -14,8 +14,8 @@ import { CreditCard, Hash, Landmark, Save, Shield, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updateBankInfo } from "../../actions/profile";
 import { BankInfoFormData, bankInfoSchema } from "../../schemas/profile-schemas";
+import { updateBankInfoAction } from "../../actions/update-bank-info";
 
 interface BankInfoModalProps {
     children: React.ReactNode;
@@ -51,7 +51,7 @@ export function BankInfoModal({
     const onSubmit = (data: BankInfoFormData) => {
         startTransition(async () => {
             try {
-                const result = await updateBankInfo({
+                const result = await updateBankInfoAction({
                     bankName: data.bankName || undefined,
                     accountNumber: data.accountNumber || undefined,
                     cci: data.cci || undefined,

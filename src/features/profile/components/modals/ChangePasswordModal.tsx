@@ -10,9 +10,9 @@ import { CheckCircle, Lock, Save, Shield, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { changePassword } from "../../actions/profile";
 import { ChangePasswordFormData, changePasswordSchema } from "../../schemas/security-schemas";
 import { FormSection } from "@/components/common/form/FormSection";
+import { ChangePasswordAction } from "../../actions/change-password";
 
 interface ChangePasswordModalProps {
     children: React.ReactNode;
@@ -71,7 +71,7 @@ export function ChangePasswordModal({
     const onSubmit = (data: ChangePasswordFormData) => {
         startTransition(async () => {
             try {
-                const result = await changePassword({
+                const result = await ChangePasswordAction({
                     currentPassword: data.currentPassword,
                     newPassword: data.newPassword,
                 });
@@ -178,14 +178,14 @@ export function ChangePasswordModal({
                                 <div key={key} className="flex items-center gap-2">
                                     <CheckCircle
                                         className={`h-3 w-3 ${passwordStrength.checks[key as keyof typeof passwordStrength.checks]
-                                                ? "text-success"
-                                                : "text-muted-foreground"
+                                            ? "text-success"
+                                            : "text-muted-foreground"
                                             }`}
                                     />
                                     <span
                                         className={`text-xs ${passwordStrength.checks[key as keyof typeof passwordStrength.checks]
-                                                ? "text-success"
-                                                : "text-muted-foreground"
+                                            ? "text-success"
+                                            : "text-muted-foreground"
                                             }`}
                                     >
                                         {label}

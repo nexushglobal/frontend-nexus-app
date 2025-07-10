@@ -1,36 +1,39 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from "@/components/ui/card";
-import { ProfileData } from '@/types/profile.types';
-import { AtSign, Camera } from 'lucide-react';
-import { PhotoUploadModal } from './modal/PhotoUploadModal';
+'use client'
 
-type Props = {
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { AtSign, Camera } from 'lucide-react'
+import type { ProfileData } from '../types/profile.types'
+import { PhotoUploadModal } from './modals/PhotoUploadModal'
+
+interface ProfileHeaderProps {
     profile: ProfileData
     onUpdate: () => void
 }
 
-const ProfileHeader = ({ profile, onUpdate }: Props) => {
-    const getInitials = (firstName: string, lastName: string) => {
-        return `${firstName[0]}${lastName[0]}`.toUpperCase();
-    };
+export const ProfileHeader = ({ profile, onUpdate }: ProfileHeaderProps) => {
+    const getInitials = (firstName?: string, lastName?: string) => {
+        if (!firstName || !lastName) return 'U'
+        return `${firstName[0]}${lastName[0]}`.toUpperCase()
+    }
 
     const getCompletionPercentage = () => {
-        let completedFields = 0;
-        const totalFields = 6;
+        let completedFields = 0
+        const totalFields = 6
 
-        if (profile.personalInfo) completedFields++;
-        if (profile.contactInfo) completedFields++;
-        if (profile.billingInfo?.ruc) completedFields++;
-        if (profile.bankInfo?.bankName) completedFields++;
-        if (profile.nickname) completedFields++;
-        if (profile.photo) completedFields++;
+        if (profile.personalInfo) completedFields++
+        if (profile.contactInfo) completedFields++
+        if (profile.billingInfo?.ruc) completedFields++
+        if (profile.bankInfo?.bankName) completedFields++
+        if (profile.nickname) completedFields++
+        if (profile.photo) completedFields++
 
-        return Math.round((completedFields / totalFields) * 100);
-    };
+        return Math.round((completedFields / totalFields) * 100)
+    }
 
-    const completionPercentage = getCompletionPercentage();
+    const completionPercentage = getCompletionPercentage()
 
     return (
         <Card className="mb-6">
@@ -92,7 +95,5 @@ const ProfileHeader = ({ profile, onUpdate }: Props) => {
                 </div>
             </CardContent>
         </Card>
-    );
+    )
 }
-
-export default ProfileHeader

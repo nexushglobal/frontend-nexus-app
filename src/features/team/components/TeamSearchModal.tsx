@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useDebounce } from "@/hooks/useDebounce";
 import {
     ChevronLeft,
     ChevronRight,
@@ -20,6 +19,7 @@ import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { TeamSearchResult } from "../types/team.types";
 import { searchTeamMembersAction } from "../actions/search-team-members";
+import useDebounce from "@/features/shared/hooks/useDebounce";
 
 interface TeamSearchModalProps {
     children: React.ReactNode;
@@ -38,10 +38,8 @@ export function TeamSearchModal({ children, onNavigateToUser }: TeamSearchModalP
     const [currentPage, setCurrentPage] = useState(1);
     const [isPending, startTransition] = useTransition();
 
-    // Debounce search term to avoid too many API calls
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-    // Perform search
     const performSearch = useCallback(async (query: string, page: number = 1) => {
         if (!query.trim() || query.length < 2) {
             setResults([]);

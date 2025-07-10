@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BankInfo } from "@/types/profile.types";
 import { CreditCard, Edit, Hash, Landmark } from "lucide-react";
-import { BankInfoModal } from "../modal/BankInfoModal";
 import { SectionHeader } from "@/components/common/card/SectionHeader";
 import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
 import { InfoCard } from "@/components/common/card/InfoCard";
+import { BankInfo } from "../../types/profile.types";
+import { BankInfoModal } from "../modals/BankInfoModal";
 
 interface Props {
     bankInfo: BankInfo | null;

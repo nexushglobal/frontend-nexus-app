@@ -11,9 +11,9 @@ import { Globe, Mail, MapPin, Phone, Save, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updateContactInfo } from "../../actions/profile";
 import { ContactInfoFormData, contactInfoSchema } from "../../schemas/profile-schemas";
 import { FormSection } from "@/components/common/form/FormSection";
+import { updateContactInfoAction } from "../../actions/update-contact-info";
 
 interface ContactInfoModalProps {
     children: React.ReactNode;
@@ -52,7 +52,7 @@ export function ContactInfoModal({
     const onSubmit = (data: ContactInfoFormData) => {
         startTransition(async () => {
             try {
-                const result = await updateContactInfo({
+                const result = await updateContactInfoAction({
                     phone: data.phone,
                     address: data.address || undefined,
                     postalCode: data.postalCode || undefined,

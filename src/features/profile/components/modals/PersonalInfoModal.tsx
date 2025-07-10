@@ -11,9 +11,9 @@ import { AtSign, CreditCard, IdCard, Mail, Save, User, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updatePersonalInfo } from "../../actions/profile";
-import { PersonalInfoFormData, personalInfoSchema } from "../../schemas/personal-info-schema";
 import { FormSection } from "@/components/common/form/FormSection";
+import { PersonalInfoFormData, personalInfoSchema } from "../../schemas/profile-schemas";
+import { updatePersonalInfoAction } from "../../actions/update-personal-info";
 
 interface PersonalInfoModalProps {
     children: React.ReactNode;
@@ -56,7 +56,7 @@ export function PersonalInfoModal({
     const onSubmit = (data: PersonalInfoFormData) => {
         startTransition(async () => {
             try {
-                const result = await updatePersonalInfo({
+                const result = await updatePersonalInfoAction({
                     nickname: data.nickname || undefined,
                     email: data.email || undefined,
                     documentType: data.documentType || undefined,

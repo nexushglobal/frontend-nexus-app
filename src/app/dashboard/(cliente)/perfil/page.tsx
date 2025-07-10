@@ -1,11 +1,11 @@
-import { Suspense } from "react";
-import { ProfilePageContent } from "./components/ProfilePageContent";
-import { ProfilePageSkeleton } from "./components/ProfilePageSkeleton";
+import { ProfilePage } from '@/features/profile/components/ProfilePage'
+import type { Metadata } from 'next'
 
-export default function ProfilePage() {
-    return (
-        <Suspense fallback={<ProfilePageSkeleton />}>
-            <ProfilePageContent />
-        </Suspense>
-    );
+export const metadata: Metadata = {
+    title: 'Mi Perfil | Dashboard',
+    description: 'Gestiona tu información personal y configuración de cuenta'
+}
+
+export default function Page() {
+    return <ProfilePage />
 }

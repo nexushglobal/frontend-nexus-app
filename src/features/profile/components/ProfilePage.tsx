@@ -1,38 +1,30 @@
-"use client";
+'use client'
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { motion } from "framer-motion";
-import {
-    AlertTriangle,
-    ArrowRight,
-    CheckCircle,
-    FileText,
-    Landmark,
-    Phone,
-    Receipt
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { useProfile } from "../hooks/useProfile";
-import { menuSections } from "../utils/menu.utils";
-import { OverviewSection } from "./OverviewSection";
-import { BankInfoCard } from "./ProfileCards/BankInfoCard";
-import { BillingInfoCard } from "./ProfileCards/BillingInfoCard";
-import { ContactInfoCard } from "./ProfileCards/ContactInfoCard";
-import { PersonalInfoCard } from "./ProfileCards/PersonalInfoCard";
-import { ReferralCodesCard } from "./ProfileCards/ReferralCodesCard";
-import { SecurityCard } from "./ProfileCards/SecurityCard";
-import ProfileHeader from "./ProfileHeader";
-import { ProfilePageSkeleton } from "./ProfilePageSkeleton";
+import { useEffect, useState } from 'react'
+import { useProfile } from '../hooks/useProfile'
+
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { motion } from "framer-motion"
+import { AlertTriangle, ArrowRight, CheckCircle, FileText, Landmark, Phone, Receipt } from 'lucide-react'
+import { PROFILE_SECTIONS } from '../constants/profile.constants'
+import { OverviewSection } from './OverviewSection'
+import { ProfileHeader } from './ProfileHeader'
+import { ProfilePageSkeleton } from './ProfilePageSkeleton'
+import { BankInfoCard } from './cards/BankInfoCard'
+import { BillingInfoCard } from './cards/BillingInfoCard'
+import { ContactInfoCard } from './cards/ContactInfoCard'
+import { PersonalInfoCard } from './cards/PersonalInfoCard'
+import { ReferralCodesCard } from './cards/ReferralCodesCard'
+import { SecurityCard } from './cards/SecurityCard'
 
 
 
-export function ProfilePageContent() {
+export const ProfilePage = () => {
     const { profile, loading, error, refetch } = useProfile();
     const [activeSection, setActiveSection] = useState("overview");
     const [isMobile, setIsMobile] = useState(false);
-
     useEffect(() => {
         const checkIsMobile = () => {
             setIsMobile(window.innerWidth < 768);
@@ -235,7 +227,7 @@ export function ProfilePageContent() {
                     >
                         {activeSection === "more" ? (
                             <div className="grid grid-cols-2 gap-2">
-                                {menuSections.slice(3).map((section) => (
+                                {PROFILE_SECTIONS.slice(3).map((section) => (
                                     <Button
                                         key={section.id}
                                         variant="outline"
@@ -308,7 +300,7 @@ export function ProfilePageContent() {
                         </CardHeader>
                         <CardContent className="p-0">
                             <nav className="space-y-1">
-                                {menuSections.map((section) => {
+                                {PROFILE_SECTIONS.map((section) => {
                                     const isActive = activeSection === section.id;
                                     const isIncomplete = incompleteSections.some(incomplete => incomplete.id === section.id);
 

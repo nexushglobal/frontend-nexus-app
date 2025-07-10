@@ -9,10 +9,10 @@ import { Camera, Save, Upload, User, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updatePhoto } from "../../actions/profile";
 import { PhotoFormData, photoSchema } from "../../schemas/profile-schemas";
 import { FileUploadWrapper } from "@/components/common/form/FileUploadWrapper";
 import { InfoCard } from "@/components/common/card/InfoCard";
+import { uploadPhotoAction } from "../../actions/upload-photo";
 
 interface PhotoUploadModalProps {
     children: React.ReactNode;
@@ -43,7 +43,7 @@ export function PhotoUploadModal({
                 const formData = new FormData();
                 formData.append('photo', data.photo[0]);
 
-                const result = await updatePhoto(formData);
+                const result = await uploadPhotoAction(formData);
 
                 if (result.success) {
                     toast.success("Foto actualizada", {

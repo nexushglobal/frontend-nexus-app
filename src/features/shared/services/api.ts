@@ -222,6 +222,15 @@ class ApiClient {
         signal: controller.signal,
       });
 
+      console.log(`API Call: ${fetchOptions.method || "GET"} ${url}`, {
+        headers: config.headers,
+        body: config.body,
+        response: {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url,
+        },
+      });
       clearTimeout(timeoutId);
       return this.handleResponse<T>(response);
     } catch (error) {

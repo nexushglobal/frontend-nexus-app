@@ -2,9 +2,9 @@ import { SectionHeader } from "@/components/common/card/SectionHeader";
 import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ContactInfo } from "@/types/profile.types";
 import { Edit, Globe, Mail, MapPin, Phone } from "lucide-react";
-import { ContactInfoModal } from "../modal/ContactInfoModal";
+import { ContactInfo } from "../../types/profile.types";
+import { ContactInfoModal } from "../modals/ContactInfoModal";
 
 interface ContactInfoCardProps {
     contactInfo: ContactInfo | null;

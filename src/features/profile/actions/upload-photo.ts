@@ -1,0 +1,24 @@
+"use server";
+
+import { api } from "@/features/shared/services/api";
+import type { ProfileActionResponse } from "../types/profile.types";
+
+export async function uploadPhotoAction(
+  formData: FormData
+): Promise<ProfileActionResponse> {
+  try {
+    await api.put("/api/user/profile/photo", formData);
+
+    return {
+      success: true,
+      message: "Foto de perfil actualizada exitosamente",
+    };
+  } catch (error) {
+    console.error("Error uploading photo:", error);
+    return {
+      success: false,
+      message: "Error al subir la foto",
+      errors: error,
+    };
+  }
+}

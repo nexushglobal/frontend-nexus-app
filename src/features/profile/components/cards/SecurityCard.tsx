@@ -4,7 +4,7 @@ import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Edit, Lock, Shield } from "lucide-react";
-import { ChangePasswordModal } from "../modal/ChangePasswordModal";
+import { ChangePasswordModal } from "../modals/ChangePasswordModal";
 
 interface SecurityCardProps {
     onUpdate: () => void;

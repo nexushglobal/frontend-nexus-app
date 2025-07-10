@@ -10,11 +10,11 @@ import { Building, Info, MapPin, Receipt, Save, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updateBillingInfo } from "../../actions/profile";
 import { BillingInfoFormData, billingInfoSchema } from "../../schemas/profile-schemas";
 import { createFormField } from "@/hooks/useFormField";
 import { FormSection } from "@/components/common/form/FormSection";
 import { InfoCard } from "@/components/common/card/InfoCard";
+import { updateBillingInfoAction } from "../../actions/update-billing-info";
 
 interface BillingInfoModalProps {
     children: React.ReactNode;
@@ -44,7 +44,7 @@ export function BillingInfoModal({
     const onSubmit = (data: BillingInfoFormData) => {
         startTransition(async () => {
             try {
-                const result = await updateBillingInfo({
+                const result = await updateBillingInfoAction({
                     ruc: data.ruc || undefined,
                     razonSocial: data.razonSocial || undefined,
                     address: data.address || undefined,

@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import { ProfileData } from "@/types/profile.types";
-import { getProfile } from "../actions/profile";
+import { getProfileAction } from "../actions/get-profile";
+import type { ProfileData } from "../types/profile.types";
 
-export function useProfile() {
+export const useProfile = () => {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,7 @@ export function useProfile() {
       setLoading(true);
       setError(null);
 
-      const result = await getProfile();
+      const result = await getProfileAction();
 
       if (result.success && result.data) {
         setProfile(result.data);
@@ -51,4 +51,4 @@ export function useProfile() {
     error,
     refetch,
   };
-}
+};
