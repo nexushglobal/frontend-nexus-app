@@ -1,21 +1,9 @@
-import { PaymentConfig, PaymentStatus } from "@/types/payments/payments.types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
-
-interface UsePaymentFiltersProps {
-  search: string;
-  status: PaymentStatus | undefined;
-  paymentConfigId: number | undefined;
-  startDate: string | undefined;
-  endDate: string | undefined;
-  sortBy: string;
-  sortOrder: "ASC" | "DESC";
-}
-
-interface DateRange {
-  from: Date | undefined;
-  to: Date | undefined;
-}
+import type {
+  PaymentFiltersHookProps,
+  DateRange,
+} from "../types/payment.types";
 
 export function usePaymentFilters({
   search: initialSearch,
@@ -25,7 +13,7 @@ export function usePaymentFilters({
   endDate: initialEndDate,
   sortBy: initialSortBy,
   sortOrder: initialSortOrder,
-}: UsePaymentFiltersProps) {
+}: PaymentFiltersHookProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -166,7 +154,7 @@ export function usePaymentFilters({
     dateRange,
     hasActiveFilters,
     showAdvancedFilters,
-    isLoading, // Nuevo estado de loading
+    isLoading,
 
     // Setters
     setSearchValue,

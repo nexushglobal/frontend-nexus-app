@@ -1,48 +1,47 @@
-// src/app/dashboard/(cliente)/mis-pagos/components/PaymentsData.tsx
-import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
-import { Card, CardContent } from '@/components/ui/card';
-import { getUserPayments } from '../actions';
-import PaymentsTable from './PaymentsTable';
-import PaymentCards from './PaymentCards';
-import { PaymentsTableFilters } from './PaymentsTableFilters';
-import { PaymentStatus } from '@/types/payments/payments.types';
+import { TableQueryPagination } from '@/components/common/table/TableQueryPagination'
+import { Card, CardContent } from '@/components/ui/card'
+import { getUserPayments } from '../actions/get-user-payments'
+import { PaymentStatus } from '@/types/admin-payments.types'
+import { PaymentsTableFilters } from './PaymentsTableFilters'
+import { PaymentsTable } from './PaymentsTable'
+import { PaymentCards } from './PaymentCards'
 
-export default async function PaymentsData({
-    searchParams
-}: {
+interface PaymentsDataContainerProps {
     searchParams?: {
-        search?: string;
-        status?: string;
-        paymentConfigId?: string;
-        startDate?: string;
-        endDate?: string;
-        sortBy?: string;
-        sortOrder?: string;
-        page?: string;
-        limit?: string;
-    };
-}) {
-    const search = searchParams?.search || '';
+        search?: string
+        status?: string
+        paymentConfigId?: string
+        startDate?: string
+        endDate?: string
+        sortBy?: string
+        sortOrder?: string
+        page?: string
+        limit?: string
+    }
+}
+
+export async function PaymentsDataContainer({ searchParams }: PaymentsDataContainerProps) {
+    const search = searchParams?.search || ''
 
     const status = searchParams?.status && Object.values(PaymentStatus).includes(searchParams.status as PaymentStatus)
         ? (searchParams.status as PaymentStatus)
-        : undefined;
+        : undefined
 
     const paymentConfigId = searchParams?.paymentConfigId
         ? parseInt(searchParams.paymentConfigId)
-        : undefined;
+        : undefined
 
-    const startDate = searchParams?.startDate || undefined;
-    const endDate = searchParams?.endDate || undefined;
+    const startDate = searchParams?.startDate || undefined
+    const endDate = searchParams?.endDate || undefined
 
     const sortBy = (['createdAt', 'amount', 'status', 'updatedAt'].includes(searchParams?.sortBy || ''))
         ? (searchParams?.sortBy as 'createdAt' | 'amount' | 'status' | 'updatedAt')
-        : 'createdAt';
+        : 'createdAt'
 
-    const sortOrder = (searchParams?.sortOrder === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC';
+    const sortOrder = (searchParams?.sortOrder === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC'
 
-    const page = searchParams?.page ? parseInt(searchParams.page) : 1;
-    const limit = searchParams?.limit ? parseInt(searchParams.limit) : 20;
+    const page = searchParams?.page ? parseInt(searchParams.page) : 1
+    const limit = searchParams?.limit ? parseInt(searchParams.limit) : 20
 
     const { data, meta, paymentConfigs } = await getUserPayments({
         search,
@@ -54,11 +53,11 @@ export default async function PaymentsData({
         sortOrder,
         page,
         limit
-    });
+    })
 
     return (
         <div className="space-y-6">
-            <Card className="shadow-sm ">
+            <Card className="shadow-sm">
                 <CardContent>
                     <PaymentsTableFilters
                         search={search}
@@ -75,7 +74,7 @@ export default async function PaymentsData({
 
             <div className="hidden md:block">
                 <Card className="border-gray-200 shadow-sm dark:border-gray-800">
-                    <CardContent >
+                    <CardContent>
                         <PaymentsTable data={data} />
                     </CardContent>
                 </Card>
@@ -87,5 +86,5 @@ export default async function PaymentsData({
 
             <TableQueryPagination meta={meta} />
         </div>
-    );
+    )
 }

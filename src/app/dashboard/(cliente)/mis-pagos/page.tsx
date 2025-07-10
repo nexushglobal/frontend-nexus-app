@@ -1,27 +1,16 @@
-import { PageHeader } from '@/components/common/PageHeader';
-import { Suspense } from 'react';
-import PaymentsData from './components/PaymentsData';
-import PaymentsTableSkeleton from './components/PaymentsTableSkeleton';
+import { PaymentsPage } from '@/features/payment/components/PaymentsPage'
+import type { Metadata } from 'next'
 
-export default async function PaymentsPage({
-    searchParams
-}: {
-    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-    const filters = await searchParams;
+export const metadata: Metadata = {
+    title: 'Mis Pagos | Dashboard',
+    description: 'Gestiona y revisa el historial de tus pagos realizados'
+}
 
-    return (
-        <div className="container py-8">
-            <PageHeader
-                title="Mis Pagos"
-                subtitle="Gestiona y revisa el historial de tus pagos realizados"
-                className="mb-6"
-                variant="gradient"
-            />
+interface PageProps {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
-            <Suspense fallback={<PaymentsTableSkeleton />}>
-                <PaymentsData searchParams={filters} />
-            </Suspense>
-        </div>
-    );
+export default async function Page({ searchParams }: PageProps) {
+    const filters = await searchParams
+    return <PaymentsPage searchParams={filters} />
 }
