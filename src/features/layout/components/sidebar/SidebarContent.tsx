@@ -4,12 +4,13 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { MenuItem } from "@features/layout/types/menu.types";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, LogOut, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { MenuItem } from "@/types/menu.types";
 import SidebarLink from "./SidebarLink";
+
 
 type Props = {
     isCollapsed: boolean;
@@ -44,7 +45,6 @@ export const SidebarContent = ({
                 borderRightColor: "var(--sidebar-border)",
             }}
         >
-            {/* Logo y botón de colapsar */}
             <div
                 className="flex items-center justify-between p-3 border-b"
                 style={{
@@ -91,7 +91,6 @@ export const SidebarContent = ({
                 )}
             </div>
 
-            {/* Info del usuario */}
             <div
                 className="p-4 border-b"
                 style={{
@@ -184,7 +183,6 @@ export const SidebarContent = ({
                 </div>
             </div>
 
-            {/* Navegación */}
             <nav className="flex-1 overflow-y-auto py-4">
                 <motion.div
                     className="space-y-1 px-2"
@@ -200,7 +198,6 @@ export const SidebarContent = ({
                 </motion.div>
             </nav>
 
-            {/* Cerrar sesión */}
             <motion.div
                 className="p-4 border-t"
                 style={{

@@ -1,7 +1,7 @@
 
 import React from "react";
-import Sidebar from "./components/Sidebar";
 import Navbar from "@/features/layout/components/NavbarDashboard";
+import Sidebar from "@/features/layout/components/sidebar/Sidebar";
 
 export default function LayoutDashboard({
     children,

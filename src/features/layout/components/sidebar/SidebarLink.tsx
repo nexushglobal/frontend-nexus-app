@@ -10,80 +10,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { MenuItem } from "@/types/menu.types";
+import { ICON_MAPPING } from "@features/layout/constants/menu.constants";
+import { MenuItem } from "@features/layout/types/menu.types";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Award,
-  Banknote,
-  BarChart,
-  BarChart2,
   ChevronDown,
-  ClipboardCheck,
-  CreditCard,
-  Crown,
-  DollarSign,
-  History,
-  Home,
-  Layers,
-  Medal,
-  PlaneTakeoff,
-  Settings,
-  Trophy,
-  User,
-  UserCog,
-  Users,
-  UsersRound,
-  Wallet,
-  ShoppingBag,
-  Package,
-  ShoppingCart,
-  Receipt,
+  Home
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-const ICON_MAPPING = {
-  // Elementos principales
-  dashboard: Home,
-  profile: User,
-  money: Wallet,
-  wallet: CreditCard,
 
-  // Membresía
-  membership: Crown,
-  "membership-plan": PlaneTakeoff,
-  "my-plan": ClipboardCheck,
-  reconsumos: Award,
-
-  // Puntos
-  points: Award,
-  history: History,
-  chart: BarChart,
-
-  // Rangos
-  ranks: Medal,
-  "all-ranks": Layers,
-  "my-ranks": Trophy,
-
-  // Equipo
-  team: Users,
-
-  // Tienda
-  store: ShoppingBag,
-  products: Package,
-  cart: ShoppingCart,
-  orders: Receipt,
-
-  // Admin
-  users: UserCog,
-  "membership-admin": Settings,
-  "payments-admin": DollarSign,
-  "withdrawals-admin": Banknote,
-  "points-admin": Award,
-  "ranks-admin": BarChart2,
-  "team-admin": UsersRound,
-};
 
 type Props = {
   item: MenuItem;

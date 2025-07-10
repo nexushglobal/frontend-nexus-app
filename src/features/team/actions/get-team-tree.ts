@@ -3,9 +3,7 @@
 import { api } from "@/features/shared/services/api";
 import type { TeamTreeResponse } from "../types/team.types";
 
-export async function getTeamTreeAction(
-  formData: FormData
-): Promise<{
+export async function getTeamTreeAction(formData: FormData): Promise<{
   success: boolean;
   data?: TeamTreeResponse;
   error?: string;

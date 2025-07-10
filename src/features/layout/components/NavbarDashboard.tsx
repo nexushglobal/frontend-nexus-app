@@ -23,7 +23,6 @@ const Navbar = () => {
       className="w-full border-b border-border bg-layout-topbar text-layout-topbar-foreground shadow-sm backdrop-blur-sm bg-opacity-95"
     >
       <div className="flex items-center justify-between h-16 px-6">
-        {/* Sección izquierda - alineada con el contenido del sidebar */}
         <div className="flex items-center space-x-4">
           <motion.div
             initial={{ opacity: 0 }}
@@ -36,7 +35,6 @@ const Navbar = () => {
           </motion.div>
         </div>
 
-        {/* Sección derecha */}
         <div className="flex items-center gap-4">
           <UserMenu />
           <Separator orientation="vertical" className="h-6 bg-border" />

@@ -1,7 +1,5 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
-import { Menu, AlertCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     Sheet,
     SheetContent,
@@ -9,9 +7,11 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { getUserMenu } from "../actions/user-menu";
-import { MenuItem } from "@/types/menu.types";
+import { getUserMenuAction } from "@features/layout/actions/get-menu";
+import { MenuItem } from "@features/layout/types/menu.types";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertCircle, Menu } from "lucide-react";
+import { useEffect, useState } from "react";
 import { SidebarContent } from "./SidebarContent";
 
 const Sidebar = () => {
@@ -22,17 +22,18 @@ const Sidebar = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+
         const fetchMenuData = async () => {
             try {
                 setIsLoading(true);
                 setError(null);
 
-                const result = await getUserMenu();
+                const { data, success, error } = await getUserMenuAction();
 
-                if (result.success) {
-                    setMenuItems(result.data);
+                if (success && data) {
+                    setMenuItems(data.views);
                 } else {
-                    setError(result.message);
+                    setError(error || "Error al cargar el menú");
                 }
             } catch (err) {
                 console.error("Error fetching menu:", err);
