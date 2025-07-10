@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { searchTeamMembers, TeamSearchResult } from "../actions/teamSearch";
+import { TeamSearchResult } from "../types/team.types";
+import { searchTeamMembersAction } from "../actions/search-team-members";
 
 interface TeamSearchModalProps {
     children: React.ReactNode;
@@ -56,7 +57,7 @@ export function TeamSearchModal({ children, onNavigateToUser }: TeamSearchModalP
         }
 
         try {
-            const response = await searchTeamMembers({
+            const response = await searchTeamMembersAction({
                 search: query.trim(),
                 page: page,
                 limit: RESULTS_PER_PAGE

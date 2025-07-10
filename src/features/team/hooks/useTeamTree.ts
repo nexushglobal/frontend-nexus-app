@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getTeamTree, TeamMember, TeamTreeResponse } from "../actions/teamTree";
+import { TeamService } from "../service/teamApi";
+import type { TeamMember, TeamTreeResponse } from "../types/team.types";
 
 export function useTeamTree(initialUserId: string, initialDepth: number = 2) {
   const [treeData, setTreeData] = useState<TeamTreeResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [currentViewUserId, setCurrentViewUserId] = useState(initialUserId);
   const [currentDepth, setCurrentDepth] = useState(initialDepth);
 
@@ -21,22 +21,16 @@ export function useTeamTree(initialUserId: string, initialDepth: number = 2) {
         setLoading(true);
         setError(null);
 
-        const result = await getTeamTree(targetDepth, targetUserId);
-
-        if (result.success && result.data) {
-          setTreeData(result.data);
-        } else {
-          const errorMessage = result.message || "Error al cargar el árbol";
-          setError(errorMessage);
-          toast.error("Error al cargar el árbol", {
-            description: errorMessage,
-          });
-        }
-      } catch (err) {
-        const errorMessage = "Error de conexión";
+        const response = await TeamService.getTeamTree(
+          targetDepth,
+          targetUserId
+        );
+        setTreeData(response);
+      } catch (err: any) {
+        const errorMessage = err.message || "Error al cargar el árbol";
         setError(errorMessage);
-        toast.error(errorMessage, {
-          description: "No se pudo cargar la información del equipo",
+        toast.error("Error al cargar el árbol", {
+          description: errorMessage,
         });
       } finally {
         setLoading(false);

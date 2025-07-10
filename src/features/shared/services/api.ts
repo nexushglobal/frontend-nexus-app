@@ -1,144 +1,416 @@
 import { env } from "@/lib/env";
-import { ApiResponse, ApiOptions, ApiError } from "../types/api.types";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+// Tipos para el API wrapper
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data: T | null;
+  message: string | string[];
+  errors: string | string[] | null;
+}
+
+export class ApiError extends Error {
+  public success: boolean;
+  public errors: string | string[] | null;
+  public statusCode: number;
+
+  constructor(
+    message: string | string[],
+    errors: string | string[] | null = null,
+    statusCode: number = 500
+  ) {
+    super(Array.isArray(message) ? message.join(", ") : message);
+    this.name = "ApiError";
+    this.success = false;
+    this.errors = errors;
+    this.statusCode = statusCode;
+  }
+}
+
+// Opciones para las llamadas API
+export interface ApiOptions extends Omit<RequestInit, "body"> {
+  params?: Record<string, string | number | boolean | undefined | null>;
+  body?: any;
+  timeout?: number;
+  skipAuth?: boolean; // Para endpoints públicos
+}
 
 class ApiClient {
-  private baseUrl: string;
-  private defaultTimeout: number = 10000;
+  private getBaseUrl(): string {
+    const apiUrl = env.apiUrl;
 
-  constructor(baseUrl: string = env.apiUrl) {
-    this.baseUrl = baseUrl.replace(/\/$/, "");
+    if (!apiUrl) {
+      const context = typeof window === "undefined" ? "server" : "client";
+      throw new Error(
+        `API URL no está configurada para contexto ${context}. ` +
+          `Verifica que tengas ${
+            context === "server" ? "API_BACKENDL_URL" : "NEXT_PUBLIC_API_URL"
+          } en tu .env`
+      );
+    }
+
+    return apiUrl;
   }
 
-  async call<T = any>(endpoint: string, options: ApiOptions = {}): Promise<T> {
-    const url = `${this.baseUrl}${
-      endpoint.startsWith("/") ? endpoint : `/${endpoint}`
-    }`;
+  /**
+   * Obtiene el token de autenticación según el contexto
+   */
+  private async getAuthToken(): Promise<string | null> {
+    const isServer = typeof window === "undefined";
 
+    if (isServer) {
+      // En servidor: usar getServerSession
+      try {
+        const session = await getServerSession(authOptions);
+        return session?.accessToken || null;
+      } catch (error) {
+        console.warn("Error getting server session:", error);
+        return null;
+      }
+    } else {
+      // En cliente: usar sessionStorage o fetch a API route
+      try {
+        const response = await fetch("/api/auth/token");
+        if (response.ok) {
+          const { accessToken } = await response.json();
+          return accessToken;
+        }
+
+        return null;
+      } catch (error) {
+        console.warn("Error getting client token:", error);
+        return null;
+      }
+    }
+  }
+
+  /**
+   * Construye la URL con parámetros de query
+   */
+  private buildUrl(
+    endpoint: string,
+    params?: Record<string, string | number | boolean | undefined | null>
+  ): string {
+    const baseUrl = this.getBaseUrl();
+    const url = new URL(endpoint, baseUrl);
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          url.searchParams.append(key, String(value));
+        }
+      });
+    }
+
+    return url.toString();
+  }
+
+  /**
+   * Prepara los headers con autenticación
+   */
+  private async prepareHeaders(options: ApiOptions = {}): Promise<HeadersInit> {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
+
+    // Agregar autenticación si no se omite explícitamente
+    if (!options.skipAuth) {
+      const token = await this.getAuthToken();
+      if (token) {
+        (headers as Record<string, string>)[
+          "Authorization"
+        ] = `Bearer ${token}`;
+      }
+    }
+
+    return headers;
+  }
+
+  /**
+   * Maneja las respuestas HTTP
+   */
+  private async handleResponse<T>(response: Response): Promise<T> {
+    const contentType = response.headers.get("content-type");
+    const isJson = contentType?.includes("application/json");
+
+    let result: ApiResponse<T>;
+
+    if (isJson) {
+      result = await response.json();
+    } else {
+      const text = await response.text();
+      result = {
+        success: response.ok,
+        data: text as unknown as T,
+        message: response.ok ? "Success" : "Error",
+        errors: response.ok ? null : text,
+      };
+    }
+
+    // Manejar errores de autenticación
+    if (response.status === 401) {
+      // Token expirado o inválido
+      this.handleAuthError();
+      throw new ApiError(
+        "Token de autenticación inválido o expirado",
+        null,
+        401
+      );
+    }
+
+    if (!result.success) {
+      throw new ApiError(result.message, result.errors, response.status);
+    }
+
+    return result.data as T;
+  }
+
+  /**
+   * Maneja errores de autenticación
+   */
+  private handleAuthError(): void {
+    const isServer = typeof window === "undefined";
+
+    if (!isServer) {
+      // En cliente: limpiar token y redirigir
+      sessionStorage.removeItem("accessToken");
+
+      // Si usas next-auth, hacer signOut
+      if (typeof window !== "undefined") {
+        import("next-auth/react").then(({ signOut }) => {
+          signOut({ callbackUrl: "/login" });
+        });
+      }
+    }
+    // En servidor los errores 401 se propagan al componente
+  }
+
+  /**
+   * Llamada genérica al API
+   */
+  async call<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
     const {
-      timeout = this.defaultTimeout,
-      retries = 0,
-      next,
+      params,
+      body,
+      timeout = 30000,
+      skipAuth = false,
       ...fetchOptions
     } = options;
 
+    const url = this.buildUrl(endpoint, params);
+    const headers = await this.prepareHeaders({ ...options, skipAuth });
+
     const config: RequestInit = {
-      headers: {
-        "Content-Type": "application/json",
-        ...fetchOptions.headers,
-      },
       ...fetchOptions,
+      headers,
     };
 
-    if (next) {
-      (config as any).next = next;
+    // Solo agregar body si existe y no es GET
+    if (body && fetchOptions.method !== "GET") {
+      config.body = typeof body === "string" ? body : JSON.stringify(body);
     }
 
-    try {
-      const response = await this.fetchWithTimeout(url, config, timeout);
-      const result: ApiResponse<T> = await response.json();
-
-      // Tu backend siempre retorna esta estructura
-      if (!result.success) {
-        throw new ApiError(
-          Array.isArray(result.message)
-            ? result.message.join(", ")
-            : result.message,
-          result.errors,
-          response.status
-        );
-      }
-
-      // Retorna solo la data, ya validada
-      return result.data as T;
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
-
-      // Network errors, timeouts, etc.
-      throw new ApiError(
-        `Request failed: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-        null,
-        0
-      );
-    }
-  }
-
-  // Helper methods
-  async get<T = any>(
-    endpoint: string,
-    options: Omit<ApiOptions, "method" | "body"> = {}
-  ): Promise<T> {
-    return this.call<T>(endpoint, { ...options, method: "GET" });
-  }
-
-  async post<T = any>(
-    endpoint: string,
-    data?: any,
-    options: Omit<ApiOptions, "method"> = {}
-  ): Promise<T> {
-    return this.call<T>(endpoint, {
-      ...options,
-      method: "POST",
-      body: data ? JSON.stringify(data) : undefined,
-    });
-  }
-
-  async put<T = any>(
-    endpoint: string,
-    data?: any,
-    options: Omit<ApiOptions, "method"> = {}
-  ): Promise<T> {
-    return this.call<T>(endpoint, {
-      ...options,
-      method: "PUT",
-      body: data ? JSON.stringify(data) : undefined,
-    });
-  }
-
-  async delete<T = any>(
-    endpoint: string,
-    options: Omit<ApiOptions, "method" | "body"> = {}
-  ): Promise<T> {
-    return this.call<T>(endpoint, { ...options, method: "DELETE" });
-  }
-
-  // Fetch with timeout
-  private async fetchWithTimeout(
-    url: string,
-    options: RequestInit,
-    timeout: number
-  ): Promise<Response> {
+    // Crear un AbortController para timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
       const response = await fetch(url, {
-        ...options,
+        ...config,
         signal: controller.signal,
       });
+
       clearTimeout(timeoutId);
-      return response;
+      return this.handleResponse<T>(response);
     } catch (error) {
       clearTimeout(timeoutId);
-      throw error;
+
+      if (error instanceof ApiError) {
+        throw error;
+      }
+
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          throw new ApiError("Request timeout", null, 408);
+        }
+        throw new ApiError(error.message, null, 500);
+      }
+
+      throw new ApiError("Unknown error occurred", null, 500);
     }
+  }
+
+  /**
+   * GET request
+   */
+  async get<T>(
+    endpoint: string,
+    options: Omit<ApiOptions, "method"> = {}
+  ): Promise<T> {
+    return this.call<T>(endpoint, { ...options, method: "GET" });
+  }
+
+  /**
+   * POST request
+   */
+  async post<T>(
+    endpoint: string,
+    data?: any,
+    options: Omit<ApiOptions, "method" | "body"> = {}
+  ): Promise<T> {
+    return this.call<T>(endpoint, {
+      ...options,
+      method: "POST",
+      body: data,
+    });
+  }
+
+  /**
+   * PUT request
+   */
+  async put<T>(
+    endpoint: string,
+    data?: any,
+    options: Omit<ApiOptions, "method" | "body"> = {}
+  ): Promise<T> {
+    return this.call<T>(endpoint, {
+      ...options,
+      method: "PUT",
+      body: data,
+    });
+  }
+
+  /**
+   * PATCH request
+   */
+  async patch<T>(
+    endpoint: string,
+    data?: any,
+    options: Omit<ApiOptions, "method" | "body"> = {}
+  ): Promise<T> {
+    return this.call<T>(endpoint, {
+      ...options,
+      method: "PATCH",
+      body: data,
+    });
+  }
+
+  /**
+   * DELETE request
+   */
+  async delete<T>(
+    endpoint: string,
+    options: Omit<ApiOptions, "method"> = {}
+  ): Promise<T> {
+    return this.call<T>(endpoint, { ...options, method: "DELETE" });
+  }
+
+  /**
+   * GET request sin autenticación (para endpoints públicos)
+   */
+  async getPublic<T>(
+    endpoint: string,
+    options: Omit<ApiOptions, "method" | "skipAuth"> = {}
+  ): Promise<T> {
+    return this.call<T>(endpoint, {
+      ...options,
+      method: "GET",
+      skipAuth: true,
+    });
+  }
+
+  /**
+   * POST request sin autenticación (para login, registro, etc.)
+   */
+  async postPublic<T>(
+    endpoint: string,
+    data?: any,
+    options: Omit<ApiOptions, "method" | "body" | "skipAuth"> = {}
+  ): Promise<T> {
+    return this.call<T>(endpoint, {
+      ...options,
+      method: "POST",
+      body: data,
+      skipAuth: true,
+    });
   }
 }
 
 export const api = new ApiClient();
 
+// Para Server Components con optimizaciones Next.js y autenticación
 export const serverApi = {
-  static: <T>(endpoint: string) =>
-    api.get<T>(endpoint, { cache: "force-cache" }),
+  /**
+   * Cache estático con autenticación
+   */
+  static: <T>(
+    endpoint: string,
+    params?: Record<string, string | number | boolean | undefined | null>
+  ) => api.get<T>(endpoint, { params, cache: "force-cache" }),
 
-  revalidate: <T>(endpoint: string, seconds: number) =>
-    api.get<T>(endpoint, { next: { revalidate: seconds } }),
+  /**
+   * Revalidación periódica con autenticación
+   */
+  revalidate: <T>(
+    endpoint: string,
+    seconds: number,
+    params?: Record<string, string | number | boolean | undefined | null>
+  ) =>
+    api.get<T>(endpoint, {
+      params,
+      next: { revalidate: seconds },
+    }),
 
-  fresh: <T>(endpoint: string) => api.get<T>(endpoint, { cache: "no-store" }),
+  /**
+   * Siempre fresco con autenticación
+   */
+  fresh: <T>(
+    endpoint: string,
+    params?: Record<string, string | number | boolean | undefined | null>
+  ) => api.get<T>(endpoint, { params, cache: "no-store" }),
 
-  tagged: <T>(endpoint: string, tags: string[]) =>
-    api.get<T>(endpoint, { next: { tags } }),
+  /**
+   * Cache con tags para invalidación selectiva
+   */
+  tagged: <T>(
+    endpoint: string,
+    tags: string[],
+    params?: Record<string, string | number | boolean | undefined | null>
+  ) =>
+    api.get<T>(endpoint, {
+      params,
+      next: { tags },
+    }),
+
+  /**
+   * Endpoints públicos en server (sin auth)
+   */
+  public: {
+    static: <T>(
+      endpoint: string,
+      params?: Record<string, string | number | boolean | undefined | null>
+    ) => api.getPublic<T>(endpoint, { params, cache: "force-cache" }),
+
+    fresh: <T>(
+      endpoint: string,
+      params?: Record<string, string | number | boolean | undefined | null>
+    ) => api.getPublic<T>(endpoint, { params, cache: "no-store" }),
+  },
+};
+
+// Helper para construir params fácilmente
+export const buildParams = (
+  params: Record<string, any>
+): Record<string, string> => {
+  const result: Record<string, string> = {};
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      result[key] = String(value);
+    }
+  });
+
+  return result;
 };

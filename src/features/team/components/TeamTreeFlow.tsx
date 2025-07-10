@@ -16,9 +16,9 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect } from "react";
-import { TeamMember } from "../actions/teamTree";
-import { calculateHorizontalSpacing } from "../utils/size";
 import { TeamMemberNode } from "./TeamMemberNode";
+import { TeamMember } from "../types/team.types";
+import { calculateHorizontalSpacing } from "../utils/team-utils";
 
 interface TeamTreeFlowProps {
     tree: TeamMember;

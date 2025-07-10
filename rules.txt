@@ -489,17 +489,14 @@ features/auth/
 ├── components/
 │   ├── LoginForm.tsx
 │   ├── LoginPage.tsx
-│   └── index.ts
 ├── hooks/
 │   ├── useAuth.ts
-│   └── index.ts
 ├── services/
 │   └── authApi.ts
 ├── actions/
 │   └── login.ts
 ├── types/
 │   └── auth.types.ts
-└── index.ts
 ```
 
 ### **Feature complejo (payments):**
@@ -512,7 +509,6 @@ features/payments/
 │   ├── PaymentsList.tsx
 │   ├── PaymentCard.tsx
 │   ├── PaymentForm.tsx
-│   └── index.ts
 ├── hooks/
 │   ├── usePayments.ts
 │   ├── usePayment.ts
@@ -528,7 +524,6 @@ features/payments/
 │   └── payment-api.types.ts
 ├── constants/
 │   └── payments.constants.ts
-└── index.ts
 ```
 
 ---

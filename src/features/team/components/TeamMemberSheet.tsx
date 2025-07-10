@@ -15,7 +15,7 @@ import {
     Users
 } from "lucide-react";
 import { toast } from "sonner";
-import { TeamMember } from "../actions/teamTree";
+import { TeamMember } from "../types/team.types";
 
 interface TeamMemberSheetProps {
     member: TeamMember | null;

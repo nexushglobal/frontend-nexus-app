@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Eye, GitBranch } from "lucide-react";
-import { TeamMember } from "../actions/teamTree";
+import { TeamMember } from "../types/team.types";
 
 interface TeamMemberNodeData {
     member: TeamMember;

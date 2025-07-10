@@ -1,19 +1,20 @@
-"use client";
 
-import { useState } from "react";
-import { TeamMember } from "../actions/teamTree";
-import { useTeamTree } from "../hooks/useTeamTree";
-import { TeamMemberSheet } from "./TeamMemberSheet";
-import { TeamTreeControls } from "./TeamTreeControls";
-import { TeamTreeFlow } from "./TeamTreeFlow";
-import { TeamTreeSkeleton } from "./TeamTreeSkeleton";
+'use client'
+
+import { useState } from 'react'
+import { useTeamTree } from '../hooks/useTeamTree'
+import type { TeamMember } from '../types/team.types'
+import { TeamMemberSheet } from './TeamMemberSheet'
+import { TeamTreeControls } from './TeamTreeControls'
+import { TeamTreeFlow } from './TeamTreeFlow'
+import { TeamTreeSkeleton } from './TeamTreeSkeleton'
 
 interface TeamTreeContentProps {
-    currentUserId: string;
+    currentUserId: string
 }
 
 export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
-    const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+    const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
 
     const {
         treeData,
@@ -28,19 +29,19 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
         navigateToParent,
         changeDepth,
         refresh,
-    } = useTeamTree(currentUserId);
+    } = useTeamTree(currentUserId)
 
     const handleSelectMember = (member: TeamMember) => {
-        setSelectedMember(member);
-    };
+        setSelectedMember(member)
+    }
 
     const handleNavigateToUser = (userId: string) => {
-        navigateToUser(userId);
-        setSelectedMember(null);
-    };
+        navigateToUser(userId)
+        setSelectedMember(null)
+    }
 
     if (loading) {
-        return <TeamTreeSkeleton />;
+        return <TeamTreeSkeleton />
     }
 
     if (error || !treeData) {
@@ -50,7 +51,7 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
                     {error || "No se pudieron cargar los datos del equipo"}
                 </p>
             </div>
-        );
+        )
     }
 
     return (
@@ -82,5 +83,5 @@ export function TeamTreeContent({ currentUserId }: TeamTreeContentProps) {
                 onNavigateToUser={handleNavigateToUser}
             />
         </div>
-    );
+    )
 }
