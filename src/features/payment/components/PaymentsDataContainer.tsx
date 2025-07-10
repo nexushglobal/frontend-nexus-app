@@ -1,10 +1,10 @@
 import { TableQueryPagination } from '@/components/common/table/TableQueryPagination'
 import { Card, CardContent } from '@/components/ui/card'
 import { getUserPayments } from '../actions/get-user-payments'
-import { PaymentStatus } from '@/types/admin-payments.types'
 import { PaymentsTableFilters } from './PaymentsTableFilters'
 import { PaymentsTable } from './PaymentsTable'
 import { PaymentCards } from './PaymentCards'
+import { PaymentStatus } from '../types/payments.type'
 
 interface PaymentsDataContainerProps {
     searchParams?: {

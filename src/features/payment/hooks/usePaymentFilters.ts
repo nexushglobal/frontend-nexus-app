@@ -1,9 +1,6 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
-import type {
-  PaymentFiltersHookProps,
-  DateRange,
-} from "../types/payment.types";
+import { DateRange, PaymentFiltersHookProps } from "../types/payments.type";
 
 export function usePaymentFilters({
   search: initialSearch,

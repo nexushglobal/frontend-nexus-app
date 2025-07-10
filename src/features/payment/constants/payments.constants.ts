@@ -1,4 +1,4 @@
-import { PaymentStatus } from "@/types/admin-payments.types";
+import { PaymentStatus } from "../types/payments.type";
 
 export const PAYMENT_CACHE_TAGS = {
   USER_PAYMENTS: "user-payments",

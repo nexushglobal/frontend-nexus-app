@@ -29,9 +29,9 @@ import {
     SortDesc,
     X
 } from 'lucide-react'
-import type { PaymentConfig, PaymentStatus } from '../types/payment.types'
 import { usePaymentFilters } from '../hooks/usePaymentFilters'
 import { PAYMENT_STATUS_LABELS, SORT_OPTIONS } from '../constants/payments.constants'
+import { PaymentConfig, PaymentStatus } from '../types/payments.type'
 
 interface PaymentsTableFiltersProps {
     search: string
