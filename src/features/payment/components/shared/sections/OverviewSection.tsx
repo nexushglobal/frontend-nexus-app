@@ -1,14 +1,17 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PaymentStatus } from '@/features/payment/types/enums-payments'
-import { PaymentConfig } from '@/features/payment/types/response-payment'
+import { PaymentConfig, UserInfo } from '@/features/payment/types/response-payment'
 import { formatAmount, formatDateTime, getStatusConfig } from '@/features/payment/utils/payement.utils'
 import {
     Banknote,
     Calendar,
     CreditCard,
     DollarSign,
+    IdCard,
+    Mail,
     Package,
+    Phone,
     User
 } from 'lucide-react'
 
@@ -25,10 +28,11 @@ interface OverviewSectionProps {
     bankName?: string | null
     operationCode?: string | null
     rejectionReason?: string | null
+    user?: UserInfo
 }
 
 export function OverviewSection(
-    { amount, createdAt, status, updatedAt, paymentConfig, id, paymentMethod, rejectionReason, operationCode, reviewedAt, bankName, reviewedByEmail }
+    { amount, createdAt, status, updatedAt, paymentConfig, id, paymentMethod, rejectionReason, operationCode, reviewedAt, bankName, reviewedByEmail, user }
         : OverviewSectionProps) {
     const statusConfig = getStatusConfig(status)
     const StatusIcon = statusConfig.icon
@@ -139,6 +143,68 @@ export function OverviewSection(
                     </div>
                 </CardContent>
             </Card>
+
+            {/* User Information  */}
+            {user && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <User className="h-5 w-5 text-blue-600" />
+                            Información del Usuario
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className=" grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="info-field">
+                            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                                <User className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">Nombre Completo</p>
+                                <p className="font-semibold">{user.fullName}</p>
+                            </div>
+                        </div>
+
+                        {user.documentNumber && (
+                            <div className="info-field">
+                                <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800/20">
+                                    <IdCard className="h-5 w-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">Número de Documento</p>
+                                    <p className="font-semibold"> {user.documentNumber}</p>
+                                </div>
+
+                            </div>
+                        )}
+                        {user.email && (
+                            <div className="info-field">
+                                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                                    <Mail className="h-5 w-5 text-blue-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">Email</p>
+                                    <p className="font-semibold">{user.email}</p>
+                                </div>
+                            </div>
+                        )}
+                        {user.phone && (
+                            <div className="info-field">
+                                <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800/20">
+                                    <Phone className="h-5 w-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">Teléfono</p>
+                                    <p className="font-semibold">{user.phone}</p>
+                                </div>
+                            </div>
+                        )}
+
+                    </CardContent>
+                </Card>
+            )}
+
+
+
 
             {/* Review Information */}
             {(reviewedByEmail || reviewedAt) && (

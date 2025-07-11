@@ -9,12 +9,11 @@ import { useEffect, useState } from 'react'
 import { PaymentAdminDetailResponse } from '../../types/response-payment'
 import { paymentDetailMenuSections } from '../../utils/menu.utils'
 
+import { DetailsSection } from '../shared/sections/DetailsSection'
 import { ItemsSection } from '../shared/sections/ItemsSection'
 import { MetadataSection } from '../shared/sections/MetadataSection'
+import { OverviewSection } from '../shared/sections/OverviewSection'
 import { TimelineSection } from '../shared/sections/TimelineSection'
-import { AdminDetailsSection } from './AdminDetailsSection'
-import { AdminOverviewSection } from './AdminOverviewSection'
-import { AdminUserSection } from './AdminUserSection'
 
 interface PaymentAdminDetailContentProps {
     payment: PaymentAdminDetailResponse
@@ -36,33 +35,15 @@ export function PaymentAdminDetailContent({ payment, paymentId }: PaymentAdminDe
         return () => window.removeEventListener('resize', checkIsMobile)
     }, [])
 
-    const adminMenuSections = [
-        {
-            id: 'overview',
-            label: 'Resumen General',
-            icon: 'overview',
-            always: true,
-            description: 'Vista general del pago'
-        },
-        {
-            id: 'user',
-            label: 'Información del Cliente',
-            icon: 'user',
-            always: true,
-            description: 'Datos del usuario que realizó el pago'
-        },
 
-        ...paymentDetailMenuSections.filter(section => section.id !== 'overview')
-    ]
+
 
     const renderSection = () => {
         switch (activeSection) {
             case 'overview':
-                return <AdminOverviewSection {...payment} />
-            case 'user':
-                return <AdminUserSection user={payment.user} />
+                return <OverviewSection {...payment} />
             case 'details':
-                return <AdminDetailsSection {...payment} />
+                return <DetailsSection {...payment} />
             case 'items':
                 return <ItemsSection {...payment} />
             case 'timeline':
@@ -70,7 +51,7 @@ export function PaymentAdminDetailContent({ payment, paymentId }: PaymentAdminDe
             case 'metadata':
                 return <MetadataSection metadata={payment.metadata} />
             default:
-                return <AdminOverviewSection {...payment} />
+                return <OverviewSection {...payment} />
         }
     }
 
@@ -144,7 +125,7 @@ export function PaymentAdminDetailContent({ payment, paymentId }: PaymentAdminDe
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-3">
-                                    {adminMenuSections
+                                    {paymentDetailMenuSections
                                         .filter(section => !["overview", "items", "timeline"].includes(section.id))
                                         .map((section) => (
                                             <button
@@ -185,7 +166,7 @@ export function PaymentAdminDetailContent({ payment, paymentId }: PaymentAdminDe
 
                     <CardContent className="p-0">
                         <nav className="space-y-1">
-                            {adminMenuSections.map((section) => {
+                            {paymentDetailMenuSections.map((section) => {
                                 const isActive = activeSection === section.id;
 
                                 return (
