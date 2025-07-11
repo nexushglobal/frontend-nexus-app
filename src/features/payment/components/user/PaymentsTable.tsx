@@ -1,6 +1,5 @@
 'use client'
 
-import TableTemplate from '@/components/common/table/TableTemplate'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +20,7 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
 import { PaymentUser } from '../../types/response-payment'
+import TableTemplate from '@/features/shared/components/table/TableTemplate'
 
 interface PaymentsTableProps {
     data: PaymentUser[]

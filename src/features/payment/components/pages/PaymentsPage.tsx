@@ -1,4 +1,3 @@
-import { TableQueryPagination } from '@/components/common/table/TableQueryPagination'
 import { Card, CardContent } from '@/components/ui/card'
 import { PageHeader } from '@/features/shared/components/common/PageHeader'
 import { Suspense } from 'react'
@@ -8,6 +7,7 @@ import { PaymentsTableSkeleton } from '../shared/skeleton/PaymentsTableSkeleton'
 import { PaymentCards } from '../user/PaymentCards'
 import { PaymentsTable } from '../user/PaymentsTable'
 import { PaymentsTableFilters } from '../user/PaymentsTableFilters'
+import { TableQueryPagination } from '@/features/shared/components/table/TableQueryPagination'
 
 interface PaymentsPageProps {
     searchParams?: {
