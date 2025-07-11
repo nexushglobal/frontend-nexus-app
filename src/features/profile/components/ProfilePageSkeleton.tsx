@@ -1,7 +1,7 @@
 "use client"
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 
 export function ProfilePageSkeleton() {
     const [isMobile, setIsMobile] = useState(false);
@@ -113,22 +113,7 @@ export function ProfilePageSkeleton() {
             </div>
 
             {/* Suggestion Card */}
-            <Card className="border-muted">
-                <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                        <Skeleton className="h-9 w-9 rounded-lg" />
-                        <div className="flex-1 space-y-3">
-                            <Skeleton className="h-5 w-64" />
-                            <Skeleton className="h-4 w-80" />
-                            <div className="flex flex-wrap gap-2">
-                                {[...Array(4)].map((_, i) => (
-                                    <Skeleton key={i} className="h-6 w-20 rounded-full" />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+
         </div>
     );
 
@@ -225,7 +210,6 @@ export function ProfilePageSkeleton() {
     return (
         <div className="container mx-auto p-6 space-y-6 animate-pulse">
             <HeaderSkeleton />
-            <AlertSkeleton />
 
             <div className="grid grid-cols-12 gap-6">
                 {/* Sidebar Skeleton */}

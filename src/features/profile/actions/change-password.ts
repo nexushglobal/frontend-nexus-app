@@ -1,14 +1,9 @@
 "use server";
 
 import { api } from "@/features/shared/services/api";
-import type {
-  ChangePasswordRequest,
-  ProfileActionResponse,
-} from "../types/profile.types";
+import { ChangePasswordRequest } from "../types/requests-profile.types";
 
-export async function ChangePasswordAction(
-  updateData: ChangePasswordRequest
-): Promise<ProfileActionResponse> {
+export async function ChangePasswordAction(updateData: ChangePasswordRequest) {
   try {
     await api.post("/api/profile/change-password", updateData);
 

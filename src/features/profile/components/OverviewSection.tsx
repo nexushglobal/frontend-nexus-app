@@ -1,6 +1,4 @@
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProfileData } from "@/types/profile.types";
 import {
     AlertCircle,
     Building,
@@ -16,6 +14,7 @@ import {
     TrendingUp,
     User
 } from "lucide-react";
+import { ProfileData } from "../types/profile.types";
 
 interface Props {
     profile: ProfileData
@@ -242,7 +241,7 @@ export function OverviewSection({ profile }: Props) {
 
             {/* Sugerencias para completar perfil */}
             {completionPercentage < 100 && (
-                <Card className="border-primary/20 bg-primary/5">
+                <Card className="border-primary/20 bg-primary/5 py-0">
                     <CardContent className="p-6">
                         <div className="flex items-start gap-4">
                             <div className="p-2 rounded-lg bg-primary/10">
@@ -255,33 +254,7 @@ export function OverviewSection({ profile }: Props) {
                                 <p className="text-sm text-muted-foreground mb-3">
                                     Un perfil completo te ayuda a aprovechar al máximo todas las funcionalidades de la plataforma.
                                 </p>
-                                <div className="flex flex-wrap gap-2">
-                                    {!profile.nickname && (
-                                        <Badge variant="outline" className="text-xs">
-                                            + Agregar nickname
-                                        </Badge>
-                                    )}
-                                    {!profile.photo && (
-                                        <Badge variant="outline" className="text-xs">
-                                            + Subir foto de perfil
-                                        </Badge>
-                                    )}
-                                    {!profile.contactInfo?.address && (
-                                        <Badge variant="outline" className="text-xs">
-                                            + Agregar dirección
-                                        </Badge>
-                                    )}
-                                    {!profile.billingInfo?.ruc && (
-                                        <Badge variant="outline" className="text-xs">
-                                            + Configurar facturación
-                                        </Badge>
-                                    )}
-                                    {!profile.bankInfo?.bankName && (
-                                        <Badge variant="outline" className="text-xs">
-                                            + Agregar información bancaria
-                                        </Badge>
-                                    )}
-                                </div>
+
                             </div>
                         </div>
                     </CardContent>

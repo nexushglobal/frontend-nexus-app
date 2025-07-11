@@ -1,7 +1,5 @@
 "use client";
 
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
-import { createFormField } from "@/hooks/useFormField";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -11,8 +9,10 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ChangePasswordFormData, changePasswordSchema } from "../../schemas/security-schemas";
-import { FormSection } from "@/components/common/form/FormSection";
 import { ChangePasswordAction } from "../../actions/change-password";
+import { createFormField } from "@/features/shared/hooks/useFormField";
+import { FormSection } from "@/features/shared/components/form/FormSection";
+import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
 
 interface ChangePasswordModalProps {
     children: React.ReactNode;

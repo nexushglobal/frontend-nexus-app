@@ -1,14 +1,9 @@
 "use server";
 
 import { api } from "@/features/shared/services/api";
-import type {
-  BankInfoRequest,
-  ProfileActionResponse,
-} from "../types/profile.types";
+import type { BankInfoRequest } from "../types/requests-profile.types";
 
-export async function updateBankInfoAction(
-  updateData: BankInfoRequest
-): Promise<ProfileActionResponse> {
+export async function updateBankInfoAction(updateData: BankInfoRequest) {
   try {
     await api.put("/api/user/profile/bank-info", updateData);
 

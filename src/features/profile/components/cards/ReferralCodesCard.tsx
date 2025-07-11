@@ -2,7 +2,6 @@
 
 import { InfoCard } from "@/components/common/card/InfoCard";
 import { SectionHeader } from "@/components/common/card/SectionHeader";
-import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ProfileInfoField } from "../field/ProfileInfoField";
 
 interface ReferralCodesCardProps {
     referralCode: string;

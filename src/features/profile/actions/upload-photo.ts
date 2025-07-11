@@ -1,11 +1,8 @@
 "use server";
 
 import { api } from "@/features/shared/services/api";
-import type { ProfileActionResponse } from "../types/profile.types";
 
-export async function uploadPhotoAction(
-  formData: FormData
-): Promise<ProfileActionResponse> {
+export async function uploadPhotoAction(formData: FormData) {
   try {
     await api.put("/api/user/profile/photo", formData);
 

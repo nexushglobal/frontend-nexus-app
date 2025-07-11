@@ -1,9 +1,9 @@
-import { SectionHeader } from "@/components/common/card/SectionHeader";
-import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { SectionHeader } from "@/features/shared/components/card/SectionHeader";
 import { Edit, Globe, Mail, MapPin, Phone } from "lucide-react";
 import { ContactInfo } from "../../types/profile.types";
+import { ProfileInfoField } from "../field/ProfileInfoField";
 import { ContactInfoModal } from "../modals/ContactInfoModal";
 
 interface ContactInfoCardProps {

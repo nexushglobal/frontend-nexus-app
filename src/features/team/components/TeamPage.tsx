@@ -2,7 +2,6 @@
 
 import { Users } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { TeamTreeContent } from './TeamTreeContent'
 import { TeamTreeSkeleton } from './TeamTreeSkeleton'
@@ -12,9 +11,6 @@ export function TeamPage() {
     if (status === 'loading' || !session) {
         return <TeamTreeSkeleton />
     }
-
-
-
 
     return (
         <div className="container mx-auto p-6 space-y-6">

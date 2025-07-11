@@ -1,19 +1,19 @@
 "use client";
 
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
-import { createFormField } from "@/hooks/useFormField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { documentTypes } from "@/data/general.data";
-import { PersonalInfo } from "@/types/profile.types";
+import { createFormField } from "@/features/shared/hooks/useFormField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AtSign, CreditCard, IdCard, Mail, Save, User, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { FormSection } from "@/components/common/form/FormSection";
-import { PersonalInfoFormData, personalInfoSchema } from "../../schemas/profile-schemas";
 import { updatePersonalInfoAction } from "../../actions/update-personal-info";
+import { DOCUMENT_TYPES } from "../../constants/profile.constants";
+import { PersonalInfoFormData, personalInfoSchema } from "../../schemas/profile-schemas";
+import { PersonalInfo } from "../../types/profile.types";
+import { FormSection } from "@/features/shared/components/form/FormSection";
+import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
 
 interface PersonalInfoModalProps {
     children: React.ReactNode;
@@ -27,7 +27,7 @@ interface PersonalInfoModalProps {
 const usePersonalFormField = createFormField<PersonalInfoFormData>();
 
 // Transformar tipos de documento para el select
-const documentTypeOptions = documentTypes.map(docType => ({
+const documentTypeOptions = DOCUMENT_TYPES.map(docType => ({
     value: docType.value,
     label: docType.label,
     icon: "📄"

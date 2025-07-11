@@ -15,7 +15,6 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 

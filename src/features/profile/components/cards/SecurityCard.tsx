@@ -1,10 +1,10 @@
 import { InfoCard } from "@/components/common/card/InfoCard";
 import { SectionHeader } from "@/components/common/card/SectionHeader";
-import { ProfileInfoField } from "@/components/common/field/ProfileInfoField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Edit, Lock, Shield } from "lucide-react";
 import { ChangePasswordModal } from "../modals/ChangePasswordModal";
+import { ProfileInfoField } from "../field/ProfileInfoField";
 
 interface SecurityCardProps {
     onUpdate: () => void;

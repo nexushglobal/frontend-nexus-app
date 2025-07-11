@@ -1,14 +1,9 @@
 "use server";
 
 import { api } from "@/features/shared/services/api";
-import type {
-  BillingInfoRequest,
-  ProfileActionResponse,
-} from "../types/profile.types";
+import { BillingInfoRequest } from "../types/requests-profile.types";
 
-export async function updateBillingInfoAction(
-  updateData: BillingInfoRequest
-): Promise<ProfileActionResponse> {
+export async function updateBillingInfoAction(updateData: BillingInfoRequest) {
   try {
     await api.put("/api/user/profile/billing-info", updateData);
 

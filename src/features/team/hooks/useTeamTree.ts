@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { TeamService } from "../service/teamApi";
+import { getTeamTreeAction } from "../actions/get-team-tree";
 import type { TeamMember, TeamTreeResponse } from "../types/team.types";
 
 export function useTeamTree(initialUserId: string, initialDepth: number = 2) {
@@ -21,11 +21,8 @@ export function useTeamTree(initialUserId: string, initialDepth: number = 2) {
         setLoading(true);
         setError(null);
 
-        const response = await TeamService.getTeamTree(
-          targetDepth,
-          targetUserId
-        );
-        setTreeData(response);
+        const response = await getTeamTreeAction(targetDepth, targetUserId);
+        setTreeData(response.data || null);
       } catch (err: any) {
         const errorMessage = err.message || "Error al cargar el árbol";
         setError(errorMessage);

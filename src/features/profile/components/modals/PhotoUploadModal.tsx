@@ -1,6 +1,5 @@
 "use client";
 
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
@@ -10,9 +9,10 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { PhotoFormData, photoSchema } from "../../schemas/profile-schemas";
-import { FileUploadWrapper } from "@/components/common/form/FileUploadWrapper";
 import { InfoCard } from "@/components/common/card/InfoCard";
 import { uploadPhotoAction } from "../../actions/upload-photo";
+import { FileUploadWrapper } from "@/features/shared/components/form/FileUploadWrapper";
+import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
 
 interface PhotoUploadModalProps {
     children: React.ReactNode;

@@ -1,4 +1,3 @@
-// src/app/dashboard/(cliente)/mi-equipo/components/TeamTreeControls.tsx
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,8 +29,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TeamSearchModal } from "./TeamSearchModal";
-// Importación alternativa si el modal principal no funciona:
-// import { SimpleTeamSearchModal as TeamSearchModal } from "./SimpleTeamSearchModal";
 
 interface TeamTreeControlsProps {
     canGoUp: boolean;

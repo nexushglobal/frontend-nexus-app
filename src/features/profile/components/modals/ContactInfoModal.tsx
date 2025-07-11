@@ -1,19 +1,19 @@
 "use client";
 
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
-import { createFormField } from "@/hooks/useFormField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { countries } from "@/data/general.data";
-import { ContactInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Globe, Mail, MapPin, Phone, Save, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ContactInfoFormData, contactInfoSchema } from "../../schemas/profile-schemas";
-import { FormSection } from "@/components/common/form/FormSection";
 import { updateContactInfoAction } from "../../actions/update-contact-info";
+import { createFormField } from "@/features/shared/hooks/useFormField";
+import { ContactInfo } from "../../types/profile.types";
+import { COUNTRIES } from "../../constants/profile.constants";
+import { FormSection } from "@/features/shared/components/form/FormSection";
+import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
 
 interface ContactInfoModalProps {
     children: React.ReactNode;
@@ -25,7 +25,7 @@ interface ContactInfoModalProps {
 const useContactFormField = createFormField<ContactInfoFormData>();
 
 // Transformar países para el select
-const countryOptions = countries.map(country => ({
+const countryOptions = COUNTRIES.map(country => ({
     value: country.value,
     label: country.label,
     icon: country.flag

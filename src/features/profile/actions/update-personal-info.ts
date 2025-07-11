@@ -1,13 +1,8 @@
 "use server";
 import { api } from "@/features/shared/services/api";
-import type {
-  PersonalInfoRequest,
-  ProfileActionResponse,
-} from "../types/profile.types";
+import { PersonalInfoRequest } from "../types/requests-profile.types";
 
-export async function updatePersonalInfoAction(
-  data: PersonalInfoRequest
-): Promise<ProfileActionResponse> {
+export async function updatePersonalInfoAction(data: PersonalInfoRequest) {
   try {
     await api.put("/api/user/profile/personal-info", data);
     return {

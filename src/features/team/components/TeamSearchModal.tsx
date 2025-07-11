@@ -1,6 +1,5 @@
 "use client";
 
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ import { toast } from "sonner";
 import { TeamSearchResult } from "../types/team.types";
 import { searchTeamMembersAction } from "../actions/search-team-members";
 import useDebounce from "@/features/shared/hooks/useDebounce";
+import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
 
 interface TeamSearchModalProps {
     children: React.ReactNode;
@@ -299,8 +299,6 @@ export function TeamSearchModal({ children, onNavigateToUser }: TeamSearchModalP
             )}
         </div>
     );
-
-    // Custom footer for the search modal
     const customFooter = (
         <div className="flex justify-end">
             <Button
@@ -312,7 +310,6 @@ export function TeamSearchModal({ children, onNavigateToUser }: TeamSearchModalP
             </Button>
         </div>
     );
-
     return (
         <ResponsiveModal
             open={open}

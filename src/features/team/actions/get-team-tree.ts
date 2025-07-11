@@ -3,18 +3,16 @@
 import { api } from "@/features/shared/services/api";
 import type { TeamTreeResponse } from "../types/team.types";
 
-export async function getTeamTreeAction(formData: FormData): Promise<{
+export async function getTeamTreeAction(
+  depth: number = 2,
+  userId?: string
+): Promise<{
   success: boolean;
   data?: TeamTreeResponse;
   error?: string;
   errors?: any;
 }> {
   try {
-    // Extraer parámetros del FormData
-    const depth = parseInt(formData.get("depth") as string) || 2;
-    const userId = (formData.get("userId") as string) || undefined;
-
-    // Validación server-side OBLIGATORIA
     if (depth < 1 || depth > 5) {
       return {
         success: false,

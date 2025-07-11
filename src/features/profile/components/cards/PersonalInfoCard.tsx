@@ -1,11 +1,11 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Edit, User, Mail, AtSign, Calendar, IdCard } from 'lucide-react'
-import { ProfileData } from '@/types/profile.types'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AtSign, Calendar, Edit, IdCard, Mail, User } from 'lucide-react'
 import { DOCUMENT_TYPES, GENDER_OPTIONS } from '../../constants/profile.constants'
+import { ProfileData } from '../../types/profile.types'
 import { PersonalInfoModal } from '../modals/PersonalInfoModal'
 
 interface PersonalInfoCardProps {
@@ -107,10 +107,10 @@ export const PersonalInfoCard = ({ profile, onUpdate }: PersonalInfoCardProps) =
                                 <div className="w-full max-w-[200px] bg-muted rounded-full h-1.5">
                                     <div
                                         className={`h-1.5 rounded-full transition-all duration-300 ${completionPercentage >= 80
-                                                ? 'bg-green-500'
-                                                : completionPercentage >= 50
-                                                    ? 'bg-yellow-500'
-                                                    : 'bg-red-500'
+                                            ? 'bg-green-500'
+                                            : completionPercentage >= 50
+                                                ? 'bg-yellow-500'
+                                                : 'bg-red-500'
                                             }`}
                                         style={{ width: `${completionPercentage}%` }}
                                     />
@@ -133,7 +133,7 @@ export const PersonalInfoCard = ({ profile, onUpdate }: PersonalInfoCardProps) =
                 </div>
             </CardHeader>
 
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {fields.map((field, index) => (
                     <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                         <div className="flex items-center gap-3">
@@ -143,16 +143,17 @@ export const PersonalInfoCard = ({ profile, onUpdate }: PersonalInfoCardProps) =
                             <div>
                                 <p className="text-sm font-medium">{field.label}</p>
                                 <p className={`text-sm ${field.isComplete
-                                        ? 'text-foreground'
-                                        : 'text-muted-foreground italic'
+                                    ? 'text-foreground'
+                                    : 'text-muted-foreground italic'
                                     }`}>
                                     {field.value}
                                 </p>
                             </div>
                         </div>
-                        <Badge variant={field.isComplete ? "default" : "secondary"} className="text-xs">
-                            {field.isComplete ? "Completo" : "Pendiente"}
-                        </Badge>
+                        {
+                            field.isComplete ? null : <Badge variant="secondary" className="text-xs">Incompleto</Badge>
+                        }
+
                     </div>
                 ))}
 

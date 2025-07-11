@@ -1,14 +1,9 @@
 "use client";
 
 import { InfoCard } from "@/components/common/card/InfoCard";
-import { FormSection } from "@/components/common/form/FormSection";
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { banks } from "@/data/general.data";
-import { createFormField } from "@/hooks/useFormField";
-import { BankInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreditCard, Hash, Landmark, Save, Shield, X } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -16,6 +11,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { BankInfoFormData, bankInfoSchema } from "../../schemas/profile-schemas";
 import { updateBankInfoAction } from "../../actions/update-bank-info";
+import { BankInfo } from "../../types/profile.types";
+import { createFormField } from "@/features/shared/hooks/useFormField";
+import { BANKS } from "../../constants/profile.constants";
+import { FormSection } from "@/features/shared/components/form/FormSection";
+import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
 
 interface BankInfoModalProps {
     children: React.ReactNode;
@@ -25,7 +25,7 @@ interface BankInfoModalProps {
 
 const useBankFormField = createFormField<BankInfoFormData>();
 
-const bankOptions = banks.map(bank => ({
+const bankOptions = BANKS.map(bank => ({
     value: bank.value,
     label: bank.label,
     icon: bank.icon

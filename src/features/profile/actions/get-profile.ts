@@ -1,12 +1,9 @@
 "use server";
 
 import { api } from "@/features/shared/services/api";
-import type {
-  ProfileActionResponse,
-  ProfileData,
-} from "../types/profile.types";
+import type { ProfileData } from "../types/profile.types";
 
-export async function getProfileAction(): Promise<ProfileActionResponse> {
+export async function getProfileAction() {
   try {
     const profile = await api.get<ProfileData>("/api/user/profile");
 

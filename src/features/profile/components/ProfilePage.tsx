@@ -1,14 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useProfile } from '../hooks/useProfile'
-
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { motion } from "framer-motion"
 import { AlertTriangle, ArrowRight, CheckCircle, FileText, Landmark, Phone, Receipt } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { PROFILE_SECTIONS } from '../constants/profile.constants'
+import { useProfile } from '../hooks/useProfile'
 import { OverviewSection } from './OverviewSection'
 import { ProfileHeader } from './ProfileHeader'
 import { ProfilePageSkeleton } from './ProfilePageSkeleton'
@@ -35,13 +34,11 @@ export const ProfilePage = () => {
         return () => window.removeEventListener('resize', checkIsMobile);
     }, []);
 
-    // Función para obtener secciones incompletas
     const getIncompleteSections = () => {
         if (!profile) return [];
 
         const incompleteSections = [];
 
-        // Verificar información personal (nickname, documento, foto)
         const personalIncomplete = [
             !profile.nickname && "nickname",
             !profile.personalInfo?.documentType && "documento",
@@ -58,7 +55,6 @@ export const ProfilePage = () => {
             });
         }
 
-        // Verificar información de contacto (teléfono, dirección, código postal)
         const contactIncomplete = [
             !profile.contactInfo?.phone && "teléfono",
             !profile.contactInfo?.address && "dirección",
@@ -74,7 +70,6 @@ export const ProfilePage = () => {
             });
         }
 
-        // Verificar información de facturación (RUC, razón social, dirección fiscal)
         const billingIncomplete = [
             !profile.billingInfo?.ruc && "RUC",
             !profile.billingInfo?.razonSocial && "razón social",
@@ -90,7 +85,6 @@ export const ProfilePage = () => {
             });
         }
 
-        // Verificar información bancaria (banco, número de cuenta, CCI)
         const bankingIncomplete = [
             !profile.bankInfo?.bankName && "banco",
             !profile.bankInfo?.accountNumber && "número de cuenta",
@@ -156,7 +150,6 @@ export const ProfilePage = () => {
             <div className="container mx-auto p-4 space-y-6">
                 <ProfileHeader profile={profile} onUpdate={refetch} />
 
-                {/* Alerta de secciones incompletas - Mobile */}
                 {incompleteSections.length > 0 && (
                     <Alert className="border-warning/20 bg-warning/5">
                         <AlertTriangle className="h-4 w-4 text-warning" />
@@ -192,7 +185,6 @@ export const ProfilePage = () => {
                     </Alert>
                 )}
 
-                {/* Navegación mobile personalizada */}
                 <div className="space-y-4">
                     {/* Tabs principales */}
                     <div className="grid grid-cols-4 w-full gap-1 bg-muted p-1 rounded-lg">
@@ -218,7 +210,6 @@ export const ProfilePage = () => {
                         })}
                     </div>
 
-                    {/* Contenido de las secciones */}
                     <motion.div
                         key={activeSection}
                         initial={{ opacity: 0, y: 20 }}
@@ -252,7 +243,6 @@ export const ProfilePage = () => {
         <div className="container mx-auto p-6 space-y-6">
             <ProfileHeader profile={profile} onUpdate={refetch} />
 
-            {/* Alerta de secciones incompletas - Desktop */}
             {incompleteSections.length > 0 && (
                 <Alert className="border-warning/20 bg-warning/5">
                     <AlertTriangle className="h-4 w-4 text-warning" />
@@ -292,7 +282,6 @@ export const ProfilePage = () => {
             )}
 
             <div className="grid grid-cols-12 gap-6">
-                {/* Sidebar Navigation */}
                 <div className="col-span-3">
                     <Card>
                         <CardHeader>

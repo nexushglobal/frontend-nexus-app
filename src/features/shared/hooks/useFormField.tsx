@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 import { LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
-import { FormFieldWrapper } from "@/components/common/form/FormFileWrapper";
+import { FormFieldWrapper } from "../components/form/FormFileWrapper";
 
 interface BaseFieldConfig {
     label: string;

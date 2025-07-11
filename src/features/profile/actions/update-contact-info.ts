@@ -1,13 +1,8 @@
 "use server";
 import { api } from "@/features/shared/services/api";
-import type {
-  ContactInfoRequest,
-  ProfileActionResponse,
-} from "../types/profile.types";
+import { ContactInfoRequest } from "../types/requests-profile.types";
 
-export async function updateContactInfoAction(
-  updateData: ContactInfoRequest
-): Promise<ProfileActionResponse> {
+export async function updateContactInfoAction(updateData: ContactInfoRequest) {
   try {
     await api.put("/api/user/profile/contact-info", updateData);
 

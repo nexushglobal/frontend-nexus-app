@@ -1,20 +1,20 @@
 "use client";
 
-import { ResponsiveModal } from "@/components/common/ResponsiveModal";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { BillingInfo } from "@/types/profile.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building, Info, MapPin, Receipt, Save, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { BillingInfoFormData, billingInfoSchema } from "../../schemas/profile-schemas";
-import { createFormField } from "@/hooks/useFormField";
-import { FormSection } from "@/components/common/form/FormSection";
 import { InfoCard } from "@/components/common/card/InfoCard";
 import { updateBillingInfoAction } from "../../actions/update-billing-info";
+import { createFormField } from "@/features/shared/hooks/useFormField";
+import { BillingInfo } from "../../types/profile.types";
+import { FormSection } from "@/features/shared/components/form/FormSection";
+import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
 
 interface BillingInfoModalProps {
     children: React.ReactNode;
