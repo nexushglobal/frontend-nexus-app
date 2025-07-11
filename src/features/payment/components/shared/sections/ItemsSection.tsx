@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PaymentDetailResponse } from "@/features/payment/types/payments.type";
+import { PaymentMethod } from "@/features/payment/types/enums-payments";
+import { PaymentItem } from "@/features/payment/types/response-payment";
 import { formatDateTime } from "@/features/payment/utils/payement.utils";
 import { formatCurrency } from "@/features/shared/utils/formatCurrency";
 import {
@@ -16,13 +17,14 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { ImageModal } from "../ImageModal";
+import { ImageModal } from "../modal/ImageModal";
 
 interface ItemsSectionProps {
-    payment: PaymentDetailResponse;
+    items: PaymentItem[];
+    paymentMethod: PaymentMethod
 }
 
-export function ItemsSection({ payment }: ItemsSectionProps) {
+export function ItemsSection({ items, paymentMethod }: ItemsSectionProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -35,9 +37,9 @@ export function ItemsSection({ payment }: ItemsSectionProps) {
         setIsModalOpen(true);
     };
 
-    const hasImages = payment.items.some(item => item.url || payment.paymentMethod === "POINTS");
+    const hasImages = items.some(item => item.url || paymentMethod === "POINTS");
 
-    const totalAmount = payment.items.reduce((sum, item) => sum + item.amount, 0);
+    const totalAmount = items.reduce((sum, item) => sum + item.amount, 0);
 
     return (
         <div className="space-y-6">
@@ -67,7 +69,7 @@ export function ItemsSection({ payment }: ItemsSectionProps) {
                     )}
                 </CardHeader>
                 <CardContent>
-                    {payment.items.length === 0 ? (
+                    {items.length === 0 ? (
                         <div className="text-center py-12 text-muted-foreground">
                             <div className="p-4 rounded-full bg-muted/30 w-fit mx-auto mb-4">
                                 <Package className="h-8 w-8 text-muted-foreground/50" />
@@ -77,20 +79,20 @@ export function ItemsSection({ payment }: ItemsSectionProps) {
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {payment.items.map((item, index) => (
+                            {items.map((item, index) => (
                                 <Card key={item.id} className="bg-muted/20 border-muted">
                                     <CardContent className="p-6">
                                         <div className="flex items-start gap-6">
                                             {/* Image Section */}
                                             <div className="flex-shrink-0">
-                                                {item.url || payment.paymentMethod === "POINTS" ? (
+                                                {item.url || paymentMethod === "POINTS" ? (
                                                     <div
                                                         className="relative group cursor-pointer"
                                                         onClick={() => handleImageClick(index)}
                                                     >
                                                         <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-muted bg-muted/50 transition-all duration-200 group-hover:border-primary/50 group-hover:shadow-md">
                                                             <Image
-                                                                src={item.url || getDefaultImage(payment.paymentMethod) || "/imgs/placeholder.png"}
+                                                                src={item.url || getDefaultImage(paymentMethod) || "/imgs/placeholder.png"}
                                                                 alt={`Comprobante ${index + 1}`}
                                                                 width={96}
                                                                 height={96}
@@ -198,9 +200,9 @@ export function ItemsSection({ payment }: ItemsSectionProps) {
             <ImageModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                items={payment.items}
+                items={items}
                 initialIndex={selectedImageIndex}
-                paymentMethod={payment.paymentMethod}
+                paymentMethod={paymentMethod}
             />
         </div>
     );

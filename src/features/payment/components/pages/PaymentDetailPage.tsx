@@ -4,7 +4,7 @@ import { AlertTriangle } from 'lucide-react'
 import { Suspense } from 'react'
 import { getPaymentDetail } from '../../actions/get-payment-detail'
 import { PaymentDetailContent } from '../user/PaymentDetailContent'
-import { PaymentDetailLoading } from '../user/PaymentDetailLoading'
+import { PaymentDetailLoading } from '../shared/skeleton/PaymentDetailLoading'
 
 interface PaymentDetailPageProps {
     paymentId: string

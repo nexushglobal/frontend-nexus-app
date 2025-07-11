@@ -1,7 +1,21 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
-import { DateRange, PaymentFiltersHookProps } from "../types/payments.type";
+import { PaymentStatus } from "../types/enums-payments";
 
+interface UsePaymentFiltersProps {
+  search: string;
+  status: PaymentStatus | undefined;
+  paymentConfigId: number | undefined;
+  startDate: string | undefined;
+  endDate: string | undefined;
+  sortBy: string;
+  sortOrder: "ASC" | "DESC";
+}
+
+interface DateRange {
+  from: Date | undefined;
+  to: Date | undefined;
+}
 export function usePaymentFilters({
   search: initialSearch,
   status: initialStatus,
@@ -10,7 +24,7 @@ export function usePaymentFilters({
   endDate: initialEndDate,
   sortBy: initialSortBy,
   sortOrder: initialSortOrder,
-}: PaymentFiltersHookProps) {
+}: UsePaymentFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

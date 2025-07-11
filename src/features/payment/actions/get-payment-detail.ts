@@ -5,30 +5,11 @@ import {
   PAYMENT_CACHE_TAGS,
   REVALIDATE_TIME,
 } from "../constants/payments.constants";
-import { PaymentDetailResponse } from "../types/payments.type";
+import { PaymentUserDetailResponse } from "../types/response-payment";
 
-export interface GetPaymentDetailResponse {
-  success: boolean;
-  message: string;
-  data: PaymentDetailResponse | null;
-  errors: any;
-}
-
-export async function getPaymentDetail(
-  paymentId: string
-): Promise<GetPaymentDetailResponse> {
-  // Validación server-side OBLIGATORIA
-  if (!paymentId?.trim()) {
-    return {
-      success: false,
-      message: "ID de pago requerido",
-      data: null,
-      errors: "Invalid payment ID",
-    };
-  }
-
+export async function getPaymentDetail(paymentId: string) {
   try {
-    const response = await api.get<PaymentDetailResponse>(
+    const response = await api.get<PaymentUserDetailResponse>(
       `/api/user/payments/${paymentId}`,
       {
         next: {
@@ -37,20 +18,16 @@ export async function getPaymentDetail(
         },
       }
     );
-
     return {
       success: true,
-      message: "Detalle del pago obtenido correctamente",
       data: response,
-      errors: null,
     };
-  } catch (error: any) {
-    console.error("Error fetching payment detail:", error);
+  } catch (error) {
     return {
       success: false,
       message: "Error al obtener el detalle del pago",
       data: null,
-      errors: error.message || "Unknown error",
+      errors: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

@@ -19,11 +19,11 @@ import {
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Payment } from '../../types/payments.type'
 import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
+import { PaymentUser } from '../../types/response-payment'
 
 interface PaymentsTableProps {
-    data: Payment[]
+    data: PaymentUser[]
 }
 
 export function PaymentsTable({ data }: PaymentsTableProps) {
@@ -34,7 +34,7 @@ export function PaymentsTable({ data }: PaymentsTableProps) {
         paymentMethod: false
     })
 
-    const columns = useMemo<ColumnDef<Payment>[]>(() => [
+    const columns = useMemo<ColumnDef<PaymentUser>[]>(() => [
         {
             accessorKey: 'id',
             header: 'ID',
@@ -84,7 +84,7 @@ export function PaymentsTable({ data }: PaymentsTableProps) {
             accessorKey: 'status',
             header: 'Estado',
             cell: ({ row }) => {
-                const status = row.getValue('status') as Payment['status']
+                const status = row.getValue('status') as PaymentUser['status']
                 const config = getStatusConfig(status)
                 const StatusIcon = config.icon
 

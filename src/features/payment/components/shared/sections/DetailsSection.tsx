@@ -1,24 +1,45 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PaymentDetailResponse } from "@/features/payment/types/payments.type";
 import { formatDateTime } from "@/features/payment/utils/payement.utils";
 import {
     AlertTriangle,
-    Calendar,
-    Clock,
-    User,
-    FileText,
-    CreditCard,
-    Hash,
     Building2,
+    Calendar,
     CheckCircle2,
+    Clock,
+    CreditCard,
+    FileText,
+    Hash,
+    User,
     XCircle
 } from "lucide-react";
 
 interface DetailsSectionProps {
-    payment: PaymentDetailResponse;
+    operationCode?: string | null;
+    bankName?: string | null;
+    operationDate?: string | null;
+    ticketNumber?: string | null;
+    externalReference?: string | null;
+    gatewayTransactionId?: string | null;
+    reviewedByEmail?: string | null;
+    reviewedAt?: string | null;
+    createdAt: string
+    updatedAt: string
+    rejectionReason?: string | null;
 }
 
-export function DetailsSection({ payment }: DetailsSectionProps) {
+export function DetailsSection({
+    operationCode,
+    bankName,
+    operationDate,
+    ticketNumber,
+    reviewedAt,
+    reviewedByEmail,
+    gatewayTransactionId,
+    externalReference,
+    createdAt,
+    updatedAt,
+    rejectionReason
+}: DetailsSectionProps) {
     return (
         <div className="space-y-6">
             {/* Operation Details */}
@@ -33,7 +54,7 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {payment.operationCode && (
+                        {operationCode && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-accent/10">
                                     <Hash className="field-icon text-accent" />
@@ -41,37 +62,37 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                                 <div className="flex-1 min-w-0">
                                     <p className="section-title">Código de Operación</p>
                                     <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {payment.operationCode}
+                                        {operationCode}
                                     </p>
                                 </div>
                             </div>
                         )}
 
-                        {payment.bankName && (
+                        {bankName && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-secondary/10">
                                     <Building2 className="field-icon text-secondary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="section-title">Banco</p>
-                                    <p className="text-sm font-medium text-foreground">{payment.bankName}</p>
+                                    <p className="text-sm font-medium text-foreground">{bankName}</p>
                                 </div>
                             </div>
                         )}
 
-                        {payment.operationDate && (
+                        {operationDate && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-info/10">
                                     <Calendar className="field-icon text-info" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="section-title">Fecha de Operación</p>
-                                    <p className="text-sm font-medium text-foreground">{formatDateTime(payment.operationDate)}</p>
+                                    <p className="text-sm font-medium text-foreground">{formatDateTime(operationDate)}</p>
                                 </div>
                             </div>
                         )}
 
-                        {payment.ticketNumber && (
+                        {ticketNumber && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-warning/10">
                                     <FileText className="field-icon text-warning" />
@@ -79,13 +100,13 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                                 <div className="flex-1 min-w-0">
                                     <p className="section-title">Número de Ticket</p>
                                     <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {payment.ticketNumber}
+                                        {ticketNumber}
                                     </p>
                                 </div>
                             </div>
                         )}
 
-                        {payment.externalReference && (
+                        {externalReference && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-primary/10">
                                     <CreditCard className="field-icon text-primary" />
@@ -93,13 +114,13 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                                 <div className="flex-1 min-w-0">
                                     <p className="section-title">Referencia Externa</p>
                                     <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {payment.externalReference}
+                                        {externalReference}
                                     </p>
                                 </div>
                             </div>
                         )}
 
-                        {payment.gatewayTransactionId && (
+                        {gatewayTransactionId && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-accent/10">
                                     <Hash className="field-icon text-accent" />
@@ -107,7 +128,7 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                                 <div className="flex-1 min-w-0">
                                     <p className="section-title">ID de Transacción del Gateway</p>
                                     <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {payment.gatewayTransactionId}
+                                        {gatewayTransactionId}
                                     </p>
                                 </div>
                             </div>
@@ -117,12 +138,12 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
             </Card>
 
             {/* Review Information */}
-            {(payment.reviewedByEmail || payment.reviewedAt || payment.rejectionReason) && (
+            {(reviewedByEmail || reviewedAt || rejectionReason) && (
                 <Card>
                     <CardHeader className="pb-3">
                         <CardTitle className="text-lg flex items-center gap-3 text-card-foreground">
-                            <div className={`p-2 rounded-lg ${payment.rejectionReason ? 'bg-destructive/10' : 'bg-success/10'}`}>
-                                {payment.rejectionReason ? (
+                            <div className={`p-2 rounded-lg ${rejectionReason ? 'bg-destructive/10' : 'bg-success/10'}`}>
+                                {rejectionReason ? (
                                     <XCircle className="h-5 w-5 text-destructive" />
                                 ) : (
                                     <CheckCircle2 className="h-5 w-5 text-success" />
@@ -132,14 +153,14 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {payment.rejectionReason && (
+                        {rejectionReason && (
                             <div className="p-4 rounded-lg border border-destructive/20 bg-destructive/5">
                                 <div className="flex items-start gap-3">
                                     <AlertTriangle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
                                     <div className="flex-1 min-w-0">
                                         <h4 className="font-semibold text-destructive mb-2">Motivo de Rechazo</h4>
                                         <p className="text-sm text-destructive/80 leading-relaxed">
-                                            {payment.rejectionReason}
+                                            {rejectionReason}
                                         </p>
                                     </div>
                                 </div>
@@ -147,26 +168,26 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                         )}
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {payment.reviewedByEmail && (
+                            {reviewedByEmail && (
                                 <div className="info-field">
                                     <div className="p-2 rounded-lg bg-primary/10">
                                         <User className="field-icon text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="section-title">Revisado por</p>
-                                        <p className="text-sm font-medium text-foreground">{payment.reviewedByEmail}</p>
+                                        <p className="text-sm font-medium text-foreground">{reviewedByEmail}</p>
                                     </div>
                                 </div>
                             )}
 
-                            {payment.reviewedAt && (
+                            {reviewedAt && (
                                 <div className="info-field">
                                     <div className="p-2 rounded-lg bg-info/10">
                                         <Clock className="field-icon text-info" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="section-title">Fecha de Revisión</p>
-                                        <p className="text-sm font-medium text-foreground">{formatDateTime(payment.reviewedAt)}</p>
+                                        <p className="text-sm font-medium text-foreground">{formatDateTime(reviewedAt)}</p>
                                     </div>
                                 </div>
                             )}
@@ -193,7 +214,7 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="section-title">Fecha de Creación</p>
-                                <p className="text-sm font-medium text-foreground">{formatDateTime(payment.createdAt)}</p>
+                                <p className="text-sm font-medium text-foreground">{formatDateTime(createdAt)}</p>
                             </div>
                         </div>
 
@@ -203,7 +224,7 @@ export function DetailsSection({ payment }: DetailsSectionProps) {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="section-title">Última Actualización</p>
-                                <p className="text-sm font-medium text-foreground">{formatDateTime(payment.updatedAt)}</p>
+                                <p className="text-sm font-medium text-foreground">{formatDateTime(updatedAt)}</p>
                             </div>
                         </div>
                     </div>

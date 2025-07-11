@@ -1,22 +1,36 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { PaymentStatus } from '@/features/payment/types/enums-payments'
+import { PaymentConfig } from '@/features/payment/types/response-payment'
+import { formatAmount, formatDateTime, getStatusConfig } from '@/features/payment/utils/payement.utils'
 import {
+    Banknote,
     Calendar,
     CreditCard,
     DollarSign,
     Package,
-    User,
-    Banknote
+    User
 } from 'lucide-react'
-import { formatAmount, formatDateTime, getStatusConfig } from '../../utils/payement.utils'
-import { PaymentDetailResponse } from '../../types/payments.type'
 
 interface OverviewSectionProps {
-    payment: PaymentDetailResponse
+    status: PaymentStatus
+    amount: number
+    createdAt: string
+    updatedAt: string
+    paymentConfig: PaymentConfig
+    id: number
+    paymentMethod: string
+    reviewedByEmail?: string | null
+    reviewedAt?: string | null
+    bankName?: string | null
+    operationCode?: string | null
+    rejectionReason?: string | null
 }
 
-export function OverviewSection({ payment }: OverviewSectionProps) {
-    const statusConfig = getStatusConfig(payment.status)
+export function OverviewSection(
+    { amount, createdAt, status, updatedAt, paymentConfig, id, paymentMethod, rejectionReason, operationCode, reviewedAt, bankName, reviewedByEmail }
+        : OverviewSectionProps) {
+    const statusConfig = getStatusConfig(status)
     const StatusIcon = statusConfig.icon
 
     return (
@@ -27,10 +41,10 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                     <div className="flex items-center justify-between">
                         <div>
                             <CardTitle className="text-2xl font-bold">
-                                {formatAmount(payment.amount)}
+                                {formatAmount(amount)}
                             </CardTitle>
                             <p className="text-gray-600 dark:text-gray-400">
-                                {payment.paymentConfig.name}
+                                {paymentConfig.name}
                             </p>
                         </div>
                         <Badge variant={statusConfig.variant} className={`${statusConfig.className} text-sm px-3 py-1`}>
@@ -43,22 +57,22 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center">
                             <div className="text-sm text-gray-500 mb-1">ID del Pago</div>
-                            <div className="font-semibold">#{payment.id}</div>
+                            <div className="font-semibold">#{id}</div>
                         </div>
                         <div className="text-center">
                             <div className="text-sm text-gray-500 mb-1">Método</div>
-                            <div className="font-semibold">{payment.paymentMethod}</div>
+                            <div className="font-semibold">{paymentMethod}</div>
                         </div>
                         <div className="text-center">
                             <div className="text-sm text-gray-500 mb-1">Creado</div>
                             <div className="font-semibold text-sm">
-                                {formatDateTime(payment.createdAt)}
+                                {formatDateTime(createdAt)}
                             </div>
                         </div>
                         <div className="text-center">
                             <div className="text-sm text-gray-500 mb-1">Actualizado</div>
                             <div className="font-semibold text-sm">
-                                {formatDateTime(payment.updatedAt)}
+                                {formatDateTime(updatedAt)}
                             </div>
                         </div>
                     </div>
@@ -81,7 +95,7 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500">Método de Pago</p>
-                                <p className="font-semibold">{payment.paymentMethod}</p>
+                                <p className="font-semibold">{paymentMethod}</p>
                             </div>
                         </div>
 
@@ -92,24 +106,24 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                             <div>
                                 <p className="text-sm text-gray-500">Monto Total</p>
                                 <p className="font-semibold text-green-700">
-                                    {formatAmount(payment.amount)}
+                                    {formatAmount(amount)}
                                 </p>
                             </div>
                         </div>
 
-                        {payment.bankName && (
+                        {bankName && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/20">
                                     <Banknote className="h-5 w-5 text-purple-600" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Banco</p>
-                                    <p className="font-semibold">{payment.bankName}</p>
+                                    <p className="font-semibold">{bankName}</p>
                                 </div>
                             </div>
                         )}
 
-                        {payment.operationCode && (
+                        {operationCode && (
                             <div className="info-field">
                                 <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/20">
                                     <Package className="h-5 w-5 text-orange-600" />
@@ -117,7 +131,7 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                                 <div>
                                     <p className="text-sm text-gray-500">Código de Operación</p>
                                     <p className="font-mono text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-                                        {payment.operationCode}
+                                        {operationCode}
                                     </p>
                                 </div>
                             </div>
@@ -127,7 +141,7 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
             </Card>
 
             {/* Review Information */}
-            {(payment.reviewedByEmail || payment.reviewedAt) && (
+            {(reviewedByEmail || reviewedAt) && (
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -137,19 +151,19 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {payment.reviewedByEmail && (
+                            {reviewedByEmail && (
                                 <div className="info-field">
                                     <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
                                         <User className="h-5 w-5 text-gray-600" />
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-500">Revisado por</p>
-                                        <p className="font-semibold">{payment.reviewedByEmail}</p>
+                                        <p className="font-semibold">{reviewedByEmail}</p>
                                     </div>
                                 </div>
                             )}
 
-                            {payment.reviewedAt && (
+                            {reviewedAt && (
                                 <div className="info-field">
                                     <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
                                         <Calendar className="h-5 w-5 text-gray-600" />
@@ -157,20 +171,20 @@ export function OverviewSection({ payment }: OverviewSectionProps) {
                                     <div>
                                         <p className="text-sm text-gray-500">Fecha de Revisión</p>
                                         <p className="font-semibold">
-                                            {formatDateTime(payment.reviewedAt)}
+                                            {formatDateTime(reviewedAt)}
                                         </p>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {payment.rejectionReason && (
+                        {rejectionReason && (
                             <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                                 <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">
                                     Motivo de Rechazo
                                 </h4>
                                 <p className="text-red-700 dark:text-red-300">
-                                    {payment.rejectionReason}
+                                    {rejectionReason}
                                 </p>
                             </div>
                         )}

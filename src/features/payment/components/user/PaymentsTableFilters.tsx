@@ -27,9 +27,10 @@ import {
     SortAsc,
     SortDesc
 } from 'lucide-react'
-import { PaymentConfig, PaymentStatus } from '../../types/payments.type'
 import { usePaymentFilters } from '../../hooks/usePaymentFilters'
 import { PAYMENT_STATUS_LABELS, SORT_OPTIONS } from '../../constants/payments.constants'
+import { PaymentStatus } from '../../types/enums-payments'
+import { PaymentConfig } from '../../types/response-payment'
 
 interface PaymentsTableFiltersProps {
     search: string

@@ -16,15 +16,15 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { PaymentDetailResponse } from "../../types/payments.type";
 import { formatCurrency } from "@/features/shared/utils/formatCurrency";
-import { formatDateTime } from "../../utils/payement.utils";
+import { PaymentItem } from "@/features/payment/types/response-payment";
+import { formatDateTime } from "@/features/payment/utils/payement.utils";
 
 
 interface ImageModalProps {
   isOpen: boolean;
   onClose: () => void;
-  items: PaymentDetailResponse['items'];
+  items: PaymentItem[]
   initialIndex: number;
   paymentMethod: string;
 }

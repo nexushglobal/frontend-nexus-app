@@ -1,49 +1,63 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDateTime } from "@/features/payment/utils/payement.utils";
 import {
     CheckCircle,
-    XCircle,
     Clock,
-    Plus,
     Edit,
+    History,
+    Plus,
     User,
-    History
+    XCircle
 } from "lucide-react";
-import { PaymentDetailResponse } from "@/features/payment/types/payments.type";
-import { formatDateTime } from "@/features/payment/utils/payement.utils";
 
 interface TimelineSectionProps {
-    payment: PaymentDetailResponse;
+    createdAt: string;
+    updatedAt: string;
+    reviewedAt: string | null;
+    reviewedByEmail: string | null;
+    status: string;
+    paymentMethod: string;
+    rejectionReason?: string | null;
 }
 
-export function TimelineSection({ payment }: TimelineSectionProps) {
+export function TimelineSection({
+    createdAt,
+    updatedAt,
+    reviewedAt,
+    reviewedByEmail,
+    status,
+    paymentMethod,
+    rejectionReason
+}: TimelineSectionProps) {
     const timelineEvents = [
         {
             id: 1,
             type: "created",
             title: "Pago Creado",
-            description: `Pago iniciado con método ${payment.paymentMethod}`,
-            timestamp: payment.createdAt,
+            description: `Pago iniciado con método ${paymentMethod}`,
+
+            timestamp: createdAt,
             icon: Plus,
             status: "completed"
         },
-        ...(payment.updatedAt !== payment.createdAt ? [{
+        ...(updatedAt !== createdAt ? [{
             id: 2,
             type: "updated",
             title: "Información Actualizada",
             description: "Los datos del pago fueron modificados",
-            timestamp: payment.updatedAt,
+            timestamp: updatedAt,
             icon: Edit,
             status: "completed"
         }] : []),
-        ...(payment.reviewedAt ? [{
+        ...(reviewedAt ? [{
             id: 3,
             type: "reviewed",
-            title: payment.status === "APPROVED" ? "Pago Aprobado" : payment.status === "REJECTED" ? "Pago Rechazado" : "Pago Revisado",
-            description: `Revisado por ${payment.reviewedByEmail || 'Sistema'}`,
-            timestamp: payment.reviewedAt,
-            icon: payment.status === "APPROVED" ? CheckCircle : payment.status === "REJECTED" ? XCircle : User,
-            status: payment.status === "APPROVED" ? "success" : payment.status === "REJECTED" ? "error" : "info"
+            title: status === "APPROVED" ? "Pago Aprobado" : status === "REJECTED" ? "Pago Rechazado" : "Pago Revisado",
+            description: `Revisado por ${reviewedByEmail || 'Sistema'}`,
+            timestamp: reviewedAt,
+            icon: status === "APPROVED" ? CheckCircle : status === "REJECTED" ? XCircle : User,
+            status: status === "APPROVED" ? "success" : status === "REJECTED" ? "error" : "info"
         }] : [])
     ].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
@@ -119,10 +133,10 @@ export function TimelineSection({ payment }: TimelineSectionProps) {
                                     </div>
 
                                     {/* Additional context for review events */}
-                                    {event.type === "reviewed" && payment.rejectionReason && (
+                                    {event.type === "reviewed" && rejectionReason && (
                                         <div className="mt-3 p-3 bg-destructive/5 border border-destructive/10 rounded-lg">
                                             <p className="text-sm text-destructive font-medium mb-1">Motivo del rechazo:</p>
-                                            <p className="text-sm text-destructive/80">{payment.rejectionReason}</p>
+                                            <p className="text-sm text-destructive/80">{rejectionReason}</p>
                                         </div>
                                     )}
                                 </div>
@@ -135,12 +149,12 @@ export function TimelineSection({ payment }: TimelineSectionProps) {
                 <div className="mt-6 pt-4 border-t">
                     <div className="flex items-center gap-3 p-4 bg-card rounded-lg border">
                         <div className={`p-2 rounded-lg ${getStatusConfig(
-                            payment.status === "APPROVED" ? "success" :
-                                payment.status === "REJECTED" ? "error" : "info"
+                            status === "APPROVED" ? "success" :
+                                status === "REJECTED" ? "error" : "info"
                         ).bgColor}`}>
-                            {payment.status === "APPROVED" ? (
+                            {status === "APPROVED" ? (
                                 <CheckCircle className="h-5 w-5 text-success" />
-                            ) : payment.status === "REJECTED" ? (
+                            ) : status === "REJECTED" ? (
                                 <XCircle className="h-5 w-5 text-destructive" />
                             ) : (
                                 <Clock className="h-5 w-5 text-warning" />
@@ -149,20 +163,20 @@ export function TimelineSection({ payment }: TimelineSectionProps) {
                         <div className="flex-1">
                             <p className="font-medium text-foreground">Estado Actual</p>
                             <p className="text-sm text-muted-foreground">
-                                {payment.status === "APPROVED" ? "El pago ha sido aprobado exitosamente" :
-                                    payment.status === "REJECTED" ? "El pago fue rechazado y requiere atención" :
+                                {status === "APPROVED" ? "El pago ha sido aprobado exitosamente" :
+                                    status === "REJECTED" ? "El pago fue rechazado y requiere atención" :
                                         "El pago está pendiente de revisión"}
                             </p>
                         </div>
                         <Badge className={`${getStatusConfig(
-                            payment.status === "APPROVED" ? "success" :
-                                payment.status === "REJECTED" ? "error" : "info"
+                            status === "APPROVED" ? "success" :
+                                status === "REJECTED" ? "error" : "info"
                         ).bgColor} ${getStatusConfig(
-                            payment.status === "APPROVED" ? "success" :
-                                payment.status === "REJECTED" ? "error" : "info"
+                            status === "APPROVED" ? "success" :
+                                status === "REJECTED" ? "error" : "info"
                         ).iconColor} border-0`}>
-                            {payment.status === "APPROVED" ? "Aprobado" :
-                                payment.status === "REJECTED" ? "Rechazado" : "Pendiente"}
+                            {status === "APPROVED" ? "Aprobado" :
+                                status === "REJECTED" ? "Rechazado" : "Pendiente"}
                         </Badge>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import { PaymentStatus } from "../types/payments.type";
+import { PaymentStatus } from "../types/enums-payments";
 
 export const PAYMENT_CACHE_TAGS = {
   USER_PAYMENTS: "user-payments",

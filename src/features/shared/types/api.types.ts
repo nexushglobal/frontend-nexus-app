@@ -31,3 +31,16 @@ export class ApiError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+export interface ApiPaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
+export interface PaginationMeta {
+  pagination: ApiPaginationMeta;
+}

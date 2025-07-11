@@ -8,29 +8,27 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Meta } from '@/types/pagination.types';
+import { ApiPaginationMeta, } from '@/features/shared/types/api.types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface TablePaginationProps {
-  meta: Meta;
+  pagination: ApiPaginationMeta;
 }
 
 export function TableQueryPagination({
-  meta: { currentPage, itemsPerPage, totalItems, totalPages }
+  pagination: { hasNext, hasPrev, limit, page, total, totalPages }
 }: TablePaginationProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const pageIndex = currentPage - 1;
+  const pageIndex = page - 1;
   const pageCount = totalPages;
   const pagination = {
     pageIndex,
-    pageSize: itemsPerPage
+    pageSize: limit
   };
-  const canNextPage = currentPage >= totalPages;
-  const canPreviousPage = currentPage <= 1;
 
   const onPageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -69,7 +67,7 @@ export function TableQueryPagination({
     return (
       <div className="flex w-full items-center gap-2 sm:w-auto">
         <p className="text-muted-foreground text-sm whitespace-nowrap">
-          Mostrando {totalItems} registro{totalItems !== 1 ? 's' : ''}
+          Mostrando {total} registro{total !== 1 ? 's' : ''}
         </p>
       </div>
     );
@@ -96,7 +94,7 @@ export function TableQueryPagination({
             ))}
           </SelectContent>
         </Select>
-        <p className="text-muted-foreground text-sm whitespace-nowrap">de {totalItems} registros</p>
+        <p className="text-muted-foreground text-sm whitespace-nowrap">de {total} registros</p>
       </div>
 
       <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
@@ -105,7 +103,7 @@ export function TableQueryPagination({
             variant="outline"
             size="sm"
             onClick={() => previousPage()}
-            disabled={canPreviousPage}
+            disabled={hasPrev}
             className="text-muted-foreground h-8 px-2"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -129,8 +127,8 @@ export function TableQueryPagination({
                   size="sm"
                   onClick={() => setPageIndex(pageNumber - 1)}
                   className={`h-8 w-8 p-0 ${pageNumber === pageIndex + 1
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                      : 'text-muted-foreground'
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    : 'text-muted-foreground'
                     }`}
                 >
                   {pageNumber}
@@ -149,7 +147,7 @@ export function TableQueryPagination({
             variant="outline"
             size="sm"
             onClick={() => nextPage()}
-            disabled={canNextPage}
+            disabled={hasNext}
             className="text-muted-foreground h-8 px-2"
           >
             <ChevronRight className="h-4 w-4" />

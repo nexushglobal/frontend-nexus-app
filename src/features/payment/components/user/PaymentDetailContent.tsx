@@ -6,18 +6,19 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, MoreHorizontal } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { PaymentDetailResponse } from '../../types/payments.type'
+import { PaymentUserDetailResponse } from '../../types/response-payment'
 import { paymentDetailMenuSections } from '../../utils/menu.utils'
-import { OverviewSection } from './OverviewSection'
-import { DetailsSection } from './section/DetailsSection'
-import { ItemsSection } from './section/ItemsSection'
-import { MetadataSection } from './section/MetadataSection'
-import { TimelineSection } from './section/TimelineSection'
+
+import { OverviewSection } from '../shared/sections/OverviewSection'
+import { DetailsSection } from '../shared/sections/DetailsSection'
+import { ItemsSection } from '../shared/sections/ItemsSection'
+import { TimelineSection } from '../shared/sections/TimelineSection'
+import { MetadataSection } from '../shared/sections/MetadataSection'
 
 
 
 interface PaymentDetailContentProps {
-    payment: PaymentDetailResponse
+    payment: PaymentUserDetailResponse
     paymentId: string
 }
 
@@ -39,17 +40,17 @@ export function PaymentDetailContent({ payment, paymentId }: PaymentDetailConten
     const renderSection = () => {
         switch (activeSection) {
             case 'overview':
-                return <OverviewSection payment={payment} />
+                return <OverviewSection {...payment} />
             case 'details':
-                return <DetailsSection payment={payment} />
+                return <DetailsSection {...payment} />
             case 'items':
-                return <ItemsSection payment={payment} />
+                return <ItemsSection {...payment} />
             case 'timeline':
-                return <TimelineSection payment={payment} />
+                return <TimelineSection {...payment} />
             case 'metadata':
-                return <MetadataSection payment={payment} />
+                return <MetadataSection metadata={payment.metadata} />
             default:
-                return <OverviewSection payment={payment} />
+                return <OverviewSection {...payment} />
         }
     }
 
@@ -155,10 +156,8 @@ export function PaymentDetailContent({ payment, paymentId }: PaymentDetailConten
         );
     }
 
-    // Desktop Layout
     return (
         <div className="grid grid-cols-12 gap-6">
-            {/* Desktop Sidebar Navigation */}
             <div className="col-span-3">
                 <Card>
 

@@ -3,11 +3,11 @@ import { Card, CardContent } from '@/components/ui/card'
 import { PageHeader } from '@/features/shared/components/common/PageHeader'
 import { Suspense } from 'react'
 import { getUserPayments } from '../../actions/get-user-payments'
-import { PaymentStatus } from '../../types/payments.type'
+import { PaymentStatus } from '../../types/enums-payments'
 import { PaymentsTableSkeleton } from '../shared/skeleton/PaymentsTableSkeleton'
+import { PaymentCards } from '../user/PaymentCards'
 import { PaymentsTable } from '../user/PaymentsTable'
 import { PaymentsTableFilters } from '../user/PaymentsTableFilters'
-import { PaymentCards } from '../user/PaymentCards'
 
 interface PaymentsPageProps {
     searchParams?: {
@@ -46,7 +46,7 @@ export async function PaymentsPage({ searchParams }: PaymentsPageProps) {
     const page = searchParams?.page ? parseInt(searchParams.page) : 1
     const limit = searchParams?.limit ? parseInt(searchParams.limit) : 20
 
-    const { data, meta, paymentConfigs } = await getUserPayments({
+    const { data, success } = await getUserPayments({
         search,
         status,
         paymentConfigId,
@@ -57,6 +57,19 @@ export async function PaymentsPage({ searchParams }: PaymentsPageProps) {
         page,
         limit
     })
+    if (!success || !data) {
+        return (
+            <div className="container py-8">
+                <PageHeader
+                    title="Mis Pagos"
+                    subtitle="Gestiona y revisa el historial de tus pagos realizados"
+                    className="mb-6"
+                    variant="gradient"
+                />
+                <p className="text-red-500">Error al cargar los pagos del usuario.</p>
+            </div>
+        )
+    }
     return (
         <div className="container py-8">
             <PageHeader
@@ -78,7 +91,7 @@ export async function PaymentsPage({ searchParams }: PaymentsPageProps) {
                                 endDate={endDate}
                                 sortBy={sortBy}
                                 sortOrder={sortOrder}
-                                paymentConfigs={paymentConfigs}
+                                paymentConfigs={data.meta.activePaymentConfigs}
                             />
                         </CardContent>
                     </Card>
@@ -86,16 +99,16 @@ export async function PaymentsPage({ searchParams }: PaymentsPageProps) {
                     <div className="hidden md:block">
                         <Card className="border-gray-200 shadow-sm dark:border-gray-800">
                             <CardContent>
-                                <PaymentsTable data={data} />
+                                <PaymentsTable data={data.items} />
                             </CardContent>
                         </Card>
                     </div>
 
                     <div className="md:hidden">
-                        <PaymentCards data={data} />
+                        <PaymentCards data={data.items} />
                     </div>
 
-                    <TableQueryPagination meta={meta} />
+                    <TableQueryPagination pagination={data.pagination} />
                 </div>
             </Suspense>
         </div>

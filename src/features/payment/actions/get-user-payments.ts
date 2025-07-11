@@ -6,46 +6,29 @@ import {
   PAYMENT_CACHE_TAGS,
   REVALIDATE_TIME,
 } from "../constants/payments.constants";
-import {
-  PaginatedPaymentsResponse,
-  Payment,
-  PaymentConfig,
-  PaymentTableMeta,
-} from "../types/payments.type";
+import { PaymentUserResponse } from "../types/response-payment";
 
 export async function getUserPayments(
-  params?: Record<string, unknown>
-): Promise<{
-  data: Payment[];
-  meta: PaymentTableMeta;
-  paymentConfigs: PaymentConfig[];
-}> {
+  params?: Record<string, string | number | boolean | undefined | null>
+) {
   try {
-    const response = await api.get<PaginatedPaymentsResponse["data"]>(
-      "/api/user/payments",
-      {
-        params,
-        next: {
-          tags: [PAYMENT_CACHE_TAGS.USER_PAYMENTS],
-          revalidate: REVALIDATE_TIME,
-        },
-      }
-    );
-
-    const meta: PaymentTableMeta = {
-      totalItems: response.pagination.total,
-      itemsPerPage: response.pagination.limit,
-      totalPages: response.pagination.totalPages,
-      currentPage: response.pagination.page,
-    };
+    const response = await api.get<PaymentUserResponse>("/api/user/payments", {
+      params,
+      next: {
+        tags: [PAYMENT_CACHE_TAGS.USER_PAYMENTS],
+        revalidate: REVALIDATE_TIME,
+      },
+    });
 
     return {
-      data: response.items,
-      meta,
-      paymentConfigs: response.meta.activePaymentConfigs,
+      data: response,
+      success: true,
     };
   } catch (error) {
-    console.error("Error al obtener pagos del usuario:", error);
-    throw new Error("No se pudieron cargar los pagos");
+    return {
+      success: false,
+      message: "Error al obtener los pagos del usuario",
+      errors: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }

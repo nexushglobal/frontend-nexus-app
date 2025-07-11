@@ -1,18 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PaymentDetailResponse } from "../../actions";
 import {
-    FileText,
-    Info,
     Database,
+    Info,
     Key
 } from "lucide-react";
 
 interface MetadataSectionProps {
-    payment: PaymentDetailResponse;
+    metadata: Record<string, any>;
 }
 
-export function MetadataSection({ payment }: MetadataSectionProps) {
-    const metadataEntries = Object.entries(payment.metadata || {});
+export function MetadataSection({ metadata }: MetadataSectionProps) {
+    const metadataEntries = Object.entries(metadata || {});
 
     const formatKey = (key: string) => {
         return key

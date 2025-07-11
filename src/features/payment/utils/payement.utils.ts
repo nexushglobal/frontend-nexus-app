@@ -15,7 +15,8 @@ import {
   DATE_FORMAT,
   TIME_FORMAT,
 } from "../constants/payments.constants";
-import { PaymentDetailResponse, PaymentStatus } from "../types/payments.type";
+import { PaymentStatus } from "../types/enums-payments";
+import { PaymentUserDetailResponse } from "../types/response-payment";
 
 export function formatDate(dateString: string): string {
   return format(new Date(dateString), DATE_FORMAT, { locale: es });
@@ -59,7 +60,7 @@ export function getStatusIcon(status: PaymentStatus): LucideIcon {
   }
 }
 
-export function generateTimelineEvents(payment: PaymentDetailResponse) {
+export function generateTimelineEvents(payment: PaymentUserDetailResponse) {
   const events = [
     {
       id: 1,
