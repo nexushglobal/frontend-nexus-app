@@ -2,9 +2,9 @@ import { PageHeader } from '@/components/common/PageHeader'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertTriangle } from 'lucide-react'
 import { Suspense } from 'react'
-import { getPaymentDetail } from '../actions/get-payment-detail'
-import { PaymentDetailContent } from './PaymentDetailContent'
-import { PaymentDetailLoading } from './PaymentDetailLoading'
+import { getPaymentDetail } from '../../actions/get-payment-detail'
+import { PaymentDetailContent } from '../user/PaymentDetailContent'
+import { PaymentDetailLoading } from '../user/PaymentDetailLoading'
 
 interface PaymentDetailPageProps {
     paymentId: string

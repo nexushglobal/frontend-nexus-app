@@ -19,8 +19,8 @@ import {
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { formatDate, formatTime, formatAmount, getStatusConfig } from '../utils/payement.utils'
-import { Payment } from '../types/payments.type'
+import { Payment } from '../../types/payments.type'
+import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
 
 interface PaymentsTableProps {
     data: Payment[]

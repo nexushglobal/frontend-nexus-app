@@ -19,19 +19,17 @@ import {
     Calendar,
     ChevronDown,
     ChevronUp,
-    CreditCard,
     Filter,
     Loader2,
     RotateCcw,
     Search,
     Settings2,
     SortAsc,
-    SortDesc,
-    X
+    SortDesc
 } from 'lucide-react'
-import { usePaymentFilters } from '../hooks/usePaymentFilters'
-import { PAYMENT_STATUS_LABELS, SORT_OPTIONS } from '../constants/payments.constants'
-import { PaymentConfig, PaymentStatus } from '../types/payments.type'
+import { PaymentConfig, PaymentStatus } from '../../types/payments.type'
+import { usePaymentFilters } from '../../hooks/usePaymentFilters'
+import { PAYMENT_STATUS_LABELS, SORT_OPTIONS } from '../../constants/payments.constants'
 
 interface PaymentsTableFiltersProps {
     search: string

@@ -1,4 +1,4 @@
-import { PaymentDetailPage } from '@/features/payment/components/PaymentDetailPage'
+import { PaymentDetailPage } from '@/features/payment/components/pages/PaymentDetailPage'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

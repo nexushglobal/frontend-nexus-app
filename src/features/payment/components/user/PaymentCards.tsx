@@ -11,8 +11,8 @@ import {
     Package
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { Payment } from '../types/payments.type'
-import { formatAmount, formatDate, formatTime, getStatusConfig } from '../utils/payement.utils'
+import { Payment } from '../../types/payments.type'
+import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
 
 interface PaymentCardsProps {
     data: Payment[]
