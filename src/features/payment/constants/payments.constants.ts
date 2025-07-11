@@ -3,6 +3,8 @@ import { PaymentStatus } from "../types/enums-payments";
 export const PAYMENT_CACHE_TAGS = {
   USER_PAYMENTS: "user-payments",
   PAYMENT_DETAIL: "payment-detail",
+  ADMIN_PAYMENTS: "admin-payments",
+  ADMIN_PAYMENT_DETAIL: "admin-payment-detail",
 } as const;
 
 export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {

@@ -2,12 +2,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { PageHeader } from '@/features/shared/components/common/PageHeader'
 import { TableQueryPagination } from '@/features/shared/components/table/TableQueryPagination'
 import { Suspense } from 'react'
-import { getUserPayments } from '../../actions/get-user-payments'
 import { validatePaymentSearchParams } from '../../utils/validate-search-params'
 import { PaymentsTableSkeleton } from '../shared/skeleton/PaymentsTableSkeleton'
 import { PaymentCards } from '../user/PaymentCards'
 import { PaymentsTable } from '../user/PaymentsTable'
 import { PaymentsTableFilters } from '../user/PaymentsTableFilters'
+import { getUserPaymentsAction } from '../../actions/get-payments'
 
 interface PaymentsPageProps {
     searchParams?: Record<string, string | string[] | undefined>
@@ -16,7 +16,7 @@ interface PaymentsPageProps {
 export async function PaymentsPage({ searchParams }: PaymentsPageProps) {
     const params = validatePaymentSearchParams(searchParams)
 
-    const { data, success } = await getUserPayments(params)
+    const { data, success } = await getUserPaymentsAction(params)
 
     if (!success || !data) {
         return <PaymentErrorFallback />
@@ -40,7 +40,7 @@ export async function PaymentsPage({ searchParams }: PaymentsPageProps) {
 
 function PaymentContent({ params, data }: {
     params: ReturnType<typeof validatePaymentSearchParams>
-    data: Awaited<ReturnType<typeof getUserPayments>>['data']
+    data: Awaited<ReturnType<typeof getUserPaymentsAction>>['data']
 }) {
     return (
         <div className="space-y-6">

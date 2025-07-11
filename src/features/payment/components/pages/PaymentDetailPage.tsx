@@ -1,17 +1,17 @@
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { PageHeader } from '@/features/shared/components/common/PageHeader'
 import { AlertTriangle } from 'lucide-react'
 import { Suspense } from 'react'
-import { getPaymentDetail } from '../../actions/get-payment-detail'
-import { PaymentDetailContent } from '../user/PaymentDetailContent'
+import { getPaymentDetailAction } from '../../actions/get-payment-detail'
 import { PaymentDetailLoading } from '../shared/skeleton/PaymentDetailLoading'
-import { PageHeader } from '@/features/shared/components/common/PageHeader'
+import { PaymentDetailContent } from '../user/PaymentDetailContent'
 
 interface PaymentDetailPageProps {
     paymentId: string
 }
 
 async function PaymentDetailData({ paymentId }: { paymentId: string }) {
-    const result = await getPaymentDetail(paymentId)
+    const result = await getPaymentDetailAction(paymentId)
 
     if (!result.success || !result.data) {
         return (

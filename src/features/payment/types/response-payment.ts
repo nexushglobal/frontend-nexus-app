@@ -9,6 +9,14 @@ export interface PaymentConfig {
   description?: string;
 }
 
+export interface UserInfo {
+  id: number;
+  email: string;
+  fullName: string;
+  documentNumber: string;
+  phone: string;
+}
+
 export interface PaymentBase {
   id: number;
   amount: number;
@@ -53,4 +61,32 @@ export interface PaymentItem {
   amount: number;
   bankName: string | null;
   transactionDate: string;
+}
+
+// ---- PAYMENTS ADMIN ----
+export interface PaymentAdmin extends PaymentBase {
+  user: UserInfo;
+  operationCode?: string | null;
+  ticketNumber?: string | null;
+}
+
+export interface PaymentAdminResponse extends PaginationMeta {
+  items: PaymentAdmin[];
+  meta: {
+    activePaymentConfigs: PaymentConfig[];
+  };
+}
+
+export interface PaymentAdminDetailResponse extends PaymentBase {
+  user: UserInfo;
+  rejectionReason: string | null;
+  reviewedByEmail: string | null;
+  reviewedAt: string | null;
+  isArchived: boolean;
+  relatedEntityType: string;
+  relatedEntityId: string;
+  metadata: Record<string, any>;
+  externalReference: string | null;
+  gatewayTransactionId: string | null;
+  items: PaymentItem[];
 }
