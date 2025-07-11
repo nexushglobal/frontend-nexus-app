@@ -1,3 +1,4 @@
+// src/features/payment/components/user/PaymentsTableFilters.tsx
 'use client'
 
 import { Badge } from '@/components/ui/badge'
@@ -27,21 +28,15 @@ import {
     SortAsc,
     SortDesc
 } from 'lucide-react'
-import { usePaymentFilters } from '../../hooks/usePaymentFilters'
 import { PAYMENT_STATUS_LABELS, SORT_OPTIONS } from '../../constants/payments.constants'
-import { PaymentStatus } from '../../types/enums-payments'
+import { usePaymentFilters } from '../../hooks/usePaymentFilters'
+import { PaymentSearchParams } from '../../schemas/payment-search-params.schema'
 import { PaymentConfig } from '../../types/response-payment'
 
-interface PaymentsTableFiltersProps {
-    search: string
-    status: PaymentStatus | undefined
-    paymentConfigId: number | undefined
-    startDate: string | undefined
-    endDate: string | undefined
-    sortBy: string
-    sortOrder: 'ASC' | 'DESC'
+interface PaymentsTableFiltersProps extends PaymentSearchParams {
     paymentConfigs: PaymentConfig[]
 }
+
 
 export function PaymentsTableFilters(props: PaymentsTableFiltersProps) {
     const {
@@ -69,7 +64,6 @@ export function PaymentsTableFilters(props: PaymentsTableFiltersProps) {
             "w-full space-y-3 transition-opacity duration-200",
             isLoading && "opacity-60"
         )}>
-            {/* Overlay de loading */}
             {isLoading && (
                 <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 z-10 flex items-center justify-center rounded-lg">
                     <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-md shadow-lg">

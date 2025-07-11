@@ -1,57 +1,37 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
-import { PaymentStatus } from "../types/enums-payments";
-
-interface UsePaymentFiltersProps {
-  search: string;
-  status: PaymentStatus | undefined;
-  paymentConfigId: number | undefined;
-  startDate: string | undefined;
-  endDate: string | undefined;
-  sortBy: string;
-  sortOrder: "ASC" | "DESC";
-}
+import { PaymentSearchParams } from "../schemas/payment-search-params.schema";
 
 interface DateRange {
   from: Date | undefined;
   to: Date | undefined;
 }
-export function usePaymentFilters({
-  search: initialSearch,
-  status: initialStatus,
-  paymentConfigId: initialPaymentConfigId,
-  startDate: initialStartDate,
-  endDate: initialEndDate,
-  sortBy: initialSortBy,
-  sortOrder: initialSortOrder,
-}: UsePaymentFiltersProps) {
+
+interface UsePaymentFiltersProps extends PaymentSearchParams {}
+
+export function usePaymentFilters(props: UsePaymentFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Estados para loading
   const [isPending, startTransition] = useTransition();
   const [isApplyingFilters, setIsApplyingFilters] = useState(false);
 
-  // Estados locales
-  const [searchValue, setSearchValue] = useState(initialSearch);
-  const [statusValue, setStatusValue] = useState<string>(
-    initialStatus || "all"
-  );
+  const [searchValue, setSearchValue] = useState(props.search);
+  const [statusValue, setStatusValue] = useState<string>(props.status || "all");
   const [paymentConfigValue, setPaymentConfigValue] = useState<string>(
-    initialPaymentConfigId?.toString() || "all"
+    props.paymentConfigId?.toString() || "all"
   );
-  const [sortByValue, setSortByValue] = useState<string>(initialSortBy);
+  const [sortByValue, setSortByValue] = useState<string>(props.sortBy);
   const [sortOrderValue, setSortOrderValue] = useState<"ASC" | "DESC">(
-    initialSortOrder
+    props.sortOrder
   );
   const [dateRange, setDateRange] = useState<DateRange>({
-    from: initialStartDate ? new Date(initialStartDate) : undefined,
-    to: initialEndDate ? new Date(initialEndDate) : undefined,
+    from: props.startDate ? new Date(props.startDate) : undefined,
+    to: props.endDate ? new Date(props.endDate) : undefined,
   });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
-  // Función para crear query string
   const createQueryString = useCallback(
     (params: Record<string, string | null>) => {
       const newSearchParams = new URLSearchParams(searchParams?.toString());
@@ -69,7 +49,6 @@ export function usePaymentFilters({
     [searchParams]
   );
 
-  // Función para aplicar filtros con loading
   const applyFilters = useCallback(() => {
     setIsApplyingFilters(true);
 
@@ -77,21 +56,20 @@ export function usePaymentFilters({
       search: searchValue.trim() || null,
       status: statusValue === "all" ? null : statusValue,
       paymentConfigId: paymentConfigValue === "all" ? null : paymentConfigValue,
-      startDate: dateRange.from?.toISOString().split("T")[0] || null,
-      endDate: dateRange.to?.toISOString().split("T")[0] || null,
+      startDate: dateRange.from
+        ? dateRange.from.toISOString().split("T")[0]
+        : null,
+      endDate: dateRange.to ? dateRange.to.toISOString().split("T")[0] : null,
       sortBy: sortByValue,
       sortOrder: sortOrderValue,
-      page: "1", // Reset page when applying filters
+      page: "1",
     };
 
     const queryString = createQueryString(params);
 
     startTransition(() => {
       router.push(`${pathname}?${queryString}`);
-      // Reset loading state after a brief delay to allow navigation to complete
-      setTimeout(() => {
-        setIsApplyingFilters(false);
-      }, 100);
+      setIsApplyingFilters(false);
     });
   }, [
     searchValue,
@@ -101,29 +79,23 @@ export function usePaymentFilters({
     sortByValue,
     sortOrderValue,
     createQueryString,
-    router,
     pathname,
+    router,
   ]);
 
-  // Función para resetear filtros con loading
   const resetFilters = useCallback(() => {
-    setIsApplyingFilters(true);
     setSearchValue("");
     setStatusValue("all");
     setPaymentConfigValue("all");
-    setDateRange({ from: undefined, to: undefined });
     setSortByValue("createdAt");
     setSortOrderValue("DESC");
+    setDateRange({ from: undefined, to: undefined });
 
     startTransition(() => {
       router.push(pathname);
-      setTimeout(() => {
-        setIsApplyingFilters(false);
-      }, 100);
     });
-  }, [router, pathname]);
+  }, [pathname, router]);
 
-  // Función para manejar cambio de búsqueda
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
@@ -131,20 +103,9 @@ export function usePaymentFilters({
     []
   );
 
-  // Función para manejar cambio de ordenamiento
-  const handleSortChange = useCallback(
-    (field: string) => {
-      if (sortByValue === field) {
-        setSortOrderValue(sortOrderValue === "ASC" ? "DESC" : "ASC");
-      } else {
-        setSortByValue(field);
-        setSortOrderValue("DESC");
-      }
-    },
-    [sortByValue, sortOrderValue]
-  );
-
-  // Verificar si hay filtros activos
+  const handleSortChange = useCallback((value: string) => {
+    setSortByValue(value);
+  }, []);
   const hasActiveFilters =
     searchValue.trim() !== "" ||
     statusValue !== "all" ||
@@ -152,11 +113,9 @@ export function usePaymentFilters({
     dateRange.from ||
     dateRange.to;
 
-  // Estado de loading combinado
   const isLoading = isPending || isApplyingFilters;
 
   return {
-    // Estados
     searchValue,
     statusValue,
     paymentConfigValue,
@@ -166,8 +125,6 @@ export function usePaymentFilters({
     hasActiveFilters,
     showAdvancedFilters,
     isLoading,
-
-    // Setters
     setSearchValue,
     setStatusValue,
     setPaymentConfigValue,
@@ -175,8 +132,6 @@ export function usePaymentFilters({
     setSortOrderValue,
     setDateRange,
     setShowAdvancedFilters,
-
-    // Funciones
     applyFilters,
     resetFilters,
     handleSearchChange,

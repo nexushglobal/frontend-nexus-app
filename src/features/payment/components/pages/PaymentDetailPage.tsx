@@ -1,10 +1,10 @@
-import { PageHeader } from '@/components/common/PageHeader'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertTriangle } from 'lucide-react'
 import { Suspense } from 'react'
 import { getPaymentDetail } from '../../actions/get-payment-detail'
 import { PaymentDetailContent } from '../user/PaymentDetailContent'
 import { PaymentDetailLoading } from '../shared/skeleton/PaymentDetailLoading'
+import { PageHeader } from '@/features/shared/components/common/PageHeader'
 
 interface PaymentDetailPageProps {
     paymentId: string
