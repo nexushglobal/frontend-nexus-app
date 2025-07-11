@@ -1,7 +1,5 @@
 "use client";
 
-import { InfoCard } from "@/components/common/card/InfoCard";
-import { SectionHeader } from "@/components/common/card/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -17,6 +15,8 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { ProfileInfoField } from "../field/ProfileInfoField";
+import { SectionHeader } from "@/features/shared/components/card/SectionHeader";
+import { InfoCard } from "@/features/shared/components/card/InfoCard";
 
 interface ReferralCodesCardProps {
     referralCode: string;

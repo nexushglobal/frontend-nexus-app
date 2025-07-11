@@ -9,12 +9,12 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { BillingInfoFormData, billingInfoSchema } from "../../schemas/profile-schemas";
-import { InfoCard } from "@/components/common/card/InfoCard";
 import { updateBillingInfoAction } from "../../actions/update-billing-info";
 import { createFormField } from "@/features/shared/hooks/useFormField";
 import { BillingInfo } from "../../types/profile.types";
 import { FormSection } from "@/features/shared/components/form/FormSection";
 import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
+import { InfoCard } from "@/features/shared/components/card/InfoCard";
 
 interface BillingInfoModalProps {
     children: React.ReactNode;

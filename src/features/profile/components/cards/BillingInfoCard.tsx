@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Building, Edit, MapPin, Receipt } from "lucide-react";
-import { SectionHeader } from "@/components/common/card/SectionHeader";
-import { InfoCard } from "@/components/common/card/InfoCard";
 import { BillingInfo } from "../../types/profile.types";
 import { BillingInfoModal } from "../modals/BillingInfoModal";
 import { ProfileInfoField } from "../field/ProfileInfoField";
+import { SectionHeader } from "@/features/shared/components/card/SectionHeader";
+import { InfoCard } from "@/features/shared/components/card/InfoCard";
 
 interface BillingInfoCardProps {
     billingInfo: BillingInfo | null;

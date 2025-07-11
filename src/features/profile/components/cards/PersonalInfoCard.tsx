@@ -157,16 +157,7 @@ export const PersonalInfoCard = ({ profile, onUpdate }: PersonalInfoCardProps) =
                     </div>
                 ))}
 
-                {completionPercentage < 100 && (
-                    <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                        <p className="text-sm text-blue-700 font-medium">
-                            Completa tu información personal
-                        </p>
-                        <p className="text-xs text-blue-600 mt-1">
-                            Una información completa mejora tu experiencia en la plataforma
-                        </p>
-                    </div>
-                )}
+
             </CardContent>
         </Card>
     )

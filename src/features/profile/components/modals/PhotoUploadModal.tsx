@@ -9,10 +9,10 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { PhotoFormData, photoSchema } from "../../schemas/profile-schemas";
-import { InfoCard } from "@/components/common/card/InfoCard";
 import { uploadPhotoAction } from "../../actions/upload-photo";
 import { FileUploadWrapper } from "@/features/shared/components/form/FileUploadWrapper";
 import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
+import { InfoCard } from "@/features/shared/components/card/InfoCard";
 
 interface PhotoUploadModalProps {
     children: React.ReactNode;

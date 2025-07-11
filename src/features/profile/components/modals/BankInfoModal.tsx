@@ -1,6 +1,5 @@
 "use client";
 
-import { InfoCard } from "@/components/common/card/InfoCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -16,6 +15,7 @@ import { createFormField } from "@/features/shared/hooks/useFormField";
 import { BANKS } from "../../constants/profile.constants";
 import { FormSection } from "@/features/shared/components/form/FormSection";
 import { ResponsiveModal } from "@/features/shared/components/modal/ResponsiveModal";
+import { InfoCard } from "@/features/shared/components/card/InfoCard";
 
 interface BankInfoModalProps {
     children: React.ReactNode;
