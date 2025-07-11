@@ -3,3 +3,11 @@
 3. Crea tu types
 4. Crea tus actions
 5. Pidele a claude que te ayude a crear los componentes
+
+ejemplo:
+Feature Payment 
+quiero que implementes toda la funcionalidad de listar pagos por filtro en app/dashboard/(facturacion)/pagos
+debes usar componentes que ya existen si es necesario creas nuevos 
+consumir getAdminPaymentsAction la tabla es igual que la app/dashboard/(clientes)/pagos la unica diferencia es que en 
+esta se debe mostrar una columna con el detalle del cliente (user) y otra columna donde mostrar operationCode
+ticketNumber, los filtros son iguales a los de la app/dashboard/(clientes)/pagos, mantener la arquitectura de la app
