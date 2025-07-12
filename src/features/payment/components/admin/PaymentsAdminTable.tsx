@@ -1,74 +1,59 @@
+// src/features/payment/components/admin/PaymentAdminTable.tsx
 'use client'
 
+import { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-    ColumnDef,
-    getCoreRowModel,
-    getFilteredRowModel,
-    useReactTable,
-    VisibilityState
-} from '@tanstack/react-table'
-import {
-    Calendar,
-    CreditCard,
-    DollarSign,
-    Package,
-    Eye,
-    User,
-    FileText
-} from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ArrowUpDown, Calendar, DollarSign, ExternalLink, Package, User } from 'lucide-react'
+import { DataTable } from '@/features/shared/components/table/DataTable'
 import { useRouter } from 'next/navigation'
 import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
-import { PaymentAdmin } from '../../types/response-payment'
-import TableTemplate from '@/features/shared/components/table/TableTemplate'
+import type { PaymentAdmin } from '../../types/response-payment'
 import { PaymentStatus } from '../../types/enums-payments'
 
-interface PaymentsAdminTableProps {
+interface PaymentAdminTableProps {
     data: PaymentAdmin[]
+    isLoading?: boolean
+    onSortingChange?: (sorting: any) => void
+    sorting?: any
 }
 
-export function PaymentsAdminTable({ data }: PaymentsAdminTableProps) {
+export function PaymentAdminTable({
+    data,
+    isLoading,
+    onSortingChange,
+    sorting
+}: PaymentAdminTableProps) {
     const router = useRouter()
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-        id: false,
-        updatedAt: false,
-        paymentMethod: false,
-        operationDetails: false
-    })
 
-    const columns = useMemo<ColumnDef<PaymentAdmin>[]>(() => [
+    const columns: ColumnDef<PaymentAdmin>[] = [
         {
-            accessorKey: 'id',
-            header: 'ID',
-            cell: ({ row }) => (
-                <span className="font-mono text-sm text-gray-500">
-                    #{row.getValue('id')}
-                </span>
+            accessorKey: 'user',
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="p-0 h-auto hover:bg-transparent"
+                >
+                    Usuario
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
             ),
-        },
-        {
-            id: 'userInfo',
-            header: 'Cliente',
             cell: ({ row }) => {
-                const payment = row.original
-                const user = payment.user
+                const user = row.original.user
                 return (
                     <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                            <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {user.fullName}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {user.email}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Doc: {user.documentNumber}
-                            </p>
+                        <Avatar className="h-10 w-10">
+                            <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.fullName}`} />
+                            <AvatarFallback>
+                                <User className="h-4 w-4" />
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                            <p className="text-sm font-medium leading-none">{user.fullName}</p>
+                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                            <p className="text-xs text-muted-foreground">Doc: {user.documentNumber}</p>
                         </div>
                     </div>
                 )
@@ -82,18 +67,12 @@ export function PaymentsAdminTable({ data }: PaymentsAdminTableProps) {
                 return (
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                            <Package className="h-4 w-4 text-blue-600" />
-                            <span className="text-sm font-medium">
-                                {payment.paymentConfig.name}
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2">
                             <DollarSign className="h-4 w-4 text-green-600" />
                             <span className="text-sm font-semibold text-green-700 dark:text-green-400">
                                 {formatAmount(payment.amount)}
                             </span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             <span>{formatDate(payment.createdAt)}</span>
                             <span>•</span>
@@ -105,94 +84,43 @@ export function PaymentsAdminTable({ data }: PaymentsAdminTableProps) {
         },
         {
             accessorKey: 'status',
-            header: 'Estado',
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="p-0 h-auto hover:bg-transparent"
+                >
+                    Estado
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
             cell: ({ row }) => {
                 const status: PaymentStatus = row.getValue('status')
                 const config = getStatusConfig(status)
                 return (
-                    <Badge
-                        variant={config.variant as any}
-                        className={`${config.className} whitespace-nowrap`}
-                    >
-                        {/* {config.icon} */}
+                    <Badge variant={config.variant as any} className="whitespace-nowrap">
                         {config.label}
                     </Badge>
                 )
             },
         },
         {
-            accessorKey: 'operationDetails',
-            header: 'Detalles de Operación',
+            accessorKey: 'amount',
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="p-0 h-auto hover:bg-transparent"
+                >
+                    Monto
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
             cell: ({ row }) => {
-                const payment = row.original
-                const hasOperationCode = payment.operationCode
-                const hasTicketNumber = payment.ticketNumber
-
-                if (!hasOperationCode && !hasTicketNumber) {
-                    return (
-                        <span className="text-xs text-gray-400 italic">
-                            Sin detalles
-                        </span>
-                    )
-                }
-
+                const amount = parseFloat(row.getValue('amount'))
                 return (
-                    <div className="space-y-1">
-                        {hasOperationCode && (
-                            <div className="flex items-center gap-2">
-                                <FileText className="h-3 w-3 text-gray-500" />
-                                <span className="text-xs text-gray-600 dark:text-gray-400">
-                                    Op: {payment.operationCode}
-                                </span>
-                            </div>
-                        )}
-                        {hasTicketNumber && (
-                            <div className="flex items-center gap-2">
-                                <FileText className="h-3 w-3 text-gray-500" />
-                                <span className="text-xs text-gray-600 dark:text-gray-400">
-                                    Ticket: {payment.ticketNumber}
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                )
-            },
-        },
-        {
-            accessorKey: 'createdAt',
-            header: 'Fecha de Creación',
-            cell: ({ row }) => {
-                const date = row.getValue('createdAt') as string
-                return (
-                    <div className="text-sm">
-                        <div>{formatDate(date)}</div>
-                        <div className="text-xs text-gray-500">{formatTime(date)}</div>
-                    </div>
-                )
-            },
-        },
-        {
-            accessorKey: 'updatedAt',
-            header: 'Última Actualización',
-            cell: ({ row }) => {
-                const date = row.getValue('updatedAt') as string
-                return (
-                    <div className="text-sm">
-                        <div>{formatDate(date)}</div>
-                        <div className="text-xs text-gray-500">{formatTime(date)}</div>
-                    </div>
-                )
-            },
-        },
-        {
-            accessorKey: 'paymentMethod',
-            header: 'Método de Pago',
-            cell: ({ row }) => {
-                const method = row.getValue('paymentMethod') as string
-                return (
-                    <div className="flex items-center gap-2">
-                        <CreditCard className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm">{method}</span>
+                    <div className="text-right font-medium">
+                        {formatAmount(amount)}
                     </div>
                 )
             },
@@ -204,34 +132,26 @@ export function PaymentsAdminTable({ data }: PaymentsAdminTableProps) {
                 const payment = row.original
                 return (
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         onClick={() => router.push(`/dashboard/pagos/detalle/${payment.id}`)}
-                        className="flex items-center gap-2"
+                        className="h-8 px-2"
                     >
-                        <Eye className="h-4 w-4" />
-                        Ver Detalle
+                        <ExternalLink className="h-4 w-4" />
+                        <span className="sr-only">Ver detalle</span>
                     </Button>
                 )
             },
         },
-    ], [router])
-
-    const table = useReactTable({
-        data,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        state: {
-            columnVisibility,
-        },
-    })
+    ]
 
     return (
-        <TableTemplate
-            table={table}
+        <DataTable
             columns={columns}
+            data={data}
+            isLoading={isLoading}
+            onSortingChange={onSortingChange}
+            sorting={sorting}
         />
     )
 }

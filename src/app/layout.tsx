@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,29 +35,31 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Toaster
-              position="top-right"
-              richColors
-              duration={5000}
-              closeButton
-              toastOptions={{
-                className: "bg-popover text-popover-foreground",
-                style: {
-                  "--normal-bg": "var(--popover)",
-                  "--normal-text": "var(--popover-foreground)",
-                  "--normal-border": "var(--border)",
-                } as React.CSSProperties,
-              }}
+          <QueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster
+                position="top-right"
+                richColors
+                duration={5000}
+                closeButton
+                toastOptions={{
+                  className: "bg-popover text-popover-foreground",
+                  style: {
+                    "--normal-bg": "var(--popover)",
+                    "--normal-text": "var(--popover-foreground)",
+                    "--normal-border": "var(--border)",
+                  } as React.CSSProperties,
+                }}
 
-            />
-          </ThemeProvider>
+              />
+            </ThemeProvider>
+          </QueryProvider>
         </AuthProvider>
       </body>
     </html>
