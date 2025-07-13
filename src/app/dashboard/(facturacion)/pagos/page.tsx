@@ -1,4 +1,4 @@
-import { PaymentAdminPageModern } from '@/features/payment/components/pages/PaymentAdminPageModern'
+import { PaymentAdminPage } from '@/features/payment/components/pages/PaymentAdminPage'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-    return <PaymentAdminPageModern />
+    return <PaymentAdminPage />
 }

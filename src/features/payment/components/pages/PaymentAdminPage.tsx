@@ -6,17 +6,16 @@ import { TablePagination } from '@/features/shared/components/table/TablePaginat
 import { PaymentAdminFilters } from '../admin/PaymentAdminFilters'
 import { PaymentAdminCards } from '../admin/PaymentAdminCards'
 import { usePaymentAdminFiltersStore } from '../../stores/payment-filters.store'
-import { useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SortingState } from '@tanstack/react-table'
 import { useAdminPayments } from '../../hooks/usePaymentsQuery'
 import { PaymentAdminTable } from '../admin/PaymentsAdminTable'
 
-export function PaymentAdminPageModern() {
+export function PaymentAdminPage() {
     const { filters, setFilter, setFilters } = usePaymentAdminFiltersStore()
 
-    // Preparar parámetros para la query
     const queryParams = useMemo(() => {
         const params: any = {
             page: filters.page || 1,
