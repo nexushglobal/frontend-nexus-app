@@ -1,3 +1,4 @@
+// src/features/shared/components/table/DataTable.tsx
 'use client'
 
 import {
@@ -5,11 +6,13 @@ import {
     flexRender,
     getCoreRowModel,
     getSortedRowModel,
+    OnChangeFn,
     SortingState,
     useReactTable,
+    VisibilityState,
 } from '@tanstack/react-table'
 import { useState, useEffect } from 'react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Settings2 } from 'lucide-react'
 
 import {
     Table,
@@ -20,6 +23,13 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -28,6 +38,10 @@ interface DataTableProps<TData, TValue> {
     onSortingChange?: (sorting: SortingState) => void
     sorting?: SortingState
     className?: string
+    columnVisibility?: VisibilityState
+    onColumnVisibilityChange?: OnChangeFn<VisibilityState>
+    showColumnToggle?: boolean
+    emptyMessage?: string
 }
 
 export function DataTable<TData, TValue>({
@@ -36,7 +50,11 @@ export function DataTable<TData, TValue>({
     isLoading = false,
     onSortingChange,
     sorting = [],
-    className
+    className,
+    columnVisibility,
+    onColumnVisibilityChange,
+    showColumnToggle = true,
+    emptyMessage = "No hay resultados."
 }: DataTableProps<TData, TValue>) {
     const [internalSorting, setInternalSorting] = useState<SortingState>(sorting)
 
@@ -56,10 +74,12 @@ export function DataTable<TData, TValue>({
                 setInternalSorting(value);
             }
         },
+        onColumnVisibilityChange,
         state: {
             sorting: onSortingChange ? sorting : internalSorting,
+            columnVisibility,
         },
-        manualSorting: !!onSortingChange, // Sorting manual si se proporciona callback
+        manualSorting: !!onSortingChange,
     })
 
     // Sincronizar sorting externo
@@ -81,7 +101,7 @@ export function DataTable<TData, TValue>({
 
                     <Table>
                         <TableHeader>
-                            {table.getHeaderGroups().map((headerGroup) => (
+                            {table.getHeaderGroups().map((headerGroup, index) => (
                                 <TableRow key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => (
                                         <TableHead key={header.id}>
@@ -93,6 +113,53 @@ export function DataTable<TData, TValue>({
                                                 )}
                                         </TableHead>
                                     ))}
+                                    {/* Control de columnas en el header, solo en la primera fila */}
+                                    {index === 0 && showColumnToggle && (
+                                        <TableHead className="w-[50px]">
+                                            <div className="flex justify-end">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                                            <Settings2 className="h-4 w-4" />
+                                                            <span className="sr-only">Mostrar/ocultar columnas</span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="w-[200px]">
+                                                        <div className="px-2 py-1.5 text-sm font-semibold">
+                                                            Mostrar columnas
+                                                        </div>
+                                                        {table
+                                                            .getAllColumns()
+                                                            .filter((column) => column.getCanHide())
+                                                            .map((column) => {
+                                                                // Obtener el texto del header
+                                                                const columnDef = column.columnDef as ColumnDef<TData, TValue>
+                                                                const header = columnDef.header
+
+                                                                let headerText = column.id
+                                                                if (typeof header === 'string') {
+                                                                    headerText = header
+                                                                } else if (typeof header === 'function') {
+                                                                    // Para headers complejos, usar el id o un texto por defecto
+                                                                    headerText = column.id
+                                                                }
+
+                                                                return (
+                                                                    <DropdownMenuCheckboxItem
+                                                                        key={column.id}
+                                                                        className="capitalize"
+                                                                        checked={column.getIsVisible()}
+                                                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                                                    >
+                                                                        {headerText}
+                                                                    </DropdownMenuCheckboxItem>
+                                                                )
+                                                            })}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </div>
+                                        </TableHead>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableHeader>
@@ -102,6 +169,7 @@ export function DataTable<TData, TValue>({
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
+                                        className="hover:bg-muted/50"
                                     >
                                         {row.getVisibleCells().map((cell) => (
                                             <TableCell key={cell.id}>
@@ -111,15 +179,19 @@ export function DataTable<TData, TValue>({
                                                 )}
                                             </TableCell>
                                         ))}
+                                        {/* Celda vacía para alinear con el header del dropdown */}
+                                        {showColumnToggle && (
+                                            <TableCell className="w-[50px]" />
+                                        )}
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={columns.length}
-                                        className="h-24 text-center"
+                                        colSpan={columns.length + (showColumnToggle ? 1 : 0)}
+                                        className="h-24 text-center text-muted-foreground"
                                     >
-                                        {isLoading ? 'Cargando...' : 'No hay resultados.'}
+                                        {emptyMessage}
                                     </TableCell>
                                 </TableRow>
                             )}

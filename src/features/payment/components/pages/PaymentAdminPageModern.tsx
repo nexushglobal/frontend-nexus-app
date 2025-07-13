@@ -82,6 +82,7 @@ export function PaymentAdminPageModern() {
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                         Error al cargar los pagos: {error?.message || 'Error desconocido'}
+                        {/* TODO: implentar un reset de filtros si hay error  */}
                     </AlertDescription>
                 </Alert>
             </div>

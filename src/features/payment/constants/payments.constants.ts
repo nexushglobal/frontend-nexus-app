@@ -59,3 +59,12 @@ export const CURRENCY_FORMAT_OPTIONS = {
 
 export const DATE_FORMAT = "dd/MM/yyyy" as const;
 export const TIME_FORMAT = "HH:mm" as const;
+
+
+// Opciones de ordenamiento
+export const PAYMENT_SORT_OPTIONS = [
+  { value: 'createdAt', label: 'Fecha de creación' },
+  { value: 'amount', label: 'Monto' },
+  { value: 'status', label: 'Estado' },
+  { value: 'updatedAt', label: 'Última actualización' },
+] as const
