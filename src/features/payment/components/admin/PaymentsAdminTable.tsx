@@ -10,20 +10,17 @@ import type { PaymentAdmin } from '../../types/response-payment'
 interface PaymentAdminTableProps {
     data: PaymentAdmin[]
     isLoading?: boolean
-    onSortingChange?: (sorting: any) => void
-    sorting?: any
+
 }
 
 export function PaymentAdminTable({
     data,
     isLoading,
-    onSortingChange,
-    sorting
+
 }: PaymentAdminTableProps) {
     const router = useRouter()
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultColumnVisibility)
 
-    // Crear columnas con las acciones necesarias
     const columns = useMemo(() =>
         createPaymentAdminColumns({
             onViewDetail: (paymentId) => {
@@ -38,8 +35,6 @@ export function PaymentAdminTable({
             columns={columns}
             data={data}
             isLoading={isLoading}
-            onSortingChange={onSortingChange}
-            sorting={sorting}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
         />

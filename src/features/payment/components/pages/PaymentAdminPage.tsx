@@ -9,7 +9,6 @@ import { usePaymentAdminFiltersStore } from '../../stores/payment-filters.store'
 import { useMemo } from 'react'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { SortingState } from '@tanstack/react-table'
 import { useAdminPayments } from '../../hooks/usePaymentsQuery'
 import { PaymentAdminTable } from '../admin/PaymentsAdminTable'
 
@@ -22,7 +21,6 @@ export function PaymentAdminPage() {
             limit: filters.limit || 10,
         }
 
-        // Solo agregar filtros que tengan valor
         if (filters.search) params.search = filters.search
         if (filters.status) params.status = filters.status
         if (filters.paymentConfigId) params.paymentConfigId = Number(filters.paymentConfigId)
@@ -34,32 +32,8 @@ export function PaymentAdminPage() {
         return params
     }, [filters])
 
-    // Query para obtener datos
     const { data, isLoading, error, isError } = useAdminPayments(queryParams)
 
-    // Manejar sorting desde la tabla
-    const handleSortingChange = (sorting: SortingState) => {
-        if (sorting.length > 0) {
-            const sort = sorting[0]
-            setFilters({
-                sortBy: sort.id as any,
-                sortOrder: sort.desc ? 'DESC' : 'ASC'
-            })
-        }
-    }
-
-    // Convertir sorting de filters a formato TanStack Table
-    const tableSorting: SortingState = useMemo(() => {
-        if (filters.sortBy) {
-            return [{
-                id: filters.sortBy,
-                desc: filters.sortOrder === 'DESC'
-            }]
-        }
-        return []
-    }, [filters.sortBy, filters.sortOrder])
-
-    // Manejar cambios de paginación
     const handlePageChange = (page: number) => {
         setFilter('page', page)
     }
@@ -127,8 +101,7 @@ export function PaymentAdminPage() {
                             <PaymentAdminTable
                                 data={data.items}
                                 isLoading={isLoading}
-                                onSortingChange={handleSortingChange}
-                                sorting={tableSorting}
+
                             />
                         </div>
 

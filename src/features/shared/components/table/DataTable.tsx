@@ -1,4 +1,3 @@
-// src/features/shared/components/table/DataTable.tsx
 'use client'
 
 import {
