@@ -106,7 +106,7 @@ export function PaymentUserPage() {
                         </div>
 
                         {/* Paginación */}
-                        <Card className="shadow-sm">
+                        <Card className="shadow-sm p-1">
                             <CardContent>
                                 <TablePagination
                                     pagination={data.pagination}

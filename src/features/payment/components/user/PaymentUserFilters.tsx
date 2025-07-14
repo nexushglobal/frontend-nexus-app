@@ -1,142 +1,158 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
-import { CalendarIcon, Filter, Loader2, RotateCcw, Search, Settings2, X } from 'lucide-react'
-import { useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import {
+    Search,
+    X,
+    RotateCcw,
+    Settings2,
+    ChevronUp,
+    ChevronDown,
+    CalendarIcon,
+    SortAsc,
+    SortDesc
+} from 'lucide-react'
 import { usePaymentUserFiltersStore } from '../../stores/payment-filters.store'
-import { PAYMENT_STATUS_LABELS, PAYMENT_SORT_OPTIONS } from '../../constants/payments.constants'
-import { PaymentConfig } from '../../types/response-payment'
+import { PAYMENT_STATUS_LABELS } from '../../constants/payments.constants'
 
 interface PaymentUserFiltersProps {
-    paymentConfigs: PaymentConfig[]
+    paymentConfigs: Array<{ id: number; name: string }>
     isLoading?: boolean
 }
 
+const SORT_OPTIONS = [
+    { value: 'createdAt', label: 'Fecha de creación' },
+    { value: 'amount', label: 'Monto' },
+    { value: 'status', label: 'Estado' },
+    { value: 'updatedAt', label: 'Última actualización' },
+]
+
 export function PaymentUserFilters({ paymentConfigs, isLoading = false }: PaymentUserFiltersProps) {
-    const { filters, setFilter, resetFilters } = usePaymentUserFiltersStore()
+    const { filters, setFilter, setFilters, resetFilters } = usePaymentUserFiltersStore()
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
-    const [searchValue, setSearchValue] = useState(filters.search || '')
+    // Verificar si hay filtros activos (excluyendo paginación y ordenamiento por defecto)
+    const hasActiveFilters = Object.entries(filters).some(([key, value]) => {
+        if (key === 'page' || key === 'limit') return false
+        if (key === 'sortBy' && value === 'createdAt') return false
+        if (key === 'sortOrder' && value === 'DESC') return false
+        return value !== undefined && value !== '' && value !== null
+    })
 
-    const hasActiveFilters = useMemo(() => {
-        return !!(
-            filters.search ||
-            filters.status ||
-            filters.paymentConfigId ||
-            filters.startDate ||
-            filters.endDate
-        )
-    }, [filters])
+    // Verificar si hay filtros avanzados activos (sin incluir search y sort)
+    const hasAdvancedFilters = Boolean(
+        filters.status ||
+        filters.paymentConfigId ||
+        filters.startDate ||
+        filters.endDate
+    )
 
-    // Verificar si hay filtros avanzados activos
-    const hasAdvancedFilters = useMemo(() => {
-        return !!(
-            filters.status ||
-            filters.paymentConfigId ||
-            filters.startDate ||
-            filters.endDate
-        )
-    }, [filters])
-
-    const handleSearch = () => {
-        setFilter('search', searchValue.trim() || undefined)
-    }
-
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            handleSearch()
+    const handleDateRangeChange = (range: { from?: Date; to?: Date } | undefined) => {
+        if (range?.from) {
+            setFilter('startDate', format(range.from, 'yyyy-MM-dd'))
+            setFilter('endDate', range.to ? format(range.to, 'yyyy-MM-dd') : format(range.from, 'yyyy-MM-dd'))
+        } else {
+            setFilter('startDate', undefined)
+            setFilter('endDate', undefined)
         }
     }
 
     const handleSortChange = (value: string) => {
-        const [sortBy, sortOrder] = value.split('-')
-        setFilter('sortBy', sortBy)
-        setFilter('sortOrder', sortOrder as 'ASC' | 'DESC')
+        const currentSortBy = filters.sortBy || 'createdAt'
+        const currentOrder = filters.sortOrder || 'DESC'
+
+        if (value === currentSortBy) {
+            // Cambiar orden si es el mismo campo
+            setFilter('sortOrder', currentOrder === 'ASC' ? 'DESC' : 'ASC')
+        } else {
+            // Nuevo campo, orden por defecto DESC
+            setFilters({
+                sortBy: value as any,
+                sortOrder: 'DESC'
+            })
+        }
     }
 
-    const currentSortValue = `${filters.sortBy || 'createdAt'}-${filters.sortOrder || 'DESC'}`
+    const dateRange = filters.startDate ? {
+        from: new Date(filters.startDate),
+        to: filters.endDate ? new Date(filters.endDate) : new Date(filters.startDate)
+    } : undefined
 
     return (
         <div className="space-y-4">
-            {/* Filtros principales */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                {/* Búsqueda */}
-                <div className="md:col-span-6 lg:col-span-5 xl:col-span-4">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Buscar por descripción, monto o referencia..."
-                            value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
-                            onKeyDown={handleKeyPress}
-                            className="pl-10"
-                            disabled={isLoading}
-                        />
-                    </div>
-                </div>
-
-                {/* Ordenamiento */}
-                <div className="md:col-span-3 lg:col-span-3 xl:col-span-3">
-                    <Select
-                        value={currentSortValue}
-                        onValueChange={handleSortChange}
+            {/* Sección principal: Búsqueda y controles básicos */}
+            <div className="space-y-3">
+                {/* Búsqueda principal */}
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        placeholder="Buscar por descripción, monto o referencia..."
+                        value={filters.search || ''}
+                        onChange={(e) => setFilter('search', e.target.value)}
                         disabled={isLoading}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Ordenar por..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {PAYMENT_SORT_OPTIONS.map((option) => (
-                                <>
-                                    <SelectItem key={`${option.value}-DESC`} value={`${option.value}-DESC`}>
-                                        {option.label} (Desc)
-                                    </SelectItem>
-                                    <SelectItem key={`${option.value}-ASC`} value={`${option.value}-ASC`}>
-                                        {option.label} (Asc)
-                                    </SelectItem>
-                                </>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                        className="pl-10 pr-10"
+                    />
+                    {filters.search && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-1 top-1/2 h-6 w-6 p-0 -translate-y-1/2"
+                            onClick={() => setFilter('search', '')}
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+                    )}
                 </div>
 
-                {/* Botones de acción */}
-                <div className="md:col-span-3 lg:col-span-4 xl:col-span-5">
-                    <div className="flex items-center gap-2">
-                        <Button
-                            onClick={handleSearch}
+                {/* Controles de la segunda fila */}
+                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                    {/* Ordenamiento */}
+                    <div className="flex gap-2 flex-1 w-full sm:w-auto">
+                        <Select
+                            value={filters.sortBy || 'createdAt'}
+                            onValueChange={handleSortChange}
                             disabled={isLoading}
-                            className="flex-1 sm:flex-none"
                         >
-                            {isLoading ? (
-                                <Loader2 className="h-4 w-4 animate-spin sm:mr-2" />
-                            ) : (
-                                <Search className="h-4 w-4 sm:mr-2" />
-                            )}
-                            <span className="hidden sm:inline">Buscar</span>
-                        </Button>
+                            <SelectTrigger className="w-full sm:w-[200px]">
+                                <div className="flex items-center gap-2">
+                                    {filters.sortOrder === 'ASC' ?
+                                        <SortAsc className="h-4 w-4" /> :
+                                        <SortDesc className="h-4 w-4" />
+                                    }
+                                    <SelectValue placeholder="Ordenar por..." />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {SORT_OPTIONS.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
+                    {/* Botones de control */}
+                    <div className="flex gap-2 w-full sm:w-auto">
                         <Button
                             variant="outline"
                             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                             disabled={isLoading}
                             className="flex-1 sm:flex-none"
                         >
-                            {isLoading ? (
-                                <Loader2 className="h-4 w-4 animate-spin sm:mr-2" />
-                            ) : (
-                                <Filter className="h-4 w-4 sm:mr-2" />
-                            )}
-                            <span className="hidden sm:inline">
-                                {showAdvancedFilters ? 'Ocultar filtros' : 'Más filtros'}
-                            </span>
+                            <Settings2 className="h-4 w-4 mr-2" />
+                            Filtros avanzados
+                            {showAdvancedFilters ?
+                                <ChevronUp className="h-4 w-4 ml-2" /> :
+                                <ChevronDown className="h-4 w-4 ml-2" />
+                            }
                         </Button>
 
                         {hasActiveFilters && (
@@ -144,10 +160,11 @@ export function PaymentUserFilters({ paymentConfigs, isLoading = false }: Paymen
                                 variant="ghost"
                                 size="sm"
                                 onClick={resetFilters}
-                                className="hidden sm:flex"
                                 disabled={isLoading}
+                                className="flex-shrink-0"
                             >
-                                <RotateCcw className="h-4 w-4" />
+                                <RotateCcw className="h-4 w-4 mr-2" />
+                                <span className="hidden sm:inline">Limpiar todo</span>
                             </Button>
                         )}
                     </div>
@@ -184,7 +201,7 @@ export function PaymentUserFilters({ paymentConfigs, isLoading = false }: Paymen
                     </div>
 
                     {/* Grid de filtros avanzados */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {/* Estado */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-muted-foreground">
@@ -233,70 +250,42 @@ export function PaymentUserFilters({ paymentConfigs, isLoading = false }: Paymen
                             </Select>
                         </div>
 
-                        {/* Fecha desde */}
+                        {/* Selector de rango de fechas */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-muted-foreground">
-                                Fecha desde
+                                Rango de fechas
                             </label>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
+                                        id="date"
                                         variant="outline"
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal",
-                                            !filters.startDate && "text-muted-foreground"
-                                        )}
+                                        className="w-full justify-start text-left font-normal"
                                         disabled={isLoading}
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {filters.startDate ? (
-                                            format(new Date(filters.startDate), "PPP", { locale: es })
+                                        {dateRange?.from ? (
+                                            dateRange.to && dateRange.to !== dateRange.from ? (
+                                                <>
+                                                    {format(dateRange.from, "LLL dd, y", { locale: es })} -{" "}
+                                                    {format(dateRange.to, "LLL dd, y", { locale: es })}
+                                                </>
+                                            ) : (
+                                                format(dateRange.from, "LLL dd, y", { locale: es })
+                                            )
                                         ) : (
-                                            <span>Seleccionar fecha</span>
+                                            <span>Seleccionar fechas</span>
                                         )}
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0" align="start">
                                     <Calendar
-                                        mode="single"
-                                        selected={filters.startDate ? new Date(filters.startDate) : undefined}
-                                        onSelect={(date) => setFilter('startDate', date?.toISOString().split('T')[0])}
                                         initialFocus
-                                        locale={es}
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-
-                        {/* Fecha hasta */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-muted-foreground">
-                                Fecha hasta
-                            </label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal",
-                                            !filters.endDate && "text-muted-foreground"
-                                        )}
-                                        disabled={isLoading}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {filters.endDate ? (
-                                            format(new Date(filters.endDate), "PPP", { locale: es })
-                                        ) : (
-                                            <span>Seleccionar fecha</span>
-                                        )}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={filters.endDate ? new Date(filters.endDate) : undefined}
-                                        onSelect={(date) => setFilter('endDate', date?.toISOString().split('T')[0])}
-                                        initialFocus
+                                        mode="range"
+                                        defaultMonth={dateRange?.from}
+                                        selected={dateRange}
+                                        onSelect={handleDateRangeChange}
+                                        numberOfMonths={2}
                                         locale={es}
                                     />
                                 </PopoverContent>

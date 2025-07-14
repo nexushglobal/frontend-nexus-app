@@ -71,7 +71,6 @@ export function PaymentAdminPage() {
             />
 
             <div className="space-y-6">
-                {/* Filtros */}
                 <Card className="shadow-sm">
                     <CardContent >
                         <PaymentAdminFilters
@@ -81,7 +80,6 @@ export function PaymentAdminPage() {
                     </CardContent>
                 </Card>
 
-                {/* Loading state cuando no hay datos aún */}
                 {isLoading && !data && (
                     <Card className="shadow-sm">
                         <CardContent className="flex items-center justify-center py-12">
@@ -93,7 +91,6 @@ export function PaymentAdminPage() {
                     </Card>
                 )}
 
-                {/* Tabla Desktop */}
                 {data && (
                     <>
                         <div className="hidden md:block">
@@ -104,13 +101,11 @@ export function PaymentAdminPage() {
                             />
                         </div>
 
-                        {/* Cards Mobile */}
                         <div className="md:hidden">
                             <PaymentAdminCards data={data.items} />
                         </div>
 
-                        {/* Paginación */}
-                        <Card className="shadow-sm">
+                        <Card className="shadow-sm p-1">
                             <CardContent >
                                 <TablePagination
                                     pagination={data.pagination}
