@@ -1,15 +1,15 @@
 'use client'
 
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { PageHeader } from '@/features/shared/components/common/PageHeader'
 import { TablePagination } from '@/features/shared/components/table/TablePagination'
-import { PaymentAdminFilters } from '../admin/PaymentAdminFilters'
-import { PaymentAdminCards } from '../admin/PaymentAdminCards'
-import { usePaymentAdminFiltersStore } from '../../stores/payment-filters.store'
-import { useMemo } from 'react'
 import { AlertCircle, Loader2 } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useMemo } from 'react'
 import { useAdminPayments } from '../../hooks/usePaymentsQuery'
+import { usePaymentAdminFiltersStore } from '../../stores/payment-filters.store'
+import { PaymentAdminCards } from '../admin/PaymentAdminCards'
+import { PaymentAdminFilters } from '../admin/PaymentAdminFilters'
 import { PaymentAdminTable } from '../admin/PaymentsAdminTable'
 
 export function PaymentAdminPage() {
@@ -18,7 +18,7 @@ export function PaymentAdminPage() {
     const queryParams = useMemo(() => {
         const params: any = {
             page: filters.page || 1,
-            limit: filters.limit || 10,
+            limit: filters.limit || 20,
         }
 
         if (filters.search) params.search = filters.search
@@ -44,7 +44,7 @@ export function PaymentAdminPage() {
 
     if (isError) {
         return (
-            <div className="container py-8">
+            <div className="container">
                 <PageHeader
                     title="Gestión de Pagos"
                     subtitle="Administra y revisa el historial de pagos de todos los usuarios"
@@ -55,7 +55,6 @@ export function PaymentAdminPage() {
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                         Error al cargar los pagos: {error?.message || 'Error desconocido'}
-                        {/* TODO: implentar un reset de filtros si hay error  */}
                     </AlertDescription>
                 </Alert>
             </div>
@@ -63,7 +62,7 @@ export function PaymentAdminPage() {
     }
 
     return (
-        <div className="container py-8">
+        <div className="container ">
             <PageHeader
                 title="Gestión de Pagos"
                 subtitle="Administra y revisa el historial de pagos de todos los usuarios"
@@ -74,7 +73,7 @@ export function PaymentAdminPage() {
             <div className="space-y-6">
                 {/* Filtros */}
                 <Card className="shadow-sm">
-                    <CardContent className="pt-6">
+                    <CardContent >
                         <PaymentAdminFilters
                             paymentConfigs={data?.meta?.activePaymentConfigs || []}
                             isLoading={isLoading}
@@ -112,7 +111,7 @@ export function PaymentAdminPage() {
 
                         {/* Paginación */}
                         <Card className="shadow-sm">
-                            <CardContent className="py-4">
+                            <CardContent >
                                 <TablePagination
                                     pagination={data.pagination}
                                     onPageChange={handlePageChange}

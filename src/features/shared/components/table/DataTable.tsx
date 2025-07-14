@@ -1,5 +1,21 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table'
 import {
     ColumnDef,
     flexRender,
@@ -10,25 +26,8 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table'
-import { useState, useEffect } from 'react'
 import { Loader2, Settings2 } from 'lucide-react'
-
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { useEffect, useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -81,7 +80,6 @@ export function DataTable<TData, TValue>({
         manualSorting: !!onSortingChange,
     })
 
-    // Sincronizar sorting externo
     useEffect(() => {
         if (onSortingChange) {
             setInternalSorting(sorting)
@@ -89,7 +87,7 @@ export function DataTable<TData, TValue>({
     }, [sorting, onSortingChange])
 
     return (
-        <Card className={className}>
+        <Card className={className} >
             <CardContent className="p-0">
                 <div className="relative">
                     {isLoading && (
@@ -99,9 +97,9 @@ export function DataTable<TData, TValue>({
                     )}
 
                     <Table>
-                        <TableHeader>
+                        <TableHeader className="bg-muted/30">
                             {table.getHeaderGroups().map((headerGroup, index) => (
-                                <TableRow key={headerGroup.id}>
+                                <TableRow key={headerGroup.id} className="">
                                     {headerGroup.headers.map((header) => (
                                         <TableHead key={header.id}>
                                             {header.isPlaceholder
@@ -112,9 +110,8 @@ export function DataTable<TData, TValue>({
                                                 )}
                                         </TableHead>
                                     ))}
-                                    {/* Control de columnas en el header, solo en la primera fila */}
                                     {index === 0 && showColumnToggle && (
-                                        <TableHead className="w-[50px]">
+                                        <TableHead className="w-[50px] ">
                                             <div className="flex justify-end">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
@@ -131,7 +128,6 @@ export function DataTable<TData, TValue>({
                                                             .getAllColumns()
                                                             .filter((column) => column.getCanHide())
                                                             .map((column) => {
-                                                                // Obtener el texto del header
                                                                 const columnDef = column.columnDef as ColumnDef<TData, TValue>
                                                                 const header = columnDef.header
 
@@ -139,7 +135,6 @@ export function DataTable<TData, TValue>({
                                                                 if (typeof header === 'string') {
                                                                     headerText = header
                                                                 } else if (typeof header === 'function') {
-                                                                    // Para headers complejos, usar el id o un texto por defecto
                                                                     headerText = column.id
                                                                 }
 
@@ -168,7 +163,7 @@ export function DataTable<TData, TValue>({
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
-                                        className="hover:bg-muted/50"
+                                        className="hover:bg-muted/50 transition-colors"
                                     >
                                         {row.getVisibleCells().map((cell) => (
                                             <TableCell key={cell.id}>
@@ -178,7 +173,6 @@ export function DataTable<TData, TValue>({
                                                 )}
                                             </TableCell>
                                         ))}
-                                        {/* Celda vacía para alinear con el header del dropdown */}
                                         {showColumnToggle && (
                                             <TableCell className="w-[50px]" />
                                         )}

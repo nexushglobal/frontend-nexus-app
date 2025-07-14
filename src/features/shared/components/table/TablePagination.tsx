@@ -68,38 +68,38 @@ export function TablePagination({
                 <div className="flex items-center space-x-2">
                     <Button
                         variant="outline"
-                        className="hidden h-8 w-8 p-0 lg:flex"
+                        className="hidden h-8 w-8  lg:flex"
                         onClick={() => onPageChange(1)}
                         disabled={!canGoPrevious || isLoading}
                     >
-                        <span className="sr-only">Ir a la primera página</span>
+                        <span className="sr-only hidden">Ir a la primera página</span>
                         <ChevronsLeft className="h-4 w-4" />
                     </Button>
                     <Button
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8"
                         onClick={() => onPageChange(page - 1)}
                         disabled={!canGoPrevious || isLoading}
                     >
-                        <span className="sr-only">Ir a la página anterior</span>
+                        <span className="sr-only hidden">Ir a la página anterior</span>
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <Button
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8"
                         onClick={() => onPageChange(page + 1)}
                         disabled={!canGoNext || isLoading}
                     >
-                        <span className="sr-only">Ir a la página siguiente</span>
+                        <span className="sr-only hidden">Ir a la página siguiente</span>
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                     <Button
                         variant="outline"
-                        className="hidden h-8 w-8 p-0 lg:flex"
+                        className="hidden h-8 w-8 lg:flex"
                         onClick={() => onPageChange(totalPages)}
                         disabled={!canGoNext || isLoading}
                     >
-                        <span className="sr-only">Ir a la última página</span>
+                        <span className="sr-only hidden">Ir a la última página</span>
                         <ChevronsRight className="h-4 w-4" />
                     </Button>
                 </div>

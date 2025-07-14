@@ -1,11 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { DataTable } from '@/features/shared/components/table/DataTable'
 import { VisibilityState } from '@tanstack/react-table'
 import { useRouter } from 'next/navigation'
-import { DataTable } from '@/features/shared/components/table/DataTable'
-import { createPaymentAdminColumns, defaultColumnVisibility } from './columns/paymentAdminColumns'
+import { useMemo, useState } from 'react'
 import type { PaymentAdmin } from '../../types/response-payment'
+import { createPaymentAdminColumns, defaultColumnVisibility } from './columns/paymentAdminColumns'
 
 interface PaymentAdminTableProps {
     data: PaymentAdmin[]
