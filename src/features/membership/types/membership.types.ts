@@ -1,5 +1,3 @@
-// src/features/membership/types/response-membership.ts
-
 export interface MembershipPlan {
   id: number;
   name: string;

@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Check, Crown, Zap, DollarSign, TrendingUp, Users, Award } from "lucide-react";
 import { MembershipPlan, UserMembership } from "../types/membership.types";
 import { formatCurrency } from "@/features/shared/utils/formatCurrency";
+import { useRouter } from "next/navigation";
 
 interface MembershipPlanCardProps {
     plan: MembershipPlan;
@@ -19,7 +20,11 @@ export function MembershipPlanCard({
     isUpgrade = false,
     currentMembership
 }: MembershipPlanCardProps) {
+    const { push } = useRouter();
     const isCurrentPlan = currentMembership.plan?.id === plan.id;
+    const viewDetails = () => {
+        push(`/dashboard/membresias/planes/${plan.id}`);
+    }
 
     return (
         <Card className={`
@@ -142,6 +147,7 @@ export function MembershipPlanCard({
                         className="w-full"
                         variant={isCurrentPlan ? "outline" : "default"}
                         disabled={isCurrentPlan || !plan.isActive}
+                        onClick={viewDetails}
                     >
                         {isCurrentPlan
                             ? "Plan Actual"
