@@ -1,13 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Check, Crown, Zap, DollarSign, TrendingUp, Users, Award } from "lucide-react";
 import { MembershipPlan, UserMembership } from "../types/membership.types";
-
+import { formatCurrency } from "@/features/shared/utils/formatCurrency";
 
 interface MembershipPlanCardProps {
     plan: MembershipPlan;
     isUpgrade?: boolean;
-    currentMembership?: UserMembership;
+    currentMembership: UserMembership;
 }
 
 export function MembershipPlanCard({
@@ -15,99 +19,141 @@ export function MembershipPlanCard({
     isUpgrade = false,
     currentMembership
 }: MembershipPlanCardProps) {
-
-
-
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('es-PE', {
-            style: 'currency',
-            currency: 'PEN'
-        }).format(price);
-    };
+    const isCurrentPlan = currentMembership.plan?.id === plan.id;
 
     return (
-        <div className="group bg-card border rounded-lg p-6 transition-all duration-200 hover:shadow-md hover:border-border/80 flex flex-col h-full">
+        <Card className={`
+            relative shadow-sm transition-all duration-300 hover:shadow-md h-full flex flex-col
+            ${isCurrentPlan ? 'bg-primary/5 border-primary' : ''}
+        `}>
+            {/* Upgrade Badge */}
+            {isUpgrade && (
+                <div className="absolute -top-2 -right-2">
+                    <div className="bg-primary text-primary-foreground rounded-full p-2 shadow-lg">
+                        <Zap className="h-4 w-4" />
+                    </div>
+                </div>
+            )}
 
-            {/* Header del Plan */}
-            <div className="mb-6">
-                <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl font-semibold text-card-foreground">{plan.name}</h3>
-                    {isUpgrade && (
-                        <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs font-medium">
-                            Actualización
-                        </span>
+            <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Crown className="h-5 w-5 text-primary" />
+                        <CardTitle className="text-lg">{plan.name}</CardTitle>
+                    </div>
+                    {isCurrentPlan && (
+                        <Badge variant="outline" className="badge-success">
+                            Actual
+                        </Badge>
                     )}
                 </div>
-                <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold text-card-foreground">
-                        {formatPrice(isUpgrade && plan.upgradeCost ? plan.upgradeCost : plan.price)}
-                    </span>
+
+                <div className="space-y-2">
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-3xl font-bold text-foreground">
+                            {formatCurrency(isUpgrade && plan.upgradeCost ? plan.upgradeCost : plan.price)}
+                        </span>
+                    </div>
+                    {isUpgrade && plan.upgradeCost && plan.upgradeCost !== plan.price && (
+                        <p className="text-sm text-muted-foreground">
+                            Precio completo: {formatCurrency(plan.price)}
+                        </p>
+                    )}
                 </div>
-                {isUpgrade && plan.upgradeCost && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Desde {currentMembership?.plan?.name}
-                    </p>
+            </CardHeader>
+
+            <Separator />
+
+            <CardContent className="pt-6 space-y-6 h-full flex flex-col">
+                {/* Plan Details Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                    {plan.checkAmount > 0 && (
+                        <div className="info-field">
+                            <DollarSign className="field-icon" />
+                            <div>
+                                <div className="font-semibold">{formatCurrency(plan.checkAmount)}</div>
+                                <div className="text-xs text-muted-foreground">Monto de Cheque</div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="info-field">
+                        <Award className="field-icon" />
+                        <div>
+                            <div className="font-semibold">{plan.binaryPoints}</div>
+                            <div className="text-xs text-muted-foreground">Puntos Binarios</div>
+                        </div>
+                    </div>
+
+                    <div className="info-field">
+                        <TrendingUp className="field-icon" />
+                        <div>
+                            <div className="font-semibold">{plan.commissionPercentage}%</div>
+                            <div className="text-xs text-muted-foreground">Comisión</div>
+                        </div>
+                    </div>
+
+                    <div className="info-field">
+                        <Users className="field-icon" />
+                        <div>
+                            <div className="font-semibold">{formatCurrency(plan.directCommissionAmount)}</div>
+                            <div className="text-xs text-muted-foreground">Comisión Directa</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Products Section */}
+                {plan.products && plan.products.length > 0 && (
+                    <div className="space-y-3 flex-1">
+                        <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                            Productos Incluidos
+                        </h4>
+                        <div className="space-y-2">
+                            {plan.products.map((product, index) => (
+                                <div key={index} className="flex items-start gap-2">
+                                    <Check className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
+                                    <span className="text-sm text-card-foreground">{product}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 )}
-            </div>
 
-            {/* Contenido principal - crece para ocupar espacio disponible */}
-            <div className="flex-1 space-y-6">
-                {/* Productos */}
-                <div>
-                    <h4 className="text-sm font-medium text-card-foreground mb-3">Productos incluidos</h4>
-                    <div className="space-y-2">
-                        {plan.products.map((product, index) => (
-                            <div key={index} className="flex items-start gap-2">
-                                <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
-                                <span className="text-sm text-muted-foreground">{product}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Beneficios */}
-                <div>
-                    <h4 className="text-sm font-medium text-card-foreground mb-3">Beneficios</h4>
-                    <div className="space-y-2">
-                        {plan.benefits.map((benefit, index) => (
-                            <div key={index} className="flex items-start gap-2">
-                                <div className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0" />
-                                <span className="text-sm text-muted-foreground">{benefit}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Detalles Técnicos */}
-                <div className="bg-muted/50 rounded-lg p-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <span className="text-xs text-muted-foreground">Puntos Binarios</span>
-                            <p className="text-sm font-medium text-card-foreground">{plan.binaryPoints.toLocaleString()}</p>
+                {/* Benefits Section */}
+                {plan.benefits && plan.benefits.length > 0 && (
+                    <div className="space-y-3 flex-1">
+                        <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                            Beneficios Incluidos
+                        </h4>
+                        <div className="space-y-2">
+                            {plan.benefits.map((benefit, index) => (
+                                <div key={index} className="flex items-start gap-2">
+                                    <Check className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
+                                    <span className="text-sm text-card-foreground">{benefit}</span>
+                                </div>
+                            ))}
                         </div>
-                        <div>
-                            <span className="text-xs text-muted-foreground">Comisión</span>
-                            <p className="text-sm font-medium text-card-foreground">{plan.commissionPercentage}%</p>
-                        </div>
-                        {plan.checkAmount > 0 && (
-                            <div className="col-span-2">
-                                <span className="text-xs text-muted-foreground">Monto Check</span>
-                                <p className="text-sm font-medium text-card-foreground">{formatPrice(plan.checkAmount)}</p>
-                            </div>
-                        )}
                     </div>
-                </div>
-            </div>
+                )}
 
-            {/* Botón de Acción - siempre al final */}
-            <div className="mt-6  flex ">
-                <Link
-                    href={`/membership/plan/${plan.id}`}
-                    className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-lg font-medium transition-colors duration-200 hover:bg-primary-hover"
-                >
-                    {isUpgrade ? 'Actualizar Plan' : 'Seleccionar Plan'}
-                </Link>
-            </div>
-        </div>
+                {/* Action Button - Always at bottom */}
+                <div className="mt-auto pt-4">
+                    <Button
+                        className="w-full"
+                        variant={isCurrentPlan ? "outline" : "default"}
+                        disabled={isCurrentPlan || !plan.isActive}
+                    >
+                        {isCurrentPlan
+                            ? "Plan Actual"
+                            : !plan.isActive
+                                ? "No Disponible"
+                                : isUpgrade
+                                    ? "Actualizar Plan"
+                                    : "Seleccionar Plan"
+                        }
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
     );
 }

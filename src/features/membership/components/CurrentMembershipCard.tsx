@@ -1,7 +1,13 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Calendar, Crown, DollarSign, TrendingUp } from "lucide-react";
 import { UserMembership } from "../types/membership.types";
-
+import { formatCurrency } from "@/features/shared/utils/formatCurrency";
+import { formatDate } from "@/features/payment/utils/payement.utils";
 
 interface CurrentMembershipCardProps {
     userMembership: UserMembership;
@@ -12,98 +18,97 @@ export function CurrentMembershipCard({ userMembership }: CurrentMembershipCardP
         return null;
     }
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('es-PE', {
-            style: 'currency',
-            currency: 'PEN'
-        }).format(price);
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('es-PE', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'ACTIVE':
-                return 'bg-success/10 text-success border-success/20';
-            case 'INACTIVE':
-                return 'bg-warning/10 text-warning border-warning/20';
-            case 'EXPIRED':
-                return 'bg-destructive/10 text-destructive border-destructive/20';
-            default:
-                return 'bg-muted text-muted-foreground border-border';
-        }
-    };
-
-    const getStatusText = (status: string) => {
-        switch (status) {
-            case 'ACTIVE':
-                return 'Activa';
-            case 'INACTIVE':
-                return 'Inactiva';
-            case 'EXPIRED':
-                return 'Expirada';
-            default:
-                return status;
-        }
-    };
+    const { plan, status, endDate } = userMembership;
+    const isActive = status === "ACTIVE";
+    const daysRemaining = endDate ? Math.max(0, Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
+    const progressPercentage = daysRemaining > 0 ? Math.min(100, (daysRemaining / 365) * 100) : 0;
 
     return (
-        <div className="bg-card border rounded-lg p-6">
-            <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <span className="text-primary text-lg font-semibold">
-                            {userMembership.plan.name.charAt(0)}
-                        </span>
+        <Card className="shadow-sm hover-lift bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
+            <CardHeader>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                            <Crown className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                            <CardTitle className="text-xl flex items-center gap-2">
+                                {plan.name}
+                                <Badge
+                                    variant={isActive ? "default" : "secondary"}
+                                    className={isActive ? "badge-success" : "badge-warning"}
+                                >
+                                    {status}
+                                </Badge>
+                            </CardTitle>
+                            <p className="text-muted-foreground text-sm">Tu membresía actual</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-card-foreground">
-                            {userMembership.plan.name}
-                        </h3>
-                        <p className="text-muted-foreground">
-                            {formatPrice(userMembership.plan.price)}
-                        </p>
+                </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+                {/* Plan Info */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="info-field">
+                        <DollarSign className="field-icon" />
+                        <div>
+                            <div className="font-semibold">{formatCurrency(plan.price)}</div>
+                            <div className="text-xs text-muted-foreground">Valor del Plan</div>
+                        </div>
+                    </div>
+
+                    <div className="info-field">
+                        <TrendingUp className="field-icon" />
+                        <div>
+                            <div className="font-semibold">{daysRemaining}</div>
+                            <div className="text-xs text-muted-foreground">Días restantes</div>
+                        </div>
+                    </div>
+
+                    <div className="info-field">
+                        <Calendar className="field-icon" />
+                        <div>
+                            <div className="font-semibold text-xs">
+                                {endDate ? formatDate(endDate) : "N/A"}
+                            </div>
+                            <div className="text-xs text-muted-foreground">Fecha de expiración</div>
+                        </div>
+                    </div>
+
+                    <div className="info-field">
+                        <Crown className="field-icon" />
+                        <div>
+                            <div className="font-semibold">Activa</div>
+                            <div className="text-xs text-muted-foreground">Estado</div>
+                        </div>
                     </div>
                 </div>
 
-                {userMembership.status && (
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(userMembership.status)}`}>
-                        {getStatusText(userMembership.status)}
-                    </span>
-                )}
-            </div>
-
-            <div className="bg-muted/30 rounded-lg p-4 mb-4">
-                <p className="text-card-foreground text-center text-sm">
-                    {userMembership.message}
-                </p>
-            </div>
-
-            <div className="space-y-3 text-sm">
-                {userMembership.endDate && (
-                    <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Vence el:</span>
-                        <span className="font-medium text-card-foreground">
-                            {formatDate(userMembership.endDate)}
-                        </span>
+                {/* Progress Bar */}
+                {endDate && (
+                    <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Tiempo restante</span>
+                            <span className="font-medium">{daysRemaining} días</span>
+                        </div>
+                        <Progress
+                            value={progressPercentage}
+                            className="h-2"
+                        />
                     </div>
                 )}
 
-                {userMembership.membershipId && (
-                    <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">ID:</span>
-                        <span className="font-medium text-card-foreground">
-                            #{userMembership.membershipId}
-                        </span>
-                    </div>
-                )}
-            </div>
-        </div>
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                    <Button variant="outline" size="sm" className="flex-1">
+                        Ver Detalles
+                    </Button>
+                    <Button size="sm" className="flex-1">
+                        Renovar Plan
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
     );
 }
