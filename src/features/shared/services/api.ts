@@ -34,6 +34,8 @@ export interface ApiOptions extends Omit<RequestInit, "body"> {
   body?: any;
   timeout?: number;
   skipAuth?: boolean; // Para endpoints públicos
+  skipJsonStringify?: boolean; // No convertir body a JSON
+  isFormData?: boolean; // Indicar que es FormData
 }
 
 class ApiClient {
@@ -111,9 +113,13 @@ class ApiClient {
    */
   private async prepareHeaders(options: ApiOptions = {}): Promise<HeadersInit> {
     const headers: HeadersInit = {
-      "Content-Type": "application/json",
       ...options.headers,
     };
+
+    // Solo establecer Content-Type si no es FormData
+    if (!options.isFormData && !(options.body instanceof FormData)) {
+      (headers as Record<string, string>)["Content-Type"] = "application/json";
+    }
 
     // Agregar autenticación si no se omite explícitamente
     if (!options.skipAuth) {
@@ -126,6 +132,29 @@ class ApiClient {
     }
 
     return headers;
+  }
+
+  /**
+   * Prepara el body de la request
+   */
+  private prepareBody(
+    body: any,
+    options: ApiOptions
+  ): string | FormData | undefined {
+    if (!body) return undefined;
+
+    // Si es FormData, devolverlo directamente
+    if (body instanceof FormData || options.isFormData) {
+      return body as FormData;
+    }
+
+    // Si skipJsonStringify está habilitado, devolver el body tal como está
+    if (options.skipJsonStringify) {
+      return body;
+    }
+
+    // Por defecto, convertir a JSON
+    return typeof body === "string" ? body : JSON.stringify(body);
   }
 
   /**
@@ -196,11 +225,18 @@ class ApiClient {
       body,
       timeout = 30000,
       skipAuth = false,
+      skipJsonStringify = false,
+      isFormData = false,
       ...fetchOptions
     } = options;
 
     const url = this.buildUrl(endpoint, params);
-    const headers = await this.prepareHeaders({ ...options, skipAuth });
+    const headers = await this.prepareHeaders({
+      ...options,
+      skipAuth,
+      isFormData: isFormData || body instanceof FormData,
+      body,
+    });
 
     const config: RequestInit = {
       ...fetchOptions,
@@ -209,7 +245,7 @@ class ApiClient {
 
     // Solo agregar body si existe y no es GET
     if (body && fetchOptions.method !== "GET") {
-      config.body = typeof body === "string" ? body : JSON.stringify(body);
+      config.body = this.prepareBody(body, { skipJsonStringify, isFormData });
     }
 
     // Crear un AbortController para timeout
@@ -224,7 +260,7 @@ class ApiClient {
 
       console.log(`API Call: ${fetchOptions.method || "GET"} ${url}`, {
         headers: config.headers,
-        body: config.body,
+        body: config.body instanceof FormData ? "FormData" : config.body,
         response: {
           status: response.status,
           statusText: response.statusText,

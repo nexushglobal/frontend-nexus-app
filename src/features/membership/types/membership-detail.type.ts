@@ -66,6 +66,6 @@ export interface PaymentResult {
     endDate: string;
   };
   payment: {
-    paymentId: string;
+    id: string;
   };
 }

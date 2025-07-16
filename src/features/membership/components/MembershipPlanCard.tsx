@@ -47,7 +47,7 @@ export function MembershipPlanCard({
                         <CardTitle className="text-lg">{plan.name}</CardTitle>
                     </div>
                     {isCurrentPlan && (
-                        <Badge variant="outline" className="badge-success">
+                        <Badge variant="outline" >
                             Actual
                         </Badge>
                     )}

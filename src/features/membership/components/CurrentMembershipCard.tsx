@@ -12,6 +12,14 @@ import { formatDate } from "@/features/payment/utils/payement.utils";
 interface CurrentMembershipCardProps {
     userMembership: UserMembership;
 }
+enum MembershipStatus {
+    PENDING = "Pendiente",
+    ACTIVE = "Activa",
+    EXPIRED = "Expirada",
+    CANCELED = "Cancelada",
+    INACTIVE = "Inactiva",
+    UNKNOWN = "Desconocido"
+}
 
 export function CurrentMembershipCard({ userMembership }: CurrentMembershipCardProps) {
     if (!userMembership.hasMembership || !userMembership.plan) {
@@ -24,7 +32,7 @@ export function CurrentMembershipCard({ userMembership }: CurrentMembershipCardP
     const progressPercentage = daysRemaining > 0 ? Math.min(100, (daysRemaining / 365) * 100) : 0;
 
     return (
-        <Card className="shadow-sm hover-lift bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
+        <Card className="shadow-sm  bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -38,7 +46,7 @@ export function CurrentMembershipCard({ userMembership }: CurrentMembershipCardP
                                     variant={isActive ? "default" : "secondary"}
                                     className={isActive ? "badge-success" : "badge-warning"}
                                 >
-                                    {status}
+                                    {status && MembershipStatus[status]}
                                 </Badge>
                             </CardTitle>
                             <p className="text-muted-foreground text-sm">Tu membresía actual</p>
@@ -49,7 +57,7 @@ export function CurrentMembershipCard({ userMembership }: CurrentMembershipCardP
 
             <CardContent className="space-y-6">
                 {/* Plan Info */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="info-field">
                         <DollarSign className="field-icon" />
                         <div>
@@ -76,28 +84,21 @@ export function CurrentMembershipCard({ userMembership }: CurrentMembershipCardP
                         </div>
                     </div>
 
-                    <div className="info-field">
-                        <Crown className="field-icon" />
-                        <div>
-                            <div className="font-semibold">Activa</div>
-                            <div className="text-xs text-muted-foreground">Estado</div>
-                        </div>
-                    </div>
+
                 </div>
 
                 {/* Progress Bar */}
-                {endDate && (
-                    <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Tiempo restante</span>
-                            <span className="font-medium">{daysRemaining} días</span>
-                        </div>
-                        <Progress
-                            value={progressPercentage}
-                            className="h-2"
-                        />
-                    </div>
-                )}
+                <div>
+                    {userMembership.message && (
+                        <p className="text-sm text-muted-foreground mb-2">
+                            {userMembership.message
+                                ? userMembership.message
+                                : "No hay información adicional disponible"
+
+                            }
+                        </p>
+                    )}
+                </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
@@ -105,7 +106,7 @@ export function CurrentMembershipCard({ userMembership }: CurrentMembershipCardP
                         Ver Detalles
                     </Button>
                     <Button size="sm" className="flex-1">
-                        Renovar Plan
+                        Ver reconsumos
                     </Button>
                 </div>
             </CardContent>

@@ -26,9 +26,7 @@ export function MembershipPlansContainer({ membershipData }: MembershipPlansCont
                         <h2 className="text-lg font-medium text-foreground">
                             Tu Membresía Actual
                         </h2>
-                        <Badge variant="outline" className="badge-success">
-                            Activa
-                        </Badge>
+
                     </div>
                     <CurrentMembershipCard userMembership={userMembership} />
                 </section>
