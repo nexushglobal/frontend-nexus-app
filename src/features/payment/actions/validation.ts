@@ -8,6 +8,7 @@ import {
   PaymentRejectionResponse,
   RejectPaymentRequest,
 } from "../types/approval.type";
+import { revalidateAdminPaymentDetail } from "./revalidate-payments";
 
 export async function approvePayment(
   paymentId: string,
@@ -18,6 +19,7 @@ export async function approvePayment(
       `/api/admin/payments/approval/${paymentId}/approve`,
       data
     );
+    revalidateAdminPaymentDetail(paymentId);
     return {
       data: response,
       success: true,
@@ -41,6 +43,7 @@ export async function rejectPayment(
       `/api/admin/payments/approval/${paymentId}/reject`,
       data
     );
+    revalidateAdminPaymentDetail(paymentId);
     return {
       data: response,
       success: true,
@@ -64,6 +67,7 @@ export async function completePayment(
       `/api/admin/payments/approval/${paymentId}/complete`,
       data
     );
+    revalidateAdminPaymentDetail(paymentId);
     return {
       data: response,
       success: true,
