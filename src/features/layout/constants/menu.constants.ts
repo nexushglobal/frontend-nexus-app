@@ -10,6 +10,7 @@ import {
   History,
   Home,
   Layers,
+  MapPin,
   Medal,
   Package,
   PlaneTakeoff,
@@ -50,6 +51,9 @@ export const ICON_MAPPING = {
 
   // Equipo
   team: Users,
+
+  // Lotes
+  "lotes-activos": MapPin,
 
   // Tienda
   store: ShoppingBag,
