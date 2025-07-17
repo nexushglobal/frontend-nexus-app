@@ -8,12 +8,14 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { PaymentAdminDetailResponse } from '../../types/response-payment'
 import { paymentDetailMenuSections } from '../../utils/menu.utils'
+import { revalidateAdminPaymentDetail } from '../../actions/revalidate-payments'
 
 import { DetailsSection } from '../shared/sections/DetailsSection'
 import { ItemsSection } from '../shared/sections/ItemsSection'
 import { MetadataSection } from '../shared/sections/MetadataSection'
 import { OverviewSection } from '../shared/sections/OverviewSection'
 import { TimelineSection } from '../shared/sections/TimelineSection'
+import { PaymentAdminActions } from './PaymentAdminActions'
 
 interface PaymentAdminDetailContentProps {
     payment: PaymentAdminDetailResponse
@@ -35,8 +37,15 @@ export function PaymentAdminDetailContent({ payment, paymentId }: PaymentAdminDe
         return () => window.removeEventListener('resize', checkIsMobile)
     }, [])
 
-
-
+    const handlePaymentUpdate = async () => {
+        try {
+            await revalidateAdminPaymentDetail(paymentId)
+            // Refresh the page to get updated data
+            router.refresh()
+        } catch (error) {
+            console.error('Error revalidating payment:', error)
+        }
+    }
 
     const renderSection = () => {
         switch (activeSection) {
@@ -67,132 +76,145 @@ export function PaymentAdminDetailContent({ payment, paymentId }: PaymentAdminDe
                     <CardHeader>
                         <div className="flex items-center gap-3 mb-2">
                             <Button
-                                variant="outline"
+                                variant="ghost"
                                 size="sm"
                                 onClick={handleBackToPayments}
-                                className="flex items-center gap-2"
+                                className="h-8 w-8 p-0"
                             >
                                 <ArrowLeft className="h-4 w-4" />
-                                Volver
                             </Button>
+                            <div className="flex-1">
+                                <CardTitle className="text-lg">Pago #{paymentId}</CardTitle>
+                                <p className="text-sm text-muted-foreground">Vista móvil</p>
+                            </div>
                         </div>
-                        <CardTitle className="text-xl">Pago #{paymentId}</CardTitle>
-                        <p className="text-sm text-muted-foreground">
-                            {payment.paymentConfig.name}
-                        </p>
                     </CardHeader>
                 </Card>
 
-                {/* Navegación mobile mejorada */}
-                <div className="space-y-4">
-                    {/* Tabs principales */}
-                    <div className="grid grid-cols-4 w-full gap-1 bg-muted p-1 rounded-lg">
-                        {["overview", "items", "timeline", "more"].map((tabId) => {
-                            const isActive = activeSection === tabId ||
-                                (tabId === "more" && !["overview", "items", "timeline"].includes(activeSection));
+                {/* Admin Actions - Always visible on mobile */}
+                <PaymentAdminActions
+                    payment={payment}
+                    onPaymentUpdate={handlePaymentUpdate}
+                />
 
-                            return (
+                {/* Mobile Navigation */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-base">Navegación</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        {paymentDetailMenuSections
+                            .filter(section => ["overview", "items", "timeline"].includes(section.id))
+                            .map((section) => (
                                 <button
-                                    key={tabId}
-                                    onClick={() => setActiveSection(tabId)}
-                                    className={`px-3 py-2 text-xs font-medium rounded-md transition-colors ${isActive
-                                        ? "bg-background text-foreground shadow-sm"
-                                        : "text-muted-foreground hover:text-foreground"
-                                        }`}
+                                    key={section.id}
+                                    onClick={() => setActiveSection(section.id)}
+                                    className="w-full text-left p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                                 >
-                                    {tabId === "overview" && "Resumen"}
-                                    {tabId === "items" && "Elementos"}
-                                    {tabId === "timeline" && "Historial"}
-                                    {tabId === "more" && "Más"}
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-lg bg-primary/10">
+                                            <section.icon className="h-4 w-4 text-primary" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="font-medium">{section.label}</h4>
+                                            <p className="text-sm text-muted-foreground">
+                                                {section.description}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </button>
-                            );
-                        })}
-                    </div>
+                            ))}
+                    </CardContent>
+                </Card>
 
-                    {/* Contenido de las secciones */}
-                    <motion.div
-                        key={activeSection}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        {activeSection === "more" ? (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-lg flex items-center gap-2">
-                                        <MoreHorizontal className="h-5 w-5" />
-                                        Más opciones
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                    {paymentDetailMenuSections
-                                        .filter(section => !["overview", "items", "timeline"].includes(section.id))
-                                        .map((section) => (
-                                            <button
-                                                key={section.id}
-                                                onClick={() => setActiveSection(section.id)}
-                                                className="w-full text-left p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 rounded-lg bg-primary/10">
-                                                        <section.icon className="h-4 w-4 text-primary" />
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <h4 className="font-medium">{section.label}</h4>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {section.description}
-                                                        </p>
-                                                    </div>
+                {/* Mobile Content */}
+                <motion.div
+                    key={activeSection}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {activeSection === 'navigation' ? (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Seleccionar Sección</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                                {paymentDetailMenuSections
+                                    .filter(section => ["overview", "items", "timeline"].includes(section.id))
+                                    .map((section) => (
+                                        <button
+                                            key={section.id}
+                                            onClick={() => setActiveSection(section.id)}
+                                            className="w-full text-left p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 rounded-lg bg-primary/10">
+                                                    <section.icon className="h-4 w-4 text-primary" />
                                                 </div>
-                                            </button>
-                                        ))}
-                                </CardContent>
-                            </Card>
-                        ) : (
-                            renderSection()
-                        )}
-                    </motion.div>
-                </div>
+                                                <div className="flex-1">
+                                                    <h4 className="font-medium">{section.label}</h4>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {section.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    ))}
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        renderSection()
+                    )}
+                </motion.div>
             </div>
         );
     }
-
 
     // Desktop Layout
     return (
         <div className="grid grid-cols-12 gap-6">
             <div className="col-span-3">
-                <Card>
+                <div className="space-y-6">
+                    {/* Admin Actions */}
+                    <PaymentAdminActions
+                        payment={payment}
+                        onPaymentUpdate={handlePaymentUpdate}
+                    />
 
-                    <CardContent className="p-0">
-                        <nav className="space-y-1">
-                            {paymentDetailMenuSections.map((section) => {
-                                const isActive = activeSection === section.id;
+                    {/* Navigation Menu */}
+                    <Card>
+                        <CardContent className="p-0">
+                            <nav className="space-y-1">
+                                {paymentDetailMenuSections.map((section) => {
+                                    const isActive = activeSection === section.id;
 
-                                return (
-                                    <button
-                                        key={section.id}
-                                        onClick={() => setActiveSection(section.id)}
-                                        className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors hover:bg-muted/50 ${isActive
-                                            ? "bg-primary/10 text-primary border-r-2 border-r-primary"
-                                            : "text-muted-foreground hover:text-foreground"
-                                            }`}
-                                    >
-                                        <section.icon className="h-4 w-4 flex-shrink-0" />
-                                        <div className="min-w-0 flex-1">
-                                            <div className="text-sm font-medium truncate">
-                                                {section.label}
+                                    return (
+                                        <button
+                                            key={section.id}
+                                            onClick={() => setActiveSection(section.id)}
+                                            className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors hover:bg-muted/50 ${isActive
+                                                ? "bg-primary/10 text-primary border-r-2 border-r-primary"
+                                                : "text-muted-foreground hover:text-foreground"
+                                                }`}
+                                        >
+                                            <section.icon className="h-4 w-4 flex-shrink-0" />
+                                            <div className="min-w-0 flex-1">
+                                                <div className="text-sm font-medium truncate">
+                                                    {section.label}
+                                                </div>
+                                                <div className="text-xs text-muted-foreground truncate">
+                                                    {section.description}
+                                                </div>
                                             </div>
-                                            <div className="text-xs text-muted-foreground truncate">
-                                                {section.description}
-                                            </div>
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </nav>
-                    </CardContent>
-                </Card>
+                                        </button>
+                                    );
+                                })}
+                            </nav>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
             {/* Desktop Content */}
