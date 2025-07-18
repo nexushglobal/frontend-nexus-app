@@ -15,6 +15,7 @@ import { LotsTable } from "./LotsTable";
 import { useLots } from "../hooks/useLots";
 import { PageHeader } from "@features/shared/components/common/PageHeader";
 import CardSkeleton from "./CardSkeleton";
+import { LotsCards } from "./LotsCard";
 
 export function LotsPage() {
   const {
@@ -146,11 +147,20 @@ export function LotsPage() {
               </h3>
             </div>
 
-            <LotsTable
-              data={lots}
-              isLoading={isLoadingLots}
-              currency={selectedProject.currency}
-            />
+            <div className="hidden md:block">
+              <LotsTable
+                data={lots}
+                isLoading={isLoadingLots}
+                currency={selectedProject.currency}
+              />
+            </div>
+            <div className="md:hidden">
+              <LotsCards
+                data={lots}
+                currency={selectedProject.currency}
+                isLoading={isLoadingLots}
+              />
+            </div>
           </div>
         </div>
       )}
