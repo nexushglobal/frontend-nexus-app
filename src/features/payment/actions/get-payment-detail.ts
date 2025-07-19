@@ -15,10 +15,7 @@ export async function getPaymentDetailAction(paymentId: string) {
     const response = await api.get<PaymentUserDetailResponse>(
       `/api/user/payments/${paymentId}`,
       {
-        next: {
-          tags: [`${PAYMENT_CACHE_TAGS.PAYMENT_DETAIL}-${paymentId}`],
-          revalidate: REVALIDATE_TIME,
-        },
+        cache: "no-store",
       }
     );
     return {

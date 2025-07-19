@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, CheckCircle, Calendar, User, X, ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { AlertTriangle, ArrowRight, Calendar, CheckCircle, User, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface PaymentActionResultModalProps {
     isOpen: boolean;
@@ -40,19 +40,6 @@ export function PaymentActionResultModal({
                 return 'Completado';
             default:
                 return 'Procesado';
-        }
-    };
-
-    const getActionColor = () => {
-        switch (action) {
-            case 'approve':
-                return 'text-success';
-            case 'reject':
-                return 'text-destructive';
-            case 'complete':
-                return 'text-info';
-            default:
-                return 'text-muted-foreground';
         }
     };
 

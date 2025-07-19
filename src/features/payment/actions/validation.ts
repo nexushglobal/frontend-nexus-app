@@ -8,7 +8,10 @@ import {
   PaymentRejectionResponse,
   RejectPaymentRequest,
 } from "../types/approval.type";
-import { revalidateAdminPaymentDetail } from "./revalidate-payments";
+import {
+  revalidateAdminPaymentDetail,
+  revalidatePaymentDetail,
+} from "./revalidate-payments";
 
 export async function approvePayment(
   paymentId: string,
@@ -44,6 +47,7 @@ export async function rejectPayment(
       data
     );
     revalidateAdminPaymentDetail(paymentId);
+    revalidatePaymentDetail(paymentId);
     return {
       data: response,
       success: true,
