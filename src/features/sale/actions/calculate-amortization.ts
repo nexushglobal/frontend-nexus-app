@@ -11,9 +11,7 @@ export async function calculateAmortization(
   try {
     return await api.post<AmortizationResponse>(
       "/api/unilevel/external/calculate/amortization",
-      {
-        body: data,
-      }
+      data
     );
   } catch (error) {
     if (error instanceof Error) console.log(error.message);

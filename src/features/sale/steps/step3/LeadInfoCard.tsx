@@ -1,10 +1,10 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LeadsVendor } from "../../types/sale.types";
+import { ClientResponse } from "../../types/sale-response.types";
 
 interface LeadInfoCardProps {
-  lead: LeadsVendor;
+  lead: Partial<ClientResponse>;
 }
 
 export default function LeadInfoCard({ lead }: LeadInfoCardProps) {

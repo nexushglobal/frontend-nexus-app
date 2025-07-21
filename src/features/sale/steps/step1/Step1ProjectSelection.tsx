@@ -126,7 +126,7 @@ export default function Step1ProjectSelection({
       </div>
 
       <Form {...form}>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-2 gap-6 lg:grid-cols-2">
           <ProjectLocationSelector
             control={form.control}
             errors={form.formState.errors}

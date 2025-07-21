@@ -7,7 +7,6 @@ import { AmortizationCalculationData } from "../validations/saleValidation";
 import { Amortization } from "../types/sale-response.types";
 
 interface UseFinancialConfigProps {
-  reservationAmount: number | undefined;
   amortizationForm: UseFormReturn<AmortizationCalculationData>;
   onAmortizationCalculated: (installments: Amortization[]) => void;
 }
@@ -20,7 +19,6 @@ interface UseFinancialConfigReturn {
 }
 
 export function useFinancialConfig({
-  reservationAmount,
   amortizationForm,
   onAmortizationCalculated,
 }: UseFinancialConfigProps): UseFinancialConfigReturn {
@@ -44,7 +42,7 @@ export function useFinancialConfig({
       const result = await calculateAmortization({
         totalAmount: values.totalAmount,
         initialAmount: values.initialAmount,
-        reservationAmount: reservationAmount ?? 0,
+        reservationAmount: 0,
         interestRate: values.interestRate,
         numberOfPayments: values.quantitySaleCoutes,
         firstPaymentDate: values.firstPaymentDate,
@@ -63,7 +61,7 @@ export function useFinancialConfig({
     } finally {
       setIsCalculating(false);
     }
-  }, [amortizationForm, onAmortizationCalculated, reservationAmount]);
+  }, [amortizationForm, onAmortizationCalculated]);
 
   return {
     amortizationTable,

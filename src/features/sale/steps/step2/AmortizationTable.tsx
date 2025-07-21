@@ -1,18 +1,10 @@
 "use client";
 
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-
-import { Calculator, Table } from "lucide-react";
+import { Calculator } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
 import { Amortization } from "../../types/sale-response.types";
+import { CronogramaTable } from "../../components/CronogramaTable";
+import { CurrencyType } from "../../types/sale.enums";
 
 interface AmortizationTableProps {
   installments: Amortization[];
@@ -42,34 +34,7 @@ export default function AmortizationTable({
       </CardHeader>
       <CardContent>
         <div className="max-h-96 overflow-y-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Cuota</TableHead>
-                <TableHead>Fecha de Pago</TableHead>
-                <TableHead className="text-right">Monto</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {installments.map((installment, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
-                  <TableCell>
-                    {format(
-                      new Date(installment.expectedPaymentDate),
-                      "dd/MM/yyyy",
-                      {
-                        locale: es,
-                      }
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right font-semibold">
-                    S/ {installment.couteAmount.toFixed(2)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <CronogramaTable currency={CurrencyType.PEN} data={installments} />
         </div>
 
         <div className="mt-4 flex items-center justify-between border-t pt-4">

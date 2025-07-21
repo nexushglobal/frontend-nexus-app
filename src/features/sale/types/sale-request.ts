@@ -1,11 +1,10 @@
-import { DocumentType } from "./sale.enums";
 import { SecondaryClient } from "./sale.types";
 
 export interface ClientRequest {
   firstName: string;
   lastName: string;
   document: string;
-  documentType: DocumentType;
+  documentType: string;
   email: string;
 }
 
