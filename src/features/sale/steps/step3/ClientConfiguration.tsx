@@ -17,16 +17,12 @@ interface ClientConfigurationProps {
   control: Control<Step3FormData>;
   errors: FieldErrors<Step3FormData>;
   isLoadingClient: boolean;
-  existingClient: { id: number; address: string } | null;
-  clientAddress: string;
   onAddressChange: (address: string) => void;
 }
 
 export default function ClientConfiguration({
   control,
   isLoadingClient,
-  existingClient,
-  clientAddress,
   onAddressChange,
 }: ClientConfigurationProps) {
   if (isLoadingClient) {
@@ -52,18 +48,8 @@ export default function ClientConfiguration({
         <div className="flex items-center gap-2">
           <CreditCard className="h-4 w-4" />
           <span className="text-sm font-medium">Estado del Cliente:</span>
-          <Badge variant={existingClient ? "default" : "secondary"}>
-            {existingClient ? "Cliente Existente" : "Cliente Nuevo"}
-          </Badge>
+          <Badge variant="secondary">Cliente Nuevo</Badge>
         </div>
-        {existingClient && (
-          <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950/20">
-            <p className="text-sm text-green-800 dark:text-green-200">
-              Cliente encontrado en el sistema. Puedes editar la dirección si es
-              necesario.
-            </p>
-          </div>
-        )}
         <FormField
           control={control}
           name="clientAddress"
@@ -76,7 +62,6 @@ export default function ClientConfiguration({
               <FormControl>
                 <Input
                   placeholder="Ingrese la dirección completa"
-                  value={clientAddress}
                   onChange={(e) => {
                     onAddressChange(e.target.value);
                     field.onChange(e.target.value);

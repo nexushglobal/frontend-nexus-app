@@ -116,7 +116,8 @@ export function CreateLeadModal({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >
-            <div className="grid grid-cols-2 gap-4">
+            {/* Nombres y Apellidos - Grid 2 columnas iguales */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -154,7 +155,8 @@ export function CreateLeadModal({
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Tipo de documento y número - Grid responsivo */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="documentType"
@@ -170,7 +172,7 @@ export function CreateLeadModal({
                       disabled={isSubmitting || isCreating}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecciona" />
                         </SelectTrigger>
                       </FormControl>
@@ -187,7 +189,7 @@ export function CreateLeadModal({
                 )}
               />
 
-              <div className="md:col-span-2">
+              <div className="sm:col-span-2">
                 <FormField
                   control={form.control}
                   name="document"
@@ -208,7 +210,8 @@ export function CreateLeadModal({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Email - Ancho completo */}
+            <div className="grid grid-cols-1">
               <FormField
                 control={form.control}
                 name="email"

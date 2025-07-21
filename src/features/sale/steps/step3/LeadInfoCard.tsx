@@ -28,26 +28,6 @@ export default function LeadInfoCard({ lead }: LeadInfoCardProps) {
             {lead.documentType}: {lead.document}
           </span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">Edad:</span>
-          <span className="font-medium">{lead.age} años</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">Teléfono:</span>
-          <span className="font-medium">{lead.phone}</span>
-        </div>
-        {lead.source && (
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">Fuente:</span>
-            <span className="font-medium">{lead.source.name}</span>
-          </div>
-        )}
-        {lead.ubigeo && (
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">Ubicación:</span>
-            <span className="font-medium">{lead.ubigeo.name}</span>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

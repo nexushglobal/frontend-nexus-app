@@ -55,7 +55,6 @@ export default function Step3ClientGuarantor({
   updateFormData,
   updateStepValidation,
 }: Props) {
-  // Local form data states
   const [secondaryClientsFormData, setSecondaryClientsFormData] = useState<
     SecondaryClientFormData[]
   >([]);
@@ -63,7 +62,6 @@ export default function Step3ClientGuarantor({
     useState<GuarantorFormData>();
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-  // Modal states
   const [modal, setModal] = useState<{
     createLeadModal: boolean;
     guarantorModal: boolean;
@@ -74,7 +72,6 @@ export default function Step3ClientGuarantor({
     compradorModal: false,
   });
 
-  // Switch states
   const [switchEnable, setSwitchEnable] = useState<{
     guarantorEnable: boolean;
     compradorEnable: boolean;
@@ -119,6 +116,8 @@ export default function Step3ClientGuarantor({
       const guarantorId = getGuarantorId();
       const secondaryClientIds = getSecondaryClientsId();
 
+      console.log(guarantorId, secondaryClientIds);
+
       const basicValidation = !!isLeadCreated && !!clientAddress.trim();
 
       // Check if guarantor or secondary clients are required based on switches
@@ -154,7 +153,6 @@ export default function Step3ClientGuarantor({
     updateStepValidation,
   ]);
 
-  // Handlers
   const handleAddSecondaryClient = (data: SecondaryClientFormData) => {
     if (editingIndex !== null) {
       setSecondaryClientsFormData((prev) =>
@@ -324,7 +322,6 @@ export default function Step3ClientGuarantor({
             )}
           </div>
 
-          {/* Right Column - Configuration */}
           <div className="lg:col-span-2 space-y-4">
             {isLeadCreated && (
               <>
@@ -332,8 +329,6 @@ export default function Step3ClientGuarantor({
                   control={form.control}
                   errors={form.formState.errors}
                   isLoadingClient={loading.client}
-                  existingClient={null} // Since we're creating new
-                  clientAddress={clientAddress}
                   onAddressChange={handleAddressChange}
                 />
 

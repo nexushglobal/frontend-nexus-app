@@ -7,6 +7,7 @@ import {
 import { createClientGuarantor, createLead } from "../actions/create-client";
 import { ClientRequest } from "../types/sale-request";
 import { ClientResponse } from "../types/sale-response.types";
+import { DocumentType } from "../types/sale.enums";
 
 interface UseClientGuarantorReturn {
   createdLead: Partial<ClientResponse | null>;
@@ -65,6 +66,7 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
         firstName: leadData.firstName,
         lastName: leadData.lastName,
         document: leadData.document,
+        documentType: leadData.documentType as DocumentType,
         age: result.age,
         email: result.email,
       };
