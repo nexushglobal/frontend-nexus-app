@@ -1,3 +1,5 @@
+import { SaleStatus, SaleType, StatusPayment } from "./sale.enums";
+
 export interface CreateSalePayload {
   lotId: string;
   saleType: "DIRECT_PAYMENT" | "FINANCED";
@@ -75,4 +77,109 @@ export interface SecondaryClient {
   documentType: string;
   phone: string;
   address: string;
+}
+
+export interface Sale {
+  id: string;
+  clientFullName: string;
+  phone: string | null;
+  currency: string;
+  amount: string;
+  amountInitial: string | null;
+  numberCoutes: number | null;
+  type: SaleType;
+  status: SaleStatus;
+  saleIdReference: string;
+  vendorId: string;
+}
+
+interface PaymentSummary {
+  id: number;
+  amount: number;
+  status: StatusPayment;
+  createdAt: string;
+  reviewedAt: string;
+  reviewBy: {
+    id: string;
+    email: string;
+  } | null;
+  codeOperation: string;
+  banckName: string;
+  dateOperation: string;
+  numberTicket: string;
+  paymentConfig: string;
+  reason: string | null;
+}
+
+export interface SaleDetail {
+  id: string;
+  type: SaleType;
+  totalAmount: string;
+  status: SaleStatus;
+  createdAt: string;
+  reservationAmount: string | null;
+  maximumHoldPeriod: string | null;
+  fromReservation: boolean;
+  currency: string;
+  client: {
+    address: string;
+    firstName: string;
+    lastName: string;
+    phone: string | null;
+    reportPdfUrl: string | null;
+  };
+  secondaryClients: {
+    address: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+  } | null;
+  lot: {
+    id: string;
+    name: string;
+    lotPrice: string;
+    block: string;
+    stage: string;
+    project: string;
+  };
+  radicationPdfUrl: string | null;
+  paymentAcordPdfUrl: string | null;
+  liner: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  telemarketingSupervisor: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  telemarketingConfirmer: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  telemarketer: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  fieldManager: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  fieldSupervisor: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  fieldSeller: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  guarantor: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  vendor: {
+    document: string;
+    firstName: string;
+    lastName: string;
+  };
+  paymentsSummary: PaymentSummary[];
 }
