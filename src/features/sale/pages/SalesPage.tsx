@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
+import { File, Search } from "lucide-react";
 import {
   SALE_STATUS_LABELS,
   SALE_TYPE_LABELS,
@@ -24,6 +24,7 @@ import {
 import { useSales } from "../hooks/useSales";
 import { SalesTable } from "../components/SalesTable";
 import { SaleCard } from "../components/SalesCard";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
 
 export function SalesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,12 +58,11 @@ export function SalesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">Ventas</h1>
-        <p className="text-muted-foreground">
-          Gestiona y visualiza todas las ventas realizadas
-        </p>
-      </div>
+      <PageHeader
+        icon={File}
+        title="Ventas"
+        subtitle="Gestiona y visualiza todas las ventas realizadas"
+      />
 
       <Card>
         <CardHeader>

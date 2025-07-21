@@ -21,7 +21,7 @@ export function useSales(): UseSalesReturn {
       setLoading(true);
       setError(null);
       const data = await SaleService.getSales();
-      setSales(data);
+      setSales(data.items);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Error al cargar las ventas"

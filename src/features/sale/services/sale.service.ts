@@ -1,9 +1,10 @@
 import { api } from "@/features/shared/services/api";
-import { Sale, SaleDetail } from "../types/sale.types";
+import { SaleDetail } from "../types/sale.types";
+import { SaleResponse } from "../types/sale-response.types";
 
 export class SaleService {
-  static async getSales(): Promise<Sale[]> {
-    return api.get<Sale[]>("/api/unilevel/external/sales");
+  static async getSales(): Promise<SaleResponse> {
+    return api.get<SaleResponse>("/api/unilevel/external/sales");
   }
 
   static async getSaleDetail(saleId: string): Promise<SaleDetail> {
