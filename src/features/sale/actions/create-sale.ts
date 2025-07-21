@@ -12,9 +12,7 @@ export async function createSale(data: CreateSalePayload) {
   try {
     const response = await api.post<CreateSaleResponse>(
       "/api/unilevel/external/sales",
-      {
-        body: data,
-      }
+      data
     );
     revalidateTag(SALES_VENDOR_CACHE_TAG);
 

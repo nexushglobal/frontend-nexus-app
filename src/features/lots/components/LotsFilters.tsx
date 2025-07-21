@@ -88,7 +88,6 @@ export function LotsFilters({
               </Select>
             </div>
 
-            {/* Selector de Bloques */}
             <div className="min-w-[200px]">
               <Select
                 value={filters.blockId || "all"}
@@ -103,15 +102,15 @@ export function LotsFilters({
                       !filters.stageId
                         ? "Primero selecciona una etapa"
                         : isLoadingBlocks
-                        ? "Cargando bloques..."
+                        ? "Cargando manzanas..."
                         : blocks.length === 0
-                        ? "Sin bloques disponibles"
+                        ? "Sin manzanas disponibles"
                         : "Seleccionar bloque"
                     }
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todos los bloques</SelectItem>
+                  <SelectItem value="all">Todos las manzanas</SelectItem>
                   {blocks.map((block) => (
                     <SelectItem key={block.id} value={block.id}>
                       {block.name}

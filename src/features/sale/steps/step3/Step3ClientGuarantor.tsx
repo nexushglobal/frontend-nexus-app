@@ -110,47 +110,51 @@ export default function Step3ClientGuarantor({
     },
   });
 
-  // Validation effect
   useEffect(() => {
-    const subscription = form.watch(() => {
-      const guarantorId = getGuarantorId();
-      const secondaryClientIds = getSecondaryClientsId();
+    form.setValue("clientId", getClientId());
+    form.setValue("guarantorId", getGuarantorId());
+    form.setValue("secondaryClientIds", getSecondaryClientsId());
+    form.setValue("clientAddress", clientAddress);
+  }, [form, getClientId, getGuarantorId, getSecondaryClientsId, clientAddress]);
 
-      console.log(guarantorId, secondaryClientIds);
+  useEffect(() => {
+    const clientId = getClientId();
+    const guarantorId = getGuarantorId();
+    const secondaryClientIds = getSecondaryClientsId();
 
-      const basicValidation = !!isLeadCreated && !!clientAddress.trim();
+    const basicValidation = !!(
+      isLeadCreated &&
+      clientId > 0 &&
+      clientAddress.trim()
+    );
 
-      // Check if guarantor or secondary clients are required based on switches
-      const guarantorRequired = switchEnable.guarantorEnable;
-      const secondaryClientsRequired = switchEnable.compradorEnable;
+    const compradorBlocking =
+      switchEnable.compradorEnable &&
+      (!secondaryClientIds || secondaryClientIds.length === 0);
 
-      const guarantorValid = !guarantorRequired || guarantorId > 0;
-      const secondaryClientsValid =
-        !secondaryClientsRequired || secondaryClientIds.length > 0;
+    const guarantorBlocking =
+      switchEnable.guarantorEnable && (!guarantorId || guarantorId === 0);
 
-      const isValid =
-        basicValidation && guarantorValid && secondaryClientsValid;
+    const switchesBlocking = compradorBlocking || guarantorBlocking;
 
-      updateStepValidation("step3", isValid);
+    const isValid = basicValidation && !switchesBlocking;
 
-      updateFormData({
-        clientId: getClientId(),
-        guarantorId,
-        secondaryClientIds,
-      });
+    updateStepValidation("step3", isValid);
+
+    updateFormData({
+      clientId,
+      guarantorId,
+      secondaryClientIds,
     });
 
-    return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    form,
-    getClientId,
-    getGuarantorId,
-    getSecondaryClientsId,
     isLeadCreated,
     clientAddress,
-    switchEnable,
-    updateFormData,
-    updateStepValidation,
+    switchEnable.compradorEnable,
+    switchEnable.guarantorEnable,
+    guarantorData,
+    secondaryClientsData,
   ]);
 
   const handleAddSecondaryClient = (data: SecondaryClientFormData) => {
@@ -159,9 +163,7 @@ export default function Step3ClientGuarantor({
         prev.map((client, index) => (index === editingIndex ? data : client))
       );
       setEditingIndex(null);
-    } else {
-      setSecondaryClientsFormData((prev) => [...prev, data]);
-    }
+    } else setSecondaryClientsFormData((prev) => [...prev, data]);
     setModal({ ...modal, compradorModal: false });
   };
 
@@ -170,17 +172,13 @@ export default function Step3ClientGuarantor({
     setModal({ ...modal, compradorModal: true });
   };
 
-  const handleEditGuarantor = () => {
+  const handleEditGuarantor = () =>
     setModal({ ...modal, guarantorModal: true });
-  };
 
-  const handleDeleteSecondaryClient = (index: number) => {
+  const handleDeleteSecondaryClient = (index: number) =>
     setSecondaryClientsFormData((prev) => prev.filter((_, i) => i !== index));
-  };
 
-  const handleDeleteGuarantor = () => {
-    setGuarantorFormData(undefined);
-  };
+  const handleDeleteGuarantor = () => setGuarantorFormData(undefined);
 
   const handleAddGuarantor = (data: GuarantorFormData) => {
     setGuarantorFormData(data);
@@ -216,7 +214,6 @@ export default function Step3ClientGuarantor({
     }
   };
 
-  // Validation status for UI feedback
   const validationStatus = {
     leadCreated: isLeadCreated,
     hasAddress: !!clientAddress.trim(),
@@ -229,9 +226,7 @@ export default function Step3ClientGuarantor({
     <div className="space-y-6">
       <Form {...form}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Lead Status */}
           <div className="space-y-4">
-            {/* Lead Creation Status */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2">

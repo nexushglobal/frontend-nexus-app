@@ -106,10 +106,10 @@ export function useLots(): UseLotsReturn {
         const response = await lotsService.getBlocks(filters.stageId!);
 
         if (response) setBlocks(response);
-        else toast.error("Error al cargar los bloques");
+        else toast.error("Error al cargar las manzanas");
       } catch (err) {
-        toast.error("Error de conexión al cargar bloques");
-        console.error("Error loading blocks:", err);
+        toast.error("Error de conexión al cargar manzanas");
+        console.error("Error loading manzanas:", err);
       } finally {
         setIsLoadingBlocks(false);
       }

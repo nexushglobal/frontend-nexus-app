@@ -74,13 +74,12 @@ export function ProjectCard({
           <div className="text-center p-2 bg-muted/50 rounded-lg">
             <div className="flex items-center justify-center gap-1 mb-1">
               <MapPin className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Bloques</span>
+              <span className="text-xs text-muted-foreground">Manzanas</span>
             </div>
             <span className="text-lg font-semibold">{project.blockCount}</span>
           </div>
         </div>
 
-        {/* Disponibilidad de lotes */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Lotes disponibles</span>

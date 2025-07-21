@@ -127,14 +127,14 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
 
         setClientId(result.clientId);
 
-        if (guarantorFormData && result.guarantorId) {
+        if (guarantorFormData) {
           setGuarantorData({
             id: result.guarantorId,
             name: `${guarantorFormData.firstName} ${guarantorFormData.lastName}`,
           });
         }
 
-        if (result.secondaryClientIds && result.secondaryClientIds.length > 0) {
+        if (result.secondaryClientIds) {
           setSecondaryClientsData(
             result.secondaryClientIds.map((id, index) => ({
               id,
