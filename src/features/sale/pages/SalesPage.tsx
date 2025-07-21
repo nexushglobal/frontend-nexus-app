@@ -23,7 +23,7 @@ import {
 } from "../constants/sale.constants";
 import { useSales } from "../hooks/useSales";
 import { SalesTable } from "../components/SalesTable";
-import { SaleCard } from "../components/SaleCard";
+import { SaleCard } from "../components/SalesCard";
 
 export function SalesPage() {
   const [searchTerm, setSearchTerm] = useState("");
