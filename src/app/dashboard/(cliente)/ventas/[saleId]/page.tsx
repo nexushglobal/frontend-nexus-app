@@ -1,4 +1,4 @@
-import { SaleDetailPage } from "@/features/sale/components/SaleDetailPage";
+import { SaleDetailPage } from "@/features/sale/pages/SaleDetailPage";
 import type { Metadata } from "next";
 
 interface Props {

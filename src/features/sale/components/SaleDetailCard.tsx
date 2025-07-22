@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SaleStatusBadge } from "./SaleStatusBadge";
 import {
   MapPin,
   User,
@@ -64,7 +63,7 @@ export function SaleDetailCard({ saleDetail }: SaleDetailCardProps) {
               </p>
             </div>
             <div className="flex flex-col items-start sm:items-end gap-2">
-              <SaleStatusBadge status={saleDetail.status} />
+              <Badge variant="secondary">{saleDetail.status}</Badge>
               <p className="text-3xl font-bold text-blue-600">
                 {formatCurrency(
                   parseFloat(saleDetail.totalAmount),

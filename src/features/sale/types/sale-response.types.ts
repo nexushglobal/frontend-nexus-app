@@ -1,5 +1,5 @@
 import { CurrencyType, DocumentType, SaleStatus, SaleType } from "./sale.enums";
-import { Sale, Source, Ubigeo } from "./sale.types";
+import { Sale, SaleDetail, Source, Ubigeo } from "./sale.types";
 
 export interface CreateSaleResponse {
   id: string;
@@ -17,6 +17,10 @@ export interface CreateSaleResponse {
 
 export interface SaleResponse {
   items: Sale[];
+}
+
+export interface SaleDetailResponse {
+  data: SaleDetail;
 }
 
 export interface Amortization {

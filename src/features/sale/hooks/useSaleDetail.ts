@@ -13,7 +13,7 @@ interface UseSaleDetailReturn {
 
 export function useSaleDetail(saleId: string): UseSaleDetailReturn {
   const [saleDetail, setSaleDetail] = useState<SaleDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchSaleDetail = async () => {
@@ -22,8 +22,8 @@ export function useSaleDetail(saleId: string): UseSaleDetailReturn {
     try {
       setLoading(true);
       setError(null);
-      const data = await SaleService.getSaleDetail(saleId);
-      setSaleDetail(data);
+      const response = await SaleService.getSaleDetail(saleId);
+      setSaleDetail(response.data);
     } catch (err) {
       setError(
         err instanceof Error
