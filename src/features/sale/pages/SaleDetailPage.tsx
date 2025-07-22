@@ -6,14 +6,17 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSaleDetail } from "../hooks/useSaleDetail";
 import { SaleDetailCard } from "../components/SaleDetailCard";
+import { PageHeader } from "@/features/shared/components/common/PageHeader";
+import { Suspense } from "react";
+import { PaymentDetailLoading } from "@/features/payment/components/shared/skeleton/PaymentDetailLoading";
 
 interface SaleDetailPageProps {
-  saleId: string;
+  referenceId: string;
 }
 
-export function SaleDetailPage({ saleId }: SaleDetailPageProps) {
+export function SaleDetailPage({ referenceId }: SaleDetailPageProps) {
   const router = useRouter();
-  const { saleDetail, loading, error, refetch } = useSaleDetail(saleId);
+  const { saleDetail, loading, error, refetch } = useSaleDetail(referenceId);
 
   const handleBack = () => {
     router.push("/dashboard/ventas");
@@ -98,7 +101,7 @@ export function SaleDetailPage({ saleId }: SaleDetailPageProps) {
           <div className="text-gray-600">
             <h3 className="font-semibold">Venta no encontrada</h3>
             <p className="text-sm mt-1">
-              La venta con ID {saleId} no existe o no tienes permisos para
+              La venta con ID {referenceId} no existe o no tienes permisos para
               verla.
             </p>
           </div>
@@ -109,26 +112,16 @@ export function SaleDetailPage({ saleId }: SaleDetailPageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleBack}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Volver a Ventas
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Detalle de Venta #{saleDetail.id}
-          </h1>
-          <p className="text-muted-foreground">
-            Cliente: {saleDetail.client.firstName} {saleDetail.client.lastName}
-          </p>
-        </div>
-      </div>
-      <SaleDetailCard saleDetail={saleDetail} />
+      <PageHeader
+        title={`Detalle de Venta #${referenceId}`}
+        subtitle="Información completa y detallada de la venta"
+        variant="gradient"
+        backUrl="/dashboard/ventas"
+        className="mb-6"
+      />
+      <Suspense fallback={<PaymentDetailLoading />}>
+        <SaleDetailCard saleDetail={saleDetail} />
+      </Suspense>
     </div>
   );
 }

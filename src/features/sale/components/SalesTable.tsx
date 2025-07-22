@@ -24,9 +24,8 @@ export function SalesTable({ data, isLoading = false }: SalesTableProps) {
   const columns = useMemo(
     () =>
       createSalesColumns({
-        onViewDetail: (saleId) => {
-          router.push(`/dashboard/ventas/${saleId}`);
-        },
+        onViewDetail: (referenceId) =>
+          router.push(`/dashboard/ventas/${referenceId}`),
       }),
     [router]
   );

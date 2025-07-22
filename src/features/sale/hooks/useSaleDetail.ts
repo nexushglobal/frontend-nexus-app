@@ -23,7 +23,7 @@ export function useSaleDetail(saleId: string): UseSaleDetailReturn {
       setLoading(true);
       setError(null);
       const response = await SaleService.getSaleDetail(saleId);
-      setSaleDetail(response.data);
+      setSaleDetail(response);
     } catch (err) {
       setError(
         err instanceof Error

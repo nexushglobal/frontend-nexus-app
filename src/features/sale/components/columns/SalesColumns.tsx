@@ -7,7 +7,7 @@ import { Eye, User, Phone, DollarSign, Calendar } from "lucide-react";
 import type { Sale } from "../../types/sale.types";
 
 interface CreateSalesColumnsProps {
-  onViewDetail: (saleId: string) => void;
+  onViewDetail: (referenceId: string) => void;
 }
 
 export function createSalesColumns({
@@ -132,7 +132,7 @@ export function createSalesColumns({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onViewDetail(sale.id)}
+              onClick={() => onViewDetail(sale.saleIdReference)}
               className="h-8 px-2 hover:bg-gray-100"
             >
               <Eye className="h-4 w-4" />
