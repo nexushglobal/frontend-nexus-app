@@ -6,11 +6,11 @@ export const metadata: Metadata = {
   description: "Visualiza el detalle completo de la venta",
 };
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ saleId: string }>;
 }
 
 export default async function Page({ params }: PageProps) {
-  const { id } = await params;
+  const { saleId } = await params;
 
-  return <SaleDetailPage referenceId={id} />;
+  return <SaleDetailPage referenceId={saleId} />;
 }

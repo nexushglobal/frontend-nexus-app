@@ -4,16 +4,16 @@ import { SaleDetail } from "../types/sale.types";
 
 export class SaleService {
   static async getSales(): Promise<SaleResponse> {
-    return api.get<SaleResponse>("/api/unilevel/external/sales");
+    return await api.get<SaleResponse>("/api/unilevel/external/sales");
   }
 
   static async getSaleDetail(saleId: string): Promise<SaleDetail> {
-    const response = api.get<SaleDetail>(
-      `/api/unilevel/external/sales/${saleId}`
-    );
-
-    console.log(response);
-
-    return response;
+    const endpoint = `/api/unilevel/external/sales/${saleId}`;
+    try {
+      const response = await api.get<SaleDetail>(endpoint);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 }

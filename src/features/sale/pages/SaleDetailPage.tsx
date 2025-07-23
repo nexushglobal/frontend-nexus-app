@@ -16,7 +16,7 @@ interface SaleDetailPageProps {
 
 export function SaleDetailPage({ referenceId }: SaleDetailPageProps) {
   const router = useRouter();
-  const { saleDetail, loading, error, refetch } = useSaleDetail(referenceId);
+  const { saleDetail, loading } = useSaleDetail(referenceId);
 
   const handleBack = () => {
     router.push("/dashboard/ventas");
@@ -39,39 +39,6 @@ export function SaleDetailPage({ referenceId }: SaleDetailPageProps) {
             <Skeleton className="h-64 w-full" />
           </div>
           <Skeleton className="h-48 w-full" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleBack}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Volver a Ventas
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Detalle de Venta
-            </h1>
-            <p className="text-muted-foreground">Error al cargar el detalle</p>
-          </div>
-        </div>
-        <div className="p-6 border border-red-200 rounded-lg bg-red-50">
-          <div className="text-red-600 mb-4">
-            <h3 className="font-semibold">Error al cargar la venta</h3>
-            <p className="text-sm mt-1">{error}</p>
-          </div>
-          <Button onClick={refetch} variant="outline" size="sm">
-            Intentar de nuevo
-          </Button>
         </div>
       </div>
     );
