@@ -3,11 +3,17 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+    MembershipPlan,
+    Payment,
+    PaymentMethod,
+    PaymentResult,
+    UserMembership
+} from "@/features/membership/types/membership-detail.type";
+import { formatCurrency } from "@/features/shared/utils/formatCurrency";
 import {
     AlertCircle,
     CheckCircle,
@@ -18,22 +24,12 @@ import {
     Plus,
     Receipt,
     Trash2,
-    Upload,
-    X,
     Zap
 } from "lucide-react";
 import { useState } from "react";
-import {
-    MembershipPlan,
-    UserMembership,
-    PaymentMethod,
-    Payment,
-    PaymentResult
-} from "@/features/membership/types/membership-detail.type";
 import { subscribeToPlanAction } from "../actions/suscription-to-plan";
-import { formatCurrency } from "@/features/shared/utils/formatCurrency";
-import { VoucherPaymentModal } from "./VoucherPaymentModal";
 import { PaymentResultModal } from "./PaymentResultModal";
+import { VoucherPaymentModal } from "./VoucherPaymentModal";
 
 
 interface PaymentSubscriptionSheetProps {

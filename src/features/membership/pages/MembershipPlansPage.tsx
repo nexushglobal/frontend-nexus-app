@@ -1,11 +1,10 @@
-import { getMembershipPlansAction } from "@/features/membership/actions/get-membership-plans";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent } from "@/components/ui/card";
-import { Suspense } from "react";
-import { AlertCircle } from "lucide-react";
+import { getMembershipPlansAction } from "@/features/membership/actions/get-membership-plans";
 import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { MembershipPlansLoading } from "../components/skeleton/MembershipPlansLoading";
+import { AlertCircle } from "lucide-react";
+import { Suspense } from "react";
 import { MembershipPlansContainer } from "../components/MembershipPlansContainer";
+import { MembershipPlansLoading } from "../components/skeleton/MembershipPlansLoading";
 
 
 export async function MembershipPlansPage() {

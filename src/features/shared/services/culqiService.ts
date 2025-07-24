@@ -1,10 +1,10 @@
 
 import {
+  CardValidation,
   CreateTokenRequest,
   CreateTokenResponse,
-  CardValidation,
   PaymentFormState,
-} from "../types/culqi.types";
+} from "../types/token.types";
 
 class CulqiService {
   private readonly apiEndpoint = "/api/payments/culqi/tokens";

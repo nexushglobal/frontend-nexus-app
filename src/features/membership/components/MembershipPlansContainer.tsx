@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { CheckCircle } from "lucide-react";
 import { MembershipData } from "../types/membership.types";
 import { CurrentMembershipCard } from "./CurrentMembershipCard";

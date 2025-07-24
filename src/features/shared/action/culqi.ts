@@ -8,7 +8,10 @@ import {
 
 export async function createCustomerAction(data: CustomerRequest) {
   try {
-    const response = await api.post(`/api/culqi/payments/customer`, data, {
+    const response = await api.post<{
+      userId:string;
+      culqiCustomerId:string
+    }>(`/api/culqi/payments/customer`, data, {
       cache: "no-store",
     });
     return {
@@ -30,7 +33,10 @@ export async function updateCustomerAction(
   data: CustomerUpdateRequest
 ) {
   try {
-    const response = await api.patch(
+    const response = await api.patch<{
+      userId:string;
+      culqiCustomerId:string
+    }>(
       `/api/culqi/payments/customer/${customerId}`,
       data,
       {
@@ -53,7 +59,10 @@ export async function updateCustomerAction(
 
 export async function createCardAction(data: CardRequest) {
   try {
-    const response = await api.post(`/api/culqi/payments/card`, data, {
+    const response = await api.post<{
+      id:number;
+      culqiCardId:string;
+    }>(`/api/culqi/payments/card`, data, {
       cache: "no-store",
     });
     return {
@@ -72,7 +81,7 @@ export async function createCardAction(data: CardRequest) {
 
 export async function updateCardAction(cardId: string, data: CardRequest) {
   try {
-    const response = await api.patch(
+    const response = await api.patch<{ id: number; culqiCardId: string }>(
       `/api/culqi/payments/card/${cardId}`,
       data,
       {
@@ -95,7 +104,9 @@ export async function updateCardAction(cardId: string, data: CardRequest) {
 
 export async function deleteCardAction(cardId: string) {
   try {
-    const response = await api.delete(`/api/culqi/payments/card/${cardId}`, {
+    const response = await api.delete<
+      { deleted: boolean; message: string }
+    >(`/api/culqi/payments/card/${cardId}`, {
       cache: "no-store",
     });
     return {
