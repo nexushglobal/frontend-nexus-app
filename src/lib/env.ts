@@ -1,5 +1,6 @@
 const serverEnv = {
   apiUrl: process.env.API_BACKENDL_URL,
+  culqiPublicKey: process.env.CULQI_PUBLIC_KEY,
 };
 
 const clientEnv = {
@@ -13,6 +14,11 @@ function validateEnv() {
     if (!serverEnv.apiUrl) {
       throw new Error(
         "API_BACKENDL_URL no está definida en las variables de entorno para server-side"
+      );
+    }
+    if (!serverEnv.culqiPublicKey) {
+      console.warn(
+        "CULQI_PUBLIC_KEY no está definida - Los pagos no funcionarán"
       );
     }
   } else {
@@ -29,6 +35,13 @@ validateEnv();
 export const env = {
   get apiUrl() {
     return isServer ? serverEnv.apiUrl : clientEnv.apiUrl;
+  },
+  get culqiPublicKey() {
+    // Solo disponible en server-side
+    if (!isServer) {
+      throw new Error("culqiPublicKey solo está disponible en server-side");
+    }
+    return serverEnv.culqiPublicKey;
   },
 } as const;
 
