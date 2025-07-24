@@ -54,6 +54,7 @@ export interface PaymentSubscribeRequest {
   paymentMethod: PaymentMethod;
   payments?: Payment[];
   paymentImages?: File[];
+  source_id?: string;
 }
 
 export interface PaymentResult {

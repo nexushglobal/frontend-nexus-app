@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -28,9 +27,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { subscribeToPlanAction } from "../actions/suscription-to-plan";
+import { PaymentGatewayComponent } from "./PaymentGatewayComponent";
 import { PaymentResultModal } from "./PaymentResultModal";
 import { VoucherPaymentModal } from "./VoucherPaymentModal";
-
 
 interface PaymentSubscriptionSheetProps {
     isOpen: boolean;
@@ -59,6 +58,7 @@ export function PaymentSubscriptionSheet({
     const [showVoucherModal, setShowVoucherModal] = useState(false);
     const [showResultModal, setShowResultModal] = useState(false);
     const [paymentResult, setPaymentResult] = useState<PaymentResponse | null>(null);
+    const [selectedCardId, setSelectedCardId] = useState<string>("");
 
     const totalAmount = plan.upgradeCost !== undefined ? plan.upgradeCost : plan.price;
     const paymentsTotal = payments.reduce((sum, payment) => sum + payment.amount, 0);
@@ -77,19 +77,20 @@ export function PaymentSubscriptionSheet({
     };
 
     const handleRemovePayment = (index: number) => {
-        const payment = payments[index];
         setPayments(prev => prev.filter((_, i) => i !== index));
-        setFiles(prev => prev.filter((_, i) => i !== payment.fileIndex));
-    };
-
-    const canSubmit = () => {
-        return selectedMethod === PaymentMethod.VOUCHER &&
-            payments.length > 0 &&
-            Math.abs(paymentsTotal - totalAmount) < 0.01;
+        setFiles(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async () => {
-        if (!canSubmit()) return;
+        if (remainingAmount > 0 && selectedMethod === PaymentMethod.VOUCHER) {
+            alert("El monto total de los pagos debe cubrir el costo del plan");
+            return;
+        }
+
+        if (selectedMethod === PaymentMethod.PAYMENT_GATEWAY && !selectedCardId) {
+            alert("Debes seleccionar una tarjeta de crédito");
+            return;
+        }
 
         setIsProcessing(true);
 
@@ -97,19 +98,33 @@ export function PaymentSubscriptionSheet({
             const formData = new FormData();
             formData.append('planId', plan.id.toString());
             formData.append('paymentMethod', selectedMethod);
-            formData.append('payments', JSON.stringify(payments));
 
-            files.forEach((file, index) => {
-                formData.append('paymentImages', file);
-            });
+            // Solo agregar campos de voucher si el método es VOUCHER
+            if (selectedMethod === PaymentMethod.VOUCHER) {
+                formData.append('payments', JSON.stringify(payments));
+                files.forEach((file, index) => {
+                    formData.append(`paymentImages`, file);
+                });
+            }
+
+            // Solo agregar source_id si el método es PAYMENT_GATEWAY
+            if (selectedMethod === PaymentMethod.PAYMENT_GATEWAY) {
+                formData.append('source_id', selectedCardId);
+            }
 
             const result = await subscribeToPlanAction(formData);
-            setPaymentResult(result as PaymentResponse);
+
+            setPaymentResult({
+                success: result.success,
+                message: result.message,
+                data: result.data || undefined,
+                errors: result.errors
+            });
             setShowResultModal(true);
         } catch (error) {
             setPaymentResult({
                 success: false,
-                message: "Error inesperado al procesar el pago",
+                message: "Error inesperado",
                 errors: error instanceof Error ? error.message : "Unknown error"
             });
             setShowResultModal(true);
@@ -122,6 +137,7 @@ export function PaymentSubscriptionSheet({
         setPayments([]);
         setFiles([]);
         setSelectedMethod(PaymentMethod.VOUCHER);
+        setSelectedCardId("");
         setPaymentResult(null);
     };
 
@@ -131,6 +147,12 @@ export function PaymentSubscriptionSheet({
             onClose();
         }
     };
+
+    const canSubmit = selectedMethod === PaymentMethod.VOUCHER
+        ? remainingAmount <= 0
+        : selectedMethod === PaymentMethod.PAYMENT_GATEWAY
+            ? !!selectedCardId
+            : false;
 
     return (
         <>
@@ -176,63 +198,70 @@ export function PaymentSubscriptionSheet({
                                 </CardContent>
                             </Card>
 
-                            {/* Payment Status */}
-                            <Card className="border-success/20 bg-success/5 ">
-                                <CardHeader >
-                                    <CardTitle className="text-base flex items-center gap-2">
-                                        <DollarSign className="h-4 w-4 text-success" />
-                                        Estado del Pago
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm text-muted-foreground">Total requerido:</span>
-                                        <span className="font-medium">{formatCurrency(totalAmount)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm text-muted-foreground">Total agregado:</span>
-                                        <span className={`font-semibold ${paymentsTotal >= totalAmount ? 'text-success' : 'text-warning'}`}>
-                                            {formatCurrency(paymentsTotal)}
-                                        </span>
-                                    </div>
-                                    {remainingAmount > 0.01 && (
+                            {/* Payment Status - Solo para voucher */}
+                            {selectedMethod === PaymentMethod.VOUCHER && (
+                                <Card className="border-success/20 bg-success/5">
+                                    <CardHeader>
+                                        <CardTitle className="text-base flex items-center gap-2">
+                                            <DollarSign className="h-4 w-4 text-success" />
+                                            Estado del Pago
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-3">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm text-muted-foreground">Faltante:</span>
-                                            <span className="font-medium text-destructive">
-                                                {formatCurrency(remainingAmount)}
+                                            <span className="text-sm text-muted-foreground">Total requerido:</span>
+                                            <span className="font-medium">{formatCurrency(totalAmount)}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-muted-foreground">Total agregado:</span>
+                                            <span className={`font-semibold ${paymentsTotal >= totalAmount ? 'text-success' : 'text-warning'}`}>
+                                                {formatCurrency(paymentsTotal)}
                                             </span>
                                         </div>
-                                    )}
-                                    {Math.abs(remainingAmount) <= 0.01 && paymentsTotal > 0 && (
-                                        <div className="flex items-center gap-2 text-success text-sm">
-                                            <CheckCircle className="h-4 w-4" />
-                                            Monto completo
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
+                                        {remainingAmount > 0 && (
+                                            <div className="flex justify-between items-center pt-2 border-t">
+                                                <span className="text-sm text-muted-foreground">Monto faltante:</span>
+                                                <span className="font-semibold text-warning">
+                                                    {formatCurrency(remainingAmount)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {remainingAmount <= 0 && (
+                                            <div className="flex items-center gap-2 pt-2 border-t border-success/20">
+                                                <CheckCircle className="h-4 w-4 text-success" />
+                                                <span className="text-sm text-success font-medium">
+                                                    Monto completo
+                                                </span>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            )}
                         </div>
 
                         {/* Payment Method Selection */}
                         <Card>
-                            <CardHeader >
-                                <CardTitle className="text-base flex items-center gap-2">
-                                    <CreditCard className="h-4 w-4" />
-                                    Método de Pago
-                                </CardTitle>
+                            <CardHeader>
+                                <CardTitle className="text-base">Método de Pago</CardTitle>
                             </CardHeader>
-                            <CardContent >
-                                <RadioGroup value={selectedMethod} onValueChange={(value) => setSelectedMethod(value as PaymentMethod)}>
-                                    <div className="grid md:grid-cols-3 gap-3">
-                                        {/* Voucher Option - Active */}
-                                        <div className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedMethod === PaymentMethod.VOUCHER ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}>
+                            <CardContent>
+                                <RadioGroup
+                                    value={selectedMethod}
+                                    onValueChange={(value) => setSelectedMethod(value as PaymentMethod)}
+                                    className="space-y-4"
+                                >
+                                    <div className="grid gap-4">
+                                        {/* Voucher Option */}
+                                        <div className="border rounded-lg p-4">
                                             <div className="flex items-center space-x-3">
                                                 <RadioGroupItem value={PaymentMethod.VOUCHER} id="voucher" />
                                                 <Label htmlFor="voucher" className="flex items-center gap-2 cursor-pointer flex-1">
-                                                    <Receipt className="h-4 w-4" />
+                                                    <FileText className="h-4 w-4" />
                                                     <div>
                                                         <div className="font-medium">Voucher</div>
-                                                        <div className="text-xs text-muted-foreground">Comprobante de pago</div>
+                                                        <div className="text-xs text-muted-foreground">
+                                                            Subir comprobante de transferencia bancaria
+                                                        </div>
                                                     </div>
                                                 </Label>
                                             </div>
@@ -252,15 +281,17 @@ export function PaymentSubscriptionSheet({
                                             </div>
                                         </div>
 
-                                        {/* Gateway Option - Disabled */}
-                                        <div className="border rounded-lg p-4 opacity-50 bg-muted/30">
+                                        {/* Gateway Option - Now enabled */}
+                                        <div className="border rounded-lg p-4">
                                             <div className="flex items-center space-x-3">
-                                                <RadioGroupItem value={PaymentMethod.PAYMENT_GATEWAY} id="gateway" disabled />
-                                                <Label htmlFor="gateway" className="flex items-center gap-2 cursor-not-allowed flex-1">
+                                                <RadioGroupItem value={PaymentMethod.PAYMENT_GATEWAY} id="gateway" />
+                                                <Label htmlFor="gateway" className="flex items-center gap-2 cursor-pointer flex-1">
                                                     <CreditCard className="h-4 w-4" />
                                                     <div>
                                                         <div className="font-medium">Pasarela</div>
-                                                        <div className="text-xs text-muted-foreground">Próximamente</div>
+                                                        <div className="text-xs text-muted-foreground">
+                                                            Pago con tarjeta de crédito/débito
+                                                        </div>
                                                     </div>
                                                 </Label>
                                             </div>
@@ -270,160 +301,117 @@ export function PaymentSubscriptionSheet({
                             </CardContent>
                         </Card>
 
-                        {/* Voucher Payments Section */}
+                        {/* Payment Method Content */}
                         {selectedMethod === PaymentMethod.VOUCHER && (
-                            <Card className="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20">
-                                <CardHeader className="flex flex-row items-center justify-between">
-                                    <CardTitle className="text-base flex items-center gap-2">
-                                        <Receipt className="h-4 w-4 text-blue-600" />
-                                        Comprobantes de Pago
-                                        {payments.length > 0 && (
-                                            <Badge variant="secondary" className="ml-2">
-                                                {payments.length}/5
-                                            </Badge>
-                                        )}
-                                    </CardTitle>
-                                    <Button
-                                        onClick={() => setShowVoucherModal(true)}
-                                        size="sm"
-                                        disabled={payments.length >= 5}
-                                        className="shrink-0"
-                                    >
-                                        <Plus className="h-4 w-4 mr-2" />
-                                        Agregar
-                                    </Button>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {/* Payments List */}
-                                    {payments.length === 0 ? (
-                                        <div className="text-center py-12 text-muted-foreground">
-                                            <div className="mx-auto w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
-                                                <FileText className="h-8 w-8 opacity-50" />
-                                            </div>
-                                            <p className="text-sm font-medium mb-1">No hay comprobantes agregados</p>
-                                            <p className="text-xs">Haz clic en "Agregar" para subir tus comprobantes</p>
-                                        </div>
-                                    ) : (
-                                        <div className="grid gap-3">
-                                            {payments.map((payment, index) => (
-                                                <div key={index} className="border rounded-lg p-4 bg-background/80 backdrop-blur-sm">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="space-y-2 flex-1">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="h-2 w-2 rounded-full bg-success"></div>
-                                                                <div className="font-semibold text-lg text-success">
-                                                                    {formatCurrency(payment.amount)}
-                                                                </div>
+                            <>
+                                {/* Payment List */}
+                                {payments.length > 0 && (
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="text-base">Pagos Agregados</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="space-y-3">
+                                                {payments.map((payment, index) => (
+                                                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                                                        <div className="space-y-1">
+                                                            <div className="font-medium">
+                                                                {payment.bankName} - {payment.transactionReference}
                                                             </div>
-                                                            <div className="text-sm text-muted-foreground space-y-1">
-                                                                {payment.bankName && (
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="font-medium">Banco:</span>
-                                                                        <span>{payment.bankName}</span>
-                                                                    </div>
-                                                                )}
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="font-medium">Referencia:</span>
-                                                                    <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
-                                                                        {payment.transactionReference}
-                                                                    </span>
-                                                                </div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="font-medium">Fecha:</span>
-                                                                    <span>{payment.transactionDate}</span>
-                                                                </div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                {payment.transactionDate} • {formatCurrency(payment.amount)}
                                                             </div>
                                                         </div>
-                                                        <div className="flex gap-2 shrink-0">
+                                                        <div className="flex items-center gap-2">
                                                             <Button
-                                                                onClick={() => {
-                                                                    // TODO: Implement edit functionality
-                                                                }}
+                                                                variant="ghost"
                                                                 size="sm"
-                                                                variant="outline"
+                                                                onClick={() => {
+                                                                    setShowVoucherModal(true);
+                                                                    // Set edit mode data here if needed
+                                                                }}
                                                             >
                                                                 Editar
                                                             </Button>
                                                             <Button
-                                                                onClick={() => handleRemovePayment(index)}
+                                                                variant="ghost"
                                                                 size="sm"
-                                                                variant="outline"
-                                                                className="text-destructive hover:text-destructive"
+                                                                onClick={() => handleRemovePayment(index)}
                                                             >
                                                                 <Trash2 className="h-4 w-4" />
                                                             </Button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {/* Validation Messages */}
-                                    <div className="space-y-2">
-                                        {payments.length >= 5 && (
-                                            <div className="flex items-center gap-2 text-warning text-sm bg-warning/10 rounded-lg p-3">
-                                                <AlertCircle className="h-4 w-4" />
-                                                Máximo 5 comprobantes permitidos
+                                                ))}
                                             </div>
-                                        )}
+                                        </CardContent>
+                                    </Card>
+                                )}
 
-                                        {Math.abs(remainingAmount) > 0.01 && payments.length > 0 && (
-                                            <div className="flex items-center gap-2 text-warning text-sm bg-warning/10 rounded-lg p-3">
-                                                <AlertCircle className="h-4 w-4" />
-                                                El total debe coincidir exactamente con el monto requerido
-                                            </div>
-                                        )}
+                                {/* Add Payment Button */}
+                                {remainingAmount > 0 && (
+                                    <div className="flex justify-center">
+                                        <Button
+                                            onClick={() => setShowVoucherModal(true)}
+                                            variant="outline"
+                                            className="flex items-center gap-2"
+                                        >
+                                            <Plus className="h-4 w-4" />
+                                            Agregar Pago
+                                        </Button>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                )}
+                            </>
                         )}
 
-                        {/* Empty state for other payment methods */}
-                        {selectedMethod !== PaymentMethod.VOUCHER && (
-                            <Card className="border-dashed border-muted-foreground/25">
-                                <CardContent className="pt-6">
-                                    <div className="text-center py-12 text-muted-foreground">
-                                        <div className="mx-auto w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
-                                            <CreditCard className="h-8 w-8 opacity-50" />
-                                        </div>
-                                        <p className="text-sm font-medium mb-1">Método de pago próximamente disponible</p>
-                                        <p className="text-xs">Selecciona "Voucher" para proceder con comprobantes de pago</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                        {/* Payment Gateway Content */}
+                        {selectedMethod === PaymentMethod.PAYMENT_GATEWAY && (
+                            <PaymentGatewayComponent
+                                onCardSelect={setSelectedCardId}
+                                selectedCardId={selectedCardId}
+                            />
                         )}
-                    </div>
 
-                    {/* Footer with Action Buttons */}
-                    <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6 py-4">
-                        <div className="flex gap-3">
-                            <Button
-                                onClick={handleClose}
-                                variant="outline"
-                                className="flex-1"
-                                disabled={isProcessing}
-                            >
-                                Cancelar
-                            </Button>
+                        {/* Submit Button */}
+                        <div className="flex justify-end pt-4 border-t">
                             <Button
                                 onClick={handleSubmit}
-                                disabled={!canSubmit() || isProcessing}
-                                className="flex-1"
+                                disabled={!canSubmit || isProcessing}
+                                size="lg"
+                                className="min-w-[200px]"
                             >
                                 {isProcessing ? (
                                     <>
-                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                         Procesando...
                                     </>
                                 ) : (
                                     <>
-                                        <CheckCircle className="h-4 w-4 mr-2" />
-                                        Confirmar Pago • {formatCurrency(totalAmount)}
+                                        <CheckCircle className="mr-2 h-4 w-4" />
+                                        {selectedMethod === PaymentMethod.VOUCHER ? "Enviar Pagos" : "Procesar Pago"}
                                     </>
                                 )}
                             </Button>
                         </div>
+
+                        {/* Warning Messages */}
+                        {selectedMethod === PaymentMethod.VOUCHER && remainingAmount > 0 && (
+                            <div className="flex items-center gap-2 p-3 bg-warning/10 border border-warning/20 rounded-lg">
+                                <AlertCircle className="h-4 w-4 text-warning" />
+                                <span className="text-sm text-warning">
+                                    Debes agregar pagos que cubran el monto total de {formatCurrency(totalAmount)}
+                                </span>
+                            </div>
+                        )}
+
+                        {selectedMethod === PaymentMethod.PAYMENT_GATEWAY && !selectedCardId && (
+                            <div className="flex items-center gap-2 p-3 bg-warning/10 border border-warning/20 rounded-lg">
+                                <AlertCircle className="h-4 w-4 text-warning" />
+                                <span className="text-sm text-warning">
+                                    Debes seleccionar una tarjeta para proceder con el pago
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </SheetContent>
             </Sheet>
@@ -433,10 +421,10 @@ export function PaymentSubscriptionSheet({
                 isOpen={showVoucherModal}
                 onClose={() => setShowVoucherModal(false)}
                 onAddPayment={handleAddPayment}
-                maxAmount={remainingAmount > 0 ? remainingAmount : totalAmount}
+                maxAmount={remainingAmount}
             />
 
-            {/* Result Modal */}
+            {/* Payment Result Modal */}
             <PaymentResultModal
                 isOpen={showResultModal}
                 onClose={() => {

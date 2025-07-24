@@ -61,7 +61,7 @@ export const SidebarContent = ({
                     className="overflow-hidden whitespace-nowrap"
                 >
                     <Image
-                        src="/imgs/logo.png"
+                        src="/imgs/logo_blanco_color.png"
                         alt="Logo"
                         width={150}
                         height={40}
