@@ -37,3 +37,8 @@ export enum StatusPayment {
   CANCELLED = "CANCELLED",
   COMPLETED = "COMPLETED",
 }
+
+export enum LotTransactionRole {
+  BUYER = 'Comprador',
+  SELLER = 'Vendedor',
+}

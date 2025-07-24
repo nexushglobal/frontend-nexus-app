@@ -13,7 +13,19 @@ interface SaleDetailPageProps {
 }
 
 export function SaleDetailPage({ referenceId }: SaleDetailPageProps) {
-  const { saleDetail } = useSaleDetail(referenceId);
+  const { saleDetail, loading, error } = useSaleDetail(referenceId);
+
+  if (loading) {
+    return <SaleDetailSkeleton />;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!saleDetail) {
+    return <div>No se encontró la venta</div>;
+  }
 
   return (
     <div className="space-y-6">

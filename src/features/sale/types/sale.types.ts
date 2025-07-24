@@ -1,4 +1,4 @@
-import { SaleStatus, SaleType, StatusPayment } from "./sale.enums";
+import { LotTransactionRole, SaleStatus, SaleType, StatusPayment } from "./sale.enums";
 
 export interface CreateSalePayload {
   lotId: string;
@@ -91,6 +91,8 @@ export interface Sale {
   status: SaleStatus;
   saleIdReference: string;
   vendorId: string;
+  lotTransactionRole: LotTransactionRole;
+  createdAt: string;
 }
 
 interface PaymentSummary {

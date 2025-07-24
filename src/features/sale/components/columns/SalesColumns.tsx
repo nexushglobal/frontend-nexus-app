@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Eye, User, Phone, DollarSign, Calendar } from "lucide-react";
-import type { Sale } from "../../types/sale.types";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ColumnDef } from '@tanstack/react-table';
+import { Calendar, DollarSign, Eye, Phone, User } from 'lucide-react';
+import type { Sale } from '../../types/sale.types';
 
 interface CreateSalesColumnsProps {
   onViewDetail: (referenceId: string) => void;
@@ -15,10 +15,10 @@ export function createSalesColumns({
 }: CreateSalesColumnsProps): ColumnDef<Sale>[] {
   return [
     {
-      accessorKey: "clientFullName",
-      header: "Cliente",
+      accessorKey: 'clientFullName',
+      header: 'Cliente',
       cell: ({ row }) => {
-        const clientName = row.getValue("clientFullName") as string;
+        const clientName = row.getValue('clientFullName') as string;
         const phone = row.original.phone;
         return (
           <div className="flex items-center gap-2">
@@ -37,39 +37,39 @@ export function createSalesColumns({
       },
     },
     {
-      accessorKey: "saleIdReference",
-      header: "ID Venta",
+      accessorKey: 'saleIdReference',
+      header: 'ID Venta',
       cell: ({ row }) => (
         <span className="font-mono text-sm text-muted-foreground">
-          #{row.getValue("saleIdReference")}
+          #{row.getValue('saleIdReference')}
         </span>
       ),
     },
     {
-      accessorKey: "type",
-      header: "Tipo",
+      accessorKey: 'type',
+      header: 'Tipo',
       cell: ({ row }) => {
-        const type = row.getValue("type") as string;
+        const type = row.getValue('type') as string;
         return <Badge variant="destructive">{type}</Badge>;
       },
     },
     {
-      accessorKey: "status",
-      header: "Estado",
+      accessorKey: 'status',
+      header: 'Estado',
       cell: ({ row }) => {
-        const status = row.getValue("status") as string;
+        const status = row.getValue('status') as string;
         return <Badge variant="secondary">{status}</Badge>;
       },
     },
     {
-      accessorKey: "amount",
-      header: "Monto",
+      accessorKey: 'amount',
+      header: 'Monto',
       cell: ({ row }) => {
-        const amount = row.getValue("amount") as string;
+        const amount = row.getValue('amount') as string;
         const currency = row.original.currency;
         const numAmount = parseFloat(amount);
-        const formattedAmount = new Intl.NumberFormat("es-PE", {
-          style: "currency",
+        const formattedAmount = new Intl.NumberFormat('es-PE', {
+          style: 'currency',
           currency: currency,
           minimumFractionDigits: 2,
         }).format(numAmount);
@@ -83,30 +83,43 @@ export function createSalesColumns({
       },
     },
     {
-      accessorKey: "numberCoutes",
-      header: "Cuotas",
+      accessorKey: 'numberCoutes',
+      header: 'Cuotas',
       cell: ({ row }) => {
-        const coutes = row.getValue("numberCoutes") as number;
+        const coutes = row.getValue('numberCoutes') as number;
         return (
           <div className="text-center">
-            <span className="text-sm font-medium">{coutes || "--"}</span>
+            <span className="text-sm font-medium">{coutes || '--'}</span>
           </div>
         );
       },
     },
     {
-      accessorKey: "createdAt",
-      header: "Fecha Creación",
+      accessorKey: 'lotTransactionRole',
+      header: 'Transacción Lote',
       cell: ({ row }) => {
-        const date = row.getValue("createdAt") as string;
-        const formattedDate = new Date(date).toLocaleDateString("es-PE", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
+        return (
+          <div className="text-center">
+            <span className="text-sm font-medium">
+              {row.getValue('lotTransactionRole')}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: 'createdAt',
+      header: 'Fecha Creación',
+      cell: ({ row }) => {
+        const date = row.getValue('createdAt') as string;
+        const formattedDate = new Date(date).toLocaleDateString('es-PE', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
         });
-        const formattedTime = new Date(date).toLocaleTimeString("es-PE", {
-          hour: "2-digit",
-          minute: "2-digit",
+        const formattedTime = new Date(date).toLocaleTimeString('es-PE', {
+          hour: '2-digit',
+          minute: '2-digit',
         });
 
         return (
@@ -123,8 +136,8 @@ export function createSalesColumns({
       },
     },
     {
-      id: "actions",
-      header: "Acciones",
+      id: 'actions',
+      header: 'Acciones',
       cell: ({ row }) => {
         const sale = row.original;
         return (
@@ -154,14 +167,16 @@ export function getSalesColumns(
   options: CreateSalesColumnsProps & {
     hideColumns?: string[];
     customColumnVisibility?: Record<string, boolean>;
-  }
+  },
 ) {
   const columns = createSalesColumns(options);
 
   if (options.hideColumns)
     return columns.filter(
       (col) =>
-        !options.hideColumns?.includes(typeof col.id === "string" ? col.id : "")
+        !options.hideColumns?.includes(
+          typeof col.id === 'string' ? col.id : '',
+        ),
     );
 
   return columns;

@@ -1,36 +1,38 @@
-"use client";
+'use client';
 
-import { useState, useMemo } from "react";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { File, Search } from "lucide-react";
+} from '@/components/ui/select';
+import { PageHeader } from '@/features/shared/components/common/PageHeader';
+import { File, Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { SaleCard } from '../components/SalesCard';
+import { SalesTable } from '../components/SalesTable';
 import {
   SALE_STATUS_LABELS,
   SALE_TYPE_LABELS,
-} from "../constants/sale.constants";
-import { useSales } from "../hooks/useSales";
-import { SalesTable } from "../components/SalesTable";
-import { SaleCard } from "../components/SalesCard";
-import { PageHeader } from "@/features/shared/components/common/PageHeader";
+} from '../constants/sale.constants';
+import { useSales } from '../hooks/useSales';
 
 export function SalesPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const router = useRouter();
   const { sales, loading } = useSales();
 
   const filteredSales = useMemo(() => {
@@ -43,14 +45,14 @@ export function SalesPage() {
           sale.clientFullName.toLowerCase().includes(term) ||
           sale.id.toLowerCase().includes(term) ||
           sale.saleIdReference.toLowerCase().includes(term) ||
-          (sale.phone && sale.phone.toLowerCase().includes(term))
+          (sale.phone && sale.phone.toLowerCase().includes(term)),
       );
     }
 
-    if (statusFilter !== "all")
+    if (statusFilter !== 'all')
       filtered = filtered.filter((sale) => sale.status === statusFilter);
 
-    if (typeFilter !== "all")
+    if (typeFilter !== 'all')
       filtered = filtered.filter((sale) => sale.type === typeFilter);
 
     return filtered;
@@ -62,14 +64,32 @@ export function SalesPage() {
         icon={File}
         title="Ventas"
         subtitle="Gestiona y visualiza todas las ventas realizadas"
+        actions={
+          <>
+            <Button
+              variant="outline"
+              className="hidden sm:inline-flex"
+              onClick={() => router.push('/dashboard/crear-venta')}
+            >
+              Crear venta
+            </Button>
+            <Button
+              variant="outline"
+              className="hidden sm:inline-flex"
+              onClick={() => router.push('/dashboard/comprar-lote')}
+            >
+              Comprar Lote
+            </Button>
+          </>
+        }
       />
 
       <Card>
         <CardHeader>
           <CardTitle>Lista de Ventas</CardTitle>
           <CardDescription>
-            {filteredSales.length} venta{filteredSales.length !== 1 ? "s" : ""}{" "}
-            encontrada{filteredSales.length !== 1 ? "s" : ""}
+            {filteredSales.length} venta{filteredSales.length !== 1 ? 's' : ''}{' '}
+            encontrada{filteredSales.length !== 1 ? 's' : ''}
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -2,26 +2,31 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { SaleDetail } from '@/features/sale/types/sale.types';
-import {
-  formatCurrency,
-  formatDate,
-} from '@/features/shared/utils/formatCurrency';
-import { cn } from '@/lib/utils';
-import { Calendar, CreditCard, DollarSign, Percent, Table } from 'lucide-react';
+import { DataTable } from '@/features/shared/components/table/DataTable';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { Calendar, CreditCard, DollarSign, Percent } from 'lucide-react';
+import { createPaymentScheduleColumns } from './columns/PaymentScheduleColumns';
 
 export default function SaleFinancingInfo({ sale }: { sale: SaleDetail }) {
   if (!sale.financing) return null;
 
+  const handleViewPayments = (installmentId: string) => {
+    console.log('Ver pagos de la cuota:', installmentId);
+  };
+
+  const columns = createPaymentScheduleColumns({
+    currency: sale.currency,
+    onViewPayments: handleViewPayments,
+  });
+
+  const paidInstallments = sale.financing.financingInstallments.filter(
+    (i) => i.status === 'paid',
+  ).length;
+
   return (
     <div className="space-y-6">
+      {/* Información de financiamiento */}
       <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -65,6 +70,7 @@ export default function SaleFinancingInfo({ sale }: { sale: SaleDetail }) {
         </CardContent>
       </Card>
 
+      {/* Cronograma de pagos */}
       <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
@@ -73,79 +79,23 @@ export default function SaleFinancingInfo({ sale }: { sale: SaleDetail }) {
               Cronograma de pagos
             </CardTitle>
             <div className="flex items-center gap-2">
-              <div className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300">
-                {
-                  sale.financing.financingInstallments.filter(
-                    (i) => i.status === 'paid',
-                  ).length
-                }{' '}
-                de
+              <Badge
+                variant="secondary"
+                className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+              >
+                {paidInstallments} de{' '}
                 {sale.financing.financingInstallments.length} pagadas
-              </div>
+              </Badge>
             </div>
           </div>
         </CardHeader>
-
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-gray-50 dark:bg-gray-800/50">
-                <TableRow>
-                  <TableHead>Nº</TableHead>
-                  <TableHead>Cuota a pagar</TableHead>
-                  <TableHead>Cuota pagada</TableHead>
-                  <TableHead>Cuota Pendiente</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Fecha estimada de pago</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sale.financing.financingInstallments.map(
-                  (installment, index) => (
-                    <TableRow
-                      key={installment.id}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                    >
-                      <TableCell className="font-medium">{index + 1}</TableCell>
-                      <TableCell className="font-medium text-blue-600 dark:text-gray-100">
-                        {formatCurrency(
-                          Number(installment.couteAmount),
-                          sale.currency,
-                        )}
-                      </TableCell>
-                      <TableCell
-                        className={cn(
-                          'text-sm font-medium',
-                          Number(installment.coutePaid) > 0
-                            ? 'text-green-500'
-                            : '',
-                        )}
-                      >
-                        {formatCurrency(
-                          Number(installment.coutePaid),
-                          sale.currency,
-                        )}
-                      </TableCell>
-                      <TableCell className="font-medium text-gray-900 dark:text-gray-100">
-                        {formatCurrency(
-                          Number(installment.coutePending),
-                          sale.currency,
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="destructive">
-                          {installment.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {formatDate(installment.expectedPaymentDate)}
-                      </TableCell>
-                    </TableRow>
-                  ),
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <DataTable
+            columns={columns}
+            data={sale.financing.financingInstallments}
+            emptyMessage="sin cronograma de pagosF..."
+            className="border-0"
+          />
         </CardContent>
       </Card>
     </div>
