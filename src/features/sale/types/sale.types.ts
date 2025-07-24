@@ -111,6 +111,39 @@ interface PaymentSummary {
   reason: string | null;
 }
 
+export interface FinancinPayments {
+  paymentId: number,
+  amountApplied: number,
+  amountAppliedToLateFee: number,
+  amountAppliedToPrincipal: number,
+  paymentDate: string,
+  paymentStatus: StatusPayment,
+  codeOperation: string,
+  banckName: string,
+  dateOperation: string,
+  numberTicket: string
+}
+
+export interface FinancingInstallment {
+  id: string,
+  couteAmount: string,
+  coutePending: string,
+  coutePaid: string,
+  expectedPaymentDate: string,
+  lateFeeAmountPending: string,
+  lateFeeAmountPaid: string,
+  status: string,
+  payments: FinancinPayments[]
+}
+
+export interface Financing {
+  id: string,
+  initialAmount: string,
+  interestRate: string,
+  quantityCoutes: string,
+  financingInstallments: FinancingInstallment[]
+}
+
 export interface SaleDetail {
   id: string;
   type: SaleType;
@@ -133,7 +166,7 @@ export interface SaleDetail {
     firstName: string;
     lastName: string;
     phone: string;
-  } | null;
+  }[] | null;
   lot: {
     id: string;
     name: string;
@@ -144,6 +177,7 @@ export interface SaleDetail {
   };
   radicationPdfUrl: string | null;
   paymentAcordPdfUrl: string | null;
+  financing: Financing | null;
   liner: {
     firstName: string;
     lastName: string;
