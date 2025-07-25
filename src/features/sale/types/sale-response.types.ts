@@ -1,5 +1,11 @@
-import { CurrencyType, DocumentType, SaleStatus, SaleType } from "./sale.enums";
-import { Sale, Source, Ubigeo } from "./sale.types";
+import {
+  CurrencyType,
+  DocumentType,
+  SaleStatus,
+  SaleType,
+  StatusPayment,
+} from "./sale.enums";
+import { Sale, Source, Ubigeo, Voucher } from "./sale.types";
 
 export interface CreateSaleResponse {
   id: string;
@@ -60,4 +66,15 @@ export interface ClientGuarantorResponse {
   clientId: number;
   guarantorId: number;
   secondaryClientIds: number[];
+}
+
+export interface PaymentResponse {
+  id: number;
+  relatedEntityType: string;
+  relatedEntityId: string;
+  amount: number;
+  methodPayment: string;
+  status: StatusPayment;
+  createdAt: string;
+  vouchers: Voucher[];
 }

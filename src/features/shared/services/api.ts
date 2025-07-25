@@ -1,6 +1,6 @@
+import { authOptions } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 
 // Tipos para el API wrapper
 export interface ApiResponse<T = any> {

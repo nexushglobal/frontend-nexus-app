@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building, DollarSign, User } from "lucide-react";
-import { CreateSaleFormData } from "../../validations/saleValidation";
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Building, DollarSign } from 'lucide-react';
+import { CreateSaleFormData } from '../../validations/saleValidation';
 
 interface SaleSummaryCardsProps {
   formData: Partial<CreateSaleFormData>;
@@ -43,8 +43,8 @@ export default function SaleSummaryCards({
             <span className="text-gray-600 dark:text-gray-400">
               Tipo de Venta:
             </span>
-            <Badge variant={isFinanced ? "default" : "secondary"}>
-              {isFinanced ? "Financiada" : "Pago Directo"}
+            <Badge variant={isFinanced ? 'default' : 'secondary'}>
+              {isFinanced ? 'Financiada' : 'Pago Directo'}
             </Badge>
           </div>
         </CardContent>
@@ -107,29 +107,6 @@ export default function SaleSummaryCards({
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      <Card className="dark:bg-gray-900">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <User className="h-4 w-4" />
-            Información del Cliente
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">
-              Cliente ID:
-            </span>
-            <span className="font-medium">{formData.clientId}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">
-              Garante ID:
-            </span>
-            <span className="font-medium">{formData.guarantorId}</span>
-          </div>
         </CardContent>
       </Card>
     </div>

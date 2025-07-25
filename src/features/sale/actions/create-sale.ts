@@ -3,8 +3,12 @@
 import { api } from "@features/shared/services/api";
 import { revalidateTag } from "next/cache";
 
+import { ProcessPaymentDto } from "../types/sale-request";
+import {
+  CreateSaleResponse,
+  PaymentResponse,
+} from "../types/sale-response.types";
 import { CreateSalePayload } from "../types/sale.types";
-import { CreateSaleResponse } from "../types/sale-response.types";
 
 const SALES_VENDOR_CACHE_TAG = "sales-vendor";
 
@@ -18,10 +22,36 @@ export async function createSale(data: CreateSalePayload) {
 
     return { success: true, data: response };
   } catch (error) {
-    console.error("Error al crear la venta:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Error al crear liner",
     };
+  }
+}
+
+export async function createPayment(
+  id: string,
+  data: ProcessPaymentDto
+): Promise<PaymentResponse> {
+  try {
+    const formData = new FormData();
+    formData.append("payments", JSON.stringify(data.payments));
+    data.files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    console.log("Creating payment with data:", formData);
+    const response = await api.post<PaymentResponse>(
+      `/api/unilevel/external/payments/sale/${id}`,
+      formData
+    );
+
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      throw error;
+    }
+    throw new Error("Error al crear el pago");
   }
 }

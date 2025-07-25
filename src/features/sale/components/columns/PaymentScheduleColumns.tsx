@@ -1,44 +1,18 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import {
   formatCurrency,
   formatDate,
 } from '@/features/shared/utils/formatCurrency';
 import { cn } from '@/lib/utils';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { Calendar, CreditCard, DollarSign, Eye } from 'lucide-react';
+import { Calendar, CreditCard, DollarSign, Eye, Wallet } from 'lucide-react';
 import { FinancingInstallment } from '../../types/sale.types';
 
 interface CreatePaymentScheduleColumnsProps {
   currency: string;
   onViewPayments?: (installmentId: string) => void;
 }
-
-const getStatusVariant = (status: string) => {
-  switch (status.toLowerCase()) {
-    case 'paid':
-      return 'default' as const;
-    case 'pending':
-      return 'secondary' as const;
-    case 'overdue':
-      return 'destructive' as const;
-    default:
-      return 'secondary' as const;
-  }
-};
-
-const getStatusLabel = (status: string) => {
-  switch (status.toLowerCase()) {
-    case 'paid':
-      return 'Pagado';
-    case 'pending':
-      return 'Pendiente';
-    case 'overdue':
-      return 'Vencido';
-    default:
-      return status;
-  }
-};
 
 export function createPaymentScheduleColumns({
   currency,
@@ -123,15 +97,43 @@ export function createPaymentScheduleColumns({
       },
     },
     {
+      id: 'mora',
+      header: 'Mora',
+      cell: ({ row }) => {
+        const moraPaid = Number(row.original.lateFeeAmountPaid) || 0;
+        const moraPending = Number(row.original.lateFeeAmountPending) || 0;
+        return (
+          <div className="flex items-center gap-2">
+            <Wallet className="h-4 w-4 text-gray-400" />
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-500">Pagado:</span>
+                <span className="text-sm font-medium text-green-600">
+                  {formatCurrency(moraPaid, currency)}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-500">Pendiente:</span>
+                <span
+                  className={cn(
+                    'text-sm font-medium',
+                    moraPending > 0 ? 'text-red-500' : 'text-gray-400',
+                  )}
+                >
+                  {formatCurrency(moraPending, currency)}
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: 'status',
       header: 'Estado',
       cell: ({ row }) => {
         const status = row.getValue('status') as string;
-        return (
-          <Badge variant={getStatusVariant(status)}>
-            {getStatusLabel(status)}
-          </Badge>
-        );
+        return <StatusBadge status={status} />;
       },
     },
     {

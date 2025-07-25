@@ -1,10 +1,10 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ColumnDef } from '@tanstack/react-table';
-import { Calendar, DollarSign, Eye, Phone, User } from 'lucide-react';
+import { Calendar, DollarSign, Phone, User } from 'lucide-react';
 import type { Sale } from '../../types/sale.types';
+import PaymentsButton from '../PaymentsButton';
 
 interface CreateSalesColumnsProps {
   onViewDetail: (referenceId: string) => void;
@@ -50,7 +50,7 @@ export function createSalesColumns({
       header: 'Tipo',
       cell: ({ row }) => {
         const type = row.getValue('type') as string;
-        return <Badge variant="destructive">{type}</Badge>;
+        return <StatusBadge status={type} />;
       },
     },
     {
@@ -58,7 +58,7 @@ export function createSalesColumns({
       header: 'Estado',
       cell: ({ row }) => {
         const status = row.getValue('status') as string;
-        return <Badge variant="secondary">{status}</Badge>;
+        return <StatusBadge status={status} />;
       },
     },
     {
@@ -140,19 +140,7 @@ export function createSalesColumns({
       header: 'Acciones',
       cell: ({ row }) => {
         const sale = row.original;
-        return (
-          <div className="flex justify-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onViewDetail(sale.saleIdReference)}
-              className="h-8 px-2 hover:bg-gray-100"
-            >
-              <Eye className="h-4 w-4" />
-              <span className="sr-only">Ver detalle</span>
-            </Button>
-          </div>
-        );
+        return <PaymentsButton onViewDetail={onViewDetail} data={sale} />;
       },
     },
   ];

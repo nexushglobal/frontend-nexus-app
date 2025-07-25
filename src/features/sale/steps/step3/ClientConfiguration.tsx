@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
+import { Badge } from '@/components/ui/badge';
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { CreditCard, MapPin } from "lucide-react";
-import { Control, FieldErrors } from "react-hook-form";
-import { Step3FormData } from "../../validations/saleValidation";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { CreditCard, MapPin } from 'lucide-react';
+import { Control, FieldErrors } from 'react-hook-form';
+import { Step3FormData } from '../../validations/saleValidation';
 
 interface ClientConfigurationProps {
   control: Control<Step3FormData>;

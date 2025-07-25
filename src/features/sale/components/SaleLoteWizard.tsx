@@ -7,16 +7,16 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import StepIndicator from '../components/StepIndicator';
-import SaleSuccessModal from '../components/modals/SaleSuccessModal';
 import Step1ProjectSelection from '../steps/step1/Step1ProjectSelection';
 import Step2FinancialConfig from '../steps/step2/Step2FinancialConfig';
-import Step3ClientGuarantor from '../steps/step3/Step3ClientGuarantor';
-import Step4Summary from '../steps/step4/Step4Summary';
+import Step3ClientSection from '../steps/step3/Step3ClientSection';
+import Step4SummaryLote from '../steps/step4/Step4SummaryLote';
 import { CreateSaleResponse } from '../types/sale-response.types';
 import { CreateSaleFormData } from '../validations/saleValidation';
+import StepIndicator from './StepIndicator';
+import SaleSuccessModal from './modals/SaleSuccessModal';
 
-export default function CreateSaleWizard() {
+export default function SaleLoteWizard() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -88,7 +88,6 @@ export default function CreateSaleWizard() {
   };
 
   const handleStepClick = (step: number) => {
-    // Solo permitir navegar a pasos anteriores o al siguiente si el actual está válido
     if (
       step < currentStep ||
       (step === currentStep + 1 &&
@@ -110,6 +109,7 @@ export default function CreateSaleWizard() {
         lotId: formData.lotId!,
         saleType: formData.saleType!,
         clientId: formData.clientId!,
+        isSeller: false,
         secondaryClientsIds: formData.secondaryClientIds!,
         guarantorId: formData.guarantorId!,
         totalAmount: formData.totalAmount!,
@@ -170,7 +170,7 @@ export default function CreateSaleWizard() {
         );
       case 3:
         return (
-          <Step3ClientGuarantor
+          <Step3ClientSection
             formData={formData}
             updateFormData={updateFormData}
             updateStepValidation={updateStepValidation}
@@ -178,7 +178,7 @@ export default function CreateSaleWizard() {
         );
       case 4:
         return (
-          <Step4Summary
+          <Step4SummaryLote
             formData={formData}
             updateFormData={updateFormData}
             updateStepValidation={updateStepValidation}

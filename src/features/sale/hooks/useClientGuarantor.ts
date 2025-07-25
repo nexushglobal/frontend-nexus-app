@@ -1,13 +1,13 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import {
-  GuarantorFormData,
-  SecondaryClientFormData,
-} from "../validations/saleValidation";
 import { createClientGuarantor, createLead } from "../actions/create-client";
 import { ClientRequest } from "../types/sale-request";
 import { ClientResponse } from "../types/sale-response.types";
 import { DocumentType } from "../types/sale.enums";
+import {
+  GuarantorFormData,
+  SecondaryClientFormData,
+} from "../validations/saleValidation";
 
 interface UseClientGuarantorReturn {
   createdLead: Partial<ClientResponse | null>;
@@ -26,7 +26,7 @@ interface UseClientGuarantorReturn {
   handleCreateLead: (leadData: ClientRequest) => Promise<void>;
   handleAddressChange: (address: string) => void;
   handleGuarantorClientSuccess: (
-    secondaryClientFormData: SecondaryClientFormData[],
+    secondaryClientFormData?: SecondaryClientFormData[] | undefined,
     guarantorFormData?: GuarantorFormData
   ) => Promise<void>;
 
@@ -91,7 +91,7 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
 
   const handleGuarantorClientSuccess = useCallback(
     async (
-      secondaryClientsFormData: SecondaryClientFormData[],
+      secondaryClientsFormData?: SecondaryClientFormData[],
       guarantorFormData?: GuarantorFormData
     ) => {
       if (!createdLead) {
@@ -123,8 +123,6 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
 
         const result = await createClientGuarantor(payload);
 
-        console.log("data: ", result);
-
         setClientId(result.clientId);
 
         if (guarantorFormData) {
@@ -134,7 +132,7 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
           });
         }
 
-        if (result.secondaryClientIds) {
+        if (result.secondaryClientIds && secondaryClientsFormData) {
           setSecondaryClientsData(
             result.secondaryClientIds.map((id, index) => ({
               id,

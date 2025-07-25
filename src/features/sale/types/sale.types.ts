@@ -1,4 +1,18 @@
-import { LotTransactionRole, SaleStatus, SaleType, StatusPayment } from "./sale.enums";
+import {
+  LotTransactionRole,
+  SaleStatus,
+  SaleType,
+  StatusPayment,
+} from "./sale.enums";
+
+export interface Voucher {
+  id: number;
+  url: string;
+  amount: number;
+  bankName: string;
+  transactionReference: string;
+  transactionDate: string;
+}
 
 export interface CreateSalePayload {
   lotId: string;
@@ -10,7 +24,7 @@ export interface CreateSalePayload {
   secondaryClientsIds: number[];
   guarantorId: number;
   totalAmount: number;
-
+  isSeller?: boolean;
   totalAmountUrbanDevelopment: number;
   quantityHuCuotes?: number;
   initialAmountUrbanDevelopment?: number;
@@ -114,36 +128,36 @@ interface PaymentSummary {
 }
 
 export interface FinancinPayments {
-  paymentId: number,
-  amountApplied: number,
-  amountAppliedToLateFee: number,
-  amountAppliedToPrincipal: number,
-  paymentDate: string,
-  paymentStatus: StatusPayment,
-  codeOperation: string,
-  banckName: string,
-  dateOperation: string,
-  numberTicket: string
+  paymentId: number;
+  amountApplied: number;
+  amountAppliedToLateFee: number;
+  amountAppliedToPrincipal: number;
+  paymentDate: string;
+  paymentStatus: StatusPayment;
+  codeOperation: string;
+  banckName: string;
+  dateOperation: string;
+  numberTicket: string;
 }
 
 export interface FinancingInstallment {
-  id: string,
-  couteAmount: string,
-  coutePending: string,
-  coutePaid: string,
-  expectedPaymentDate: string,
-  lateFeeAmountPending: string,
-  lateFeeAmountPaid: string,
-  status: string,
-  payments: FinancinPayments[]
+  id: string;
+  couteAmount: string;
+  coutePending: string;
+  coutePaid: string;
+  expectedPaymentDate: string;
+  lateFeeAmountPending: string;
+  lateFeeAmountPaid: string;
+  status: string;
+  payments: FinancinPayments[];
 }
 
 export interface Financing {
-  id: string,
-  initialAmount: string,
-  interestRate: string,
-  quantityCoutes: string,
-  financingInstallments: FinancingInstallment[]
+  id: string;
+  initialAmount: string;
+  interestRate: string;
+  quantityCoutes: string;
+  financingInstallments: FinancingInstallment[];
 }
 
 export interface SaleDetail {
@@ -163,12 +177,14 @@ export interface SaleDetail {
     phone: string | null;
     reportPdfUrl: string | null;
   };
-  secondaryClients: {
-    address: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-  }[] | null;
+  secondaryClients:
+    | {
+        address: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+      }[]
+    | null;
   lot: {
     id: string;
     name: string;

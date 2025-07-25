@@ -145,29 +145,6 @@ export default function SaleGeneralInfo({ sale }: Props) {
               </div>
             </div>
           )}
-          {sale.vendor && (
-            <div className="space-y-3">
-              <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
-                <User className="h-4 w-4 text-green-500" />
-                Vendedor
-              </h4>
-              <div className="rounded-lg bg-green-50 p-4 dark:bg-green-950/20">
-                <div className="space-y-2">
-                  <div className="flex items-start gap-3">
-                    <User className="mt-0.5 h-4 w-4 text-green-600" />
-                    <div className="flex-1">
-                      <p className="font-medium text-green-900 dark:text-green-100">
-                        {sale.vendor.firstName} {sale.vendor.lastName}
-                      </p>
-                      <p className="text-sm text-green-700 dark:text-green-300">
-                        Doc: {sale.vendor.document}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
 
@@ -179,39 +156,6 @@ export default function SaleGeneralInfo({ sale }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
-              <Building2 className="h-4 w-4 text-green-500" />
-              Lote
-            </h4>
-            <div className="rounded-lg bg-green-50 p-4 dark:bg-green-950/20">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Building2 className="h-4 w-4 text-green-600" />
-                  <div>
-                    <p className="font-medium text-green-900 dark:text-green-100">
-                      {sale.lot.name}
-                    </p>
-                    <p className="text-sm text-green-700 dark:text-green-300">
-                      Identificación
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                  <div>
-                    <p className="font-medium text-green-900 dark:text-green-100">
-                      {formatCurrency(Number(sale.lot.lotPrice), sale.currency)}
-                    </p>
-                    <p className="text-sm text-green-700 dark:text-green-300">
-                      Precio del lote
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div className="space-y-3">
             <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
               <DollarSign className="h-4 w-4 text-yellow-500" />
