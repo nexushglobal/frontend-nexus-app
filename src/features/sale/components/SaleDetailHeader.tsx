@@ -2,6 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import { SaleDetail } from '@/features/sale/types/sale.types';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import {
@@ -13,7 +14,6 @@ import {
   Phone,
   ShieldCheck,
   User,
-  Users,
 } from 'lucide-react';
 
 export default function SaleDetailHeader({ sale }: { sale: SaleDetail }) {
@@ -29,9 +29,9 @@ export default function SaleDetailHeader({ sale }: { sale: SaleDetail }) {
               <div className="flex-1">
                 <div className="mb-3 flex flex-wrap items-center gap-3">
                   <h1 className="text-2xl font-bold text-gray-900 lg:text-3xl dark:text-gray-100">
-                    Venta #{sale.id.substring(0, 8)}
+                    Venta
                   </h1>
-                  <Badge variant="destructive">{sale.status}</Badge>
+                  <StatusBadge status={sale.status} />
                   <Badge
                     variant={sale.type === 'FINANCED' ? 'default' : 'secondary'}
                     className="px-3 py-1"
@@ -191,25 +191,6 @@ export default function SaleDetailHeader({ sale }: { sale: SaleDetail }) {
             </div>
 
             <div className="space-y-4">
-              {sale.vendor && (
-                <div className="flex items-start gap-3">
-                  <div className="mt-1 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-                    <Users className="h-4 w-4 text-gray-500" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Vendedor
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                      {sale.vendor.firstName} {sale.vendor.lastName}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      📄 {sale.vendor.document}
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {sale.guarantor && (
                 <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
                   <div className="flex items-start gap-2">

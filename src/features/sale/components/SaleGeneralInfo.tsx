@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import { SaleDetail } from '@/features/sale/types/sale.types';
 import {
   formatCurrency,
@@ -253,7 +253,7 @@ export default function SaleGeneralInfo({ sale }: Props) {
                             <span className="font-medium text-gray-900 dark:text-gray-100">
                               {formatCurrency(payment.amount, sale.currency)}
                             </span>
-                            {<Badge variant="default">{sale.status}</Badge>}
+                            {<StatusBadge status={sale.status} />}
                           </div>
 
                           <div className="grid grid-cols-1 gap-1 text-xs text-gray-500 sm:grid-cols-2 dark:text-gray-400">

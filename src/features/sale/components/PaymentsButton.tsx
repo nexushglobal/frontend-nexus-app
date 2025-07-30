@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { DollarSign, Eye } from 'lucide-react';
 import { useState } from 'react';
+import { SaleStatus } from '../types/sale.enums';
 import { Sale } from '../types/sale.types';
 import { PaymentSummary } from './PaymentSummary';
 
@@ -30,7 +31,8 @@ export default function PaymentsButton({ onViewDetail, data }: Props) {
         variant="ghost"
         size="sm"
         onClick={() => setIsModalOpen(true)}
-        className="h-8 px-2 hover:bg-gray-100"
+        className="h-8 px-2 hover:bg-gray-100 disabled:cursor-not-allowed"
+        disabled={data.status === SaleStatus.PENDING_APPROVAL}
       >
         <DollarSign className="h-4 w-4" />
         <span className="sr-only">Realizar pago</span>

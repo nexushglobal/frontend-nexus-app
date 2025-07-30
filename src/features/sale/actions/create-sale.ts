@@ -40,10 +40,13 @@ export async function createPayment(
       formData.append("files", file);
     });
 
-    console.log("Creating payment with data:", formData);
     const response = await api.post<PaymentResponse>(
       `/api/unilevel/external/payments/sale/${id}`,
-      formData
+      formData,
+      {
+        isFormData: true,
+        skipJsonStringify: true
+      }
     );
 
     return response;

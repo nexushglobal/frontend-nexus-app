@@ -30,7 +30,7 @@ export function SaleDetailPage({ referenceId }: SaleDetailPageProps) {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={`Detalle de Venta #${referenceId}`}
+        title="Detalle de Venta"
         subtitle="Información completa y detallada de la venta"
         variant="gradient"
         backUrl="/dashboard/ventas"
