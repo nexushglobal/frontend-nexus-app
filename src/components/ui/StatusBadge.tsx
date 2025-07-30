@@ -197,6 +197,17 @@ export function StatusBadge({ status }: { status: string }) {
           <span>Directo</span>
         </Badge>
       );
+
+    case 'DIRECT_BONUS':
+      return (
+        <Badge
+          variant="outline"
+          className="border-blue-200 bg-blue-50 px-2 py-0.5 text-blue-700 dark:border-blue-800/40 dark:bg-blue-900/20 dark:text-blue-400"
+        >
+          <span>Bono Directo</span>
+        </Badge>
+      );
+
     case 'FINANCED':
       return (
         <Badge
@@ -215,6 +226,16 @@ export function StatusBadge({ status }: { status: string }) {
         >
           <Users className="h-3 w-3" />
           <span>Liner</span>
+        </Badge>
+      );
+
+    case 'WITHDRAWAL':
+      return (
+        <Badge
+          variant="outline"
+          className="border-amber-200 bg-amber-50 px-2 py-0.5 text-amber-700 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-400"
+        >
+          <span>Retiro</span>
         </Badge>
       );
 
@@ -270,6 +291,16 @@ export function StatusBadge({ status }: { status: string }) {
         >
           <User className="h-3 w-3" />
           <span>Supervisor de Campo</span>
+        </Badge>
+      );
+
+    case 'BINARY_COMMISSION':
+      return (
+        <Badge
+          variant="outline"
+          className="border-green-200 bg-green-50 px-2 py-0.5 text-green-700 dark:border-green-800/40 dark:bg-green-900/20 dark:text-green-400"
+        >
+          <span>Comision Binaria</span>
         </Badge>
       );
 

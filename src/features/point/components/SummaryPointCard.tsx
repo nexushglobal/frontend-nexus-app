@@ -6,7 +6,7 @@ interface Props {
   className: string;
   icon: LucideIcon;
   title: string;
-  value: number;
+  value: number | undefined;
   subtitle: string;
 }
 
