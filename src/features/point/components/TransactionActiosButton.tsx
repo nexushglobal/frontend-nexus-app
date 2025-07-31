@@ -35,7 +35,10 @@ const TransactionActionsButton = ({ transaction }: Props) => {
           <span className="sr-only">Vista rápida</span>
         </Button>
 
-        <Link href={`/historial-puntos/detalle/${transaction.id}`} passHref>
+        <Link
+          href={`/dashboard/historial-puntos/detalle/${transaction.id}`}
+          passHref
+        >
           <Button
             variant="ghost"
             size="sm"

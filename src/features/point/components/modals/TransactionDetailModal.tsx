@@ -7,11 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-// import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/ui/separator';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Calendar, CreditCard, ExternalLink, X } from 'lucide-react';
+import { Calendar, CreditCard, ExternalLink, Info, X } from 'lucide-react';
 import Link from 'next/link';
 import { Transaction } from '../../types/points.types';
 
@@ -74,7 +74,7 @@ export function TransactionDetailModal({ transaction, open, onClose }: Props) {
             </div>
           </div>
 
-          {/* {transaction.metadata &&
+          {transaction.metadata &&
             Object.keys(transaction.metadata).length > 0 && (
               <>
                 <Separator />
@@ -101,7 +101,7 @@ export function TransactionDetailModal({ transaction, open, onClose }: Props) {
                   </div>
                 </div>
               </>
-            )} */}
+            )}
         </div>
 
         <DialogFooter className="flex sm:flex-row gap-2">
@@ -111,7 +111,7 @@ export function TransactionDetailModal({ transaction, open, onClose }: Props) {
           </Button>
 
           <Link
-            href={`/historial-puntos/detalle/${transaction.id}`}
+            href={`/dashboard/historial-puntos/detalle/${transaction.id}`}
             className="flex-1"
             onClick={onClose}
           >

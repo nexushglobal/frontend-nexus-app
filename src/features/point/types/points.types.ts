@@ -22,6 +22,7 @@ export interface Transaction {
   withdrawnAmount: number;
   status: PointTransactionStatus;
   isArchived: boolean;
+  metadata?: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
