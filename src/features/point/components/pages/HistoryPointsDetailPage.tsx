@@ -60,7 +60,7 @@ export default function HistoryPointDetailPage({ id }: Props) {
           <CardContent>
             <TransactionsDetailTable
               isLoading={isLoading}
-              data={transaction!.listPayments.items}
+              data={transaction?.listPayments?.items || []}
             />
           </CardContent>
         </Card>

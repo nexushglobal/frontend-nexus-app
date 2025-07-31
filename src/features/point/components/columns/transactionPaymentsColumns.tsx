@@ -25,7 +25,7 @@ export function transactionPaymentsColumns(): ColumnDef<Item>[] {
       accessorKey: 'paymentMethod',
       header: 'Metodo de pago',
       cell: ({ row }) => (
-        <span className="text-sm">{row.getValue('amount')}</span>
+        <span className="text-sm">{row.getValue('paymentMethod') ?? '--'}</span>
       ),
     },
     {
@@ -33,7 +33,7 @@ export function transactionPaymentsColumns(): ColumnDef<Item>[] {
       header: 'Referencia',
       cell: ({ row }) => (
         <span className="text-sm">
-          <StatusBadge status={row.getValue('status')} />
+          <StatusBadge status={row.getValue('paymentReference') ?? '--'} />
         </span>
       ),
     },
@@ -42,7 +42,7 @@ export function transactionPaymentsColumns(): ColumnDef<Item>[] {
       header: 'Notas',
       cell: ({ row }) => (
         <span className="text-sm">
-          <StatusBadge status={row.getValue('status')} />
+          <StatusBadge status={row.getValue('notes') ?? '--'} />
         </span>
       ),
     },
