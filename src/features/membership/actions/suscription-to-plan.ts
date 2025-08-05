@@ -18,6 +18,7 @@ export async function subscribeToPlanAction(formData: FormData) {
         skipJsonStringify: true,
       }
     );
+    console.log("Respuesta del servidor:", response);
 
     return {
       success: true,

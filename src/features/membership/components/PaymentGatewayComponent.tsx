@@ -1,19 +1,21 @@
 // src/features/membership/components/PaymentGatewayComponent.tsx
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CustomerService } from "@/features/shared/services/culqiApis";
-import { type CardData, type CustomerResponse } from "@/features/shared/types/culqi.types";
-import { AlertCircle, CreditCard, Loader2, User } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { CardList } from "./card/CardList";
-import { CustomerInfoCard } from "./card/CustomerInfoCard";
-import { CardModal } from "./modal/CardModal";
-import { CustomerModal } from "./modal/CustomerModal";
-import { DeleteCardModal } from "./modal/DeleteCardModal";
-
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CustomerService } from '@/features/shared/services/culqiApis';
+import {
+  type CardData,
+  type CustomerResponse,
+} from '@/features/shared/types/culqi.types';
+import { AlertCircle, CreditCard, Loader2, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { CardList } from './card/CardList';
+import { CustomerInfoCard } from './card/CustomerInfoCard';
+import { CardModal } from './modal/CardModal';
+import { CustomerModal } from './modal/CustomerModal';
+import { DeleteCardModal } from './modal/DeleteCardModal';
 
 interface PaymentGatewayComponentProps {
   onCardSelect: (cardId: string) => void;
@@ -22,15 +24,21 @@ interface PaymentGatewayComponentProps {
 
 export function PaymentGatewayComponent({
   onCardSelect,
-  selectedCardId
+  selectedCardId,
 }: PaymentGatewayComponentProps) {
   const [loading, setLoading] = useState(true);
-  const [customerData, setCustomerData] = useState<CustomerResponse | null>(null);
+  const [customerData, setCustomerData] = useState<CustomerResponse | null>(
+    null,
+  );
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const [showCardModal, setShowCardModal] = useState(false);
   const [showDeleteCardModal, setShowDeleteCardModal] = useState(false);
-  const [customerModalMode, setCustomerModalMode] = useState<'create' | 'edit'>('create');
-  const [cardModalMode, setCardModalMode] = useState<'create' | 'edit'>('create');
+  const [customerModalMode, setCustomerModalMode] = useState<'create' | 'edit'>(
+    'create',
+  );
+  const [cardModalMode, setCardModalMode] = useState<'create' | 'edit'>(
+    'create',
+  );
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
 
   // Cargar datos del usuario con Culqi
@@ -41,12 +49,16 @@ export function PaymentGatewayComponent({
       setCustomerData(response);
 
       // Si ya tiene tarjetas, seleccionar la primera por defecto
-      if (response.culqiData?.cards && response.culqiData.cards.length > 0 && !selectedCardId) {
+      if (
+        response.culqiData?.cards &&
+        response.culqiData.cards.length > 0 &&
+        !selectedCardId
+      ) {
         onCardSelect(response.culqiData.cards[0].source_id);
       }
     } catch (error) {
-      toast.error("Error al cargar la información del cliente");
-      console.error("Error fetching user culqi:", error);
+      toast.error('Error al cargar la información del cliente');
+      console.error('Error fetching user culqi:', error);
     } finally {
       setLoading(false);
     }
@@ -128,16 +140,17 @@ export function PaymentGatewayComponent({
   if (customerData.defaultData && !customerData.culqiData) {
     return (
       <div className="space-y-4">
-        <Card className="border-yellow-200 bg-yellow-50/50">
+        <Card className="border-warning  bg-warning/10">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <User className="h-4 w-4 text-yellow-600" />
+              <User className="h-4 w-4 text-warning" />
               Configuración Inicial Requerida
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Para procesar pagos con tarjeta, necesitas completar tu información de cliente.
+              Para procesar pagos con tarjeta, necesitas completar tu
+              información de cliente.
             </p>
             <Button
               onClick={() => handleOpenCustomerModal('create')}
