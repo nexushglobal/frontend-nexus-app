@@ -7,22 +7,19 @@ import {
   REVALIDATE_TIME,
 } from '../constants/product.constants';
 import {
-  ProductAdminResponse,
+  CategoryDetail,
   ProductDetailAdmin,
   StockProductHistoryResponse,
 } from '../types/product.type';
 
 export async function getCategoriesAction() {
   try {
-    const response = await api.get<ProductAdminResponse>(
-      '/api/product-category',
-      {
-        next: {
-          tags: [CATEGORY_CACHE_TAGS.CATEGORY_LIST],
-          revalidate: REVALIDATE_TIME,
-        },
+    const response = await api.get<CategoryDetail[]>('/api/product-category', {
+      next: {
+        tags: [CATEGORY_CACHE_TAGS.CATEGORY_LIST],
+        revalidate: REVALIDATE_TIME,
       },
-    );
+    });
 
     return {
       data: response,
