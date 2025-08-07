@@ -12,29 +12,6 @@ import {
   StockProductHistoryResponse,
 } from '../types/product.type';
 
-export async function getProductsAdminAction() {
-  try {
-    const response = await api.get<ProductAdminResponse>('/api/products', {
-      next: {
-        tags: [PRODUCT_CACHE_TAGS.PRODUCT_LIST],
-        revalidate: REVALIDATE_TIME,
-      },
-    });
-
-    return {
-      data: response,
-      success: true,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: 'Error al obtener los productos',
-      errors: error instanceof Error ? error.message : 'Unknown error',
-      data: null,
-    };
-  }
-}
-
 export async function getCategoriesAction() {
   try {
     const response = await api.get<ProductAdminResponse>(
