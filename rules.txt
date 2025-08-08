@@ -1,13 +1,44 @@
-1. Crea tu page
-2. Crea tu componente FeaturePage
-3. Crea tu types
-4. Crea tus actions
-5. Pidele a claude que te ayude a crear los componentes
+MODULO DE ECOMMERCE
 
-ejemplo:
-Feature Payment 
-quiero que implementes toda la funcionalidad de listar pagos por filtro en app/dashboard/(facturacion)/pagos
-debes usar componentes que ya existen si es necesario creas nuevos 
-consumir getAdminPaymentsAction la tabla es igual que la app/dashboard/(clientes)/pagos la unica diferencia es que en 
-esta se debe mostrar una columna con el detalle del cliente (user) y otra columna donde mostrar operationCode
-ticketNumber, los filtros son iguales a los de la app/dashboard/(clientes)/pagos, mantener la arquitectura de la app
+EL MODULO ECOMMERCE NOS PERMITIRA ADMINISTRAR TANTO LAS ORDENES COMO LOS PRODUCTOS DE LA PLATAFORMA
+se divide en 2 grandes secciones la vista para admin con el rol de FAC y la vista para usuarios con el rol de CLI
+
+nos centraremos en la vista para admin que a su vez tiene los siguientes modulos
+-Listado de productos con filtros y paginacion (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos
+-Crear product (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos/nuevo
+-Detalle de producto (Pendiente) -> /dashboard/(facturacion)/fac-ecommerce/productos/detalle/:id
+
+DETALLE DE PRODUCTO
+1. lo primero que tenemos que hacer en consumir la api del action getProductAdminAction y getCategoriesAction
+2. consultar el historial de stock del producto con el service getHistoryProductStock y el producto getProductAdmin
+3. la informacion la presentaremos en un formulario editable, donde el usuario podra editar los siguientes campos (solo esos campos) con el action updateProductAction que es un PATCH
+    - Nombre
+    - Categoria
+    - Descripcion
+    - Composicion
+    - Precio de miembro
+    - Precio publico
+    - Estado
+    - Beneficios
+4. las imagenes del producto se mostraran en grid y se podra realizar las siguientes acciones
+    - Agregar imagen con el action addProductImageAction que es un POST con el key 'image' y el valor es el archivo de imagen
+    - Actualizar imagen que abrira un modal con un formulario donde permitira cambiar isMain y  order con el action updateProductImageAction que es un PATCH
+    - Eliminar imagen con el action deleteProductImageAction que es un DELETE
+6. en la parte del stock se podra agrear stock mediante un formulario que tendra los siguientes campos
+    - actionType (select) con las opciones 'INCREASE' y 'DECREASE'
+    - quantity
+    - description siendo este un campo opcional
+   y se enviara al action addStockProductAction que es un POST
+
+si se realiza alguna accion mostrar la alerta en sonner una vez culminada la accion
+si se actualiza algo del producto se debe volver a consultar getProductAdmin, si se actualiza el stock se debe volver a consultar getHistoryProductStock
+
+CONSIDERACIONES
+- tomar de referencia la creacion de producto para las validaciones.
+- la ui debe ser parecida al detalle de pago (dashboard/fac-pagos/detalle/id) donde se tiene una seccion de menu y otra donde se mustra el detalle, considerar las secciones que creas conveniente
+
+quiero que mantengas la estructura que vengo manejando
+usar los components de shared si es necesario
+mantener los colores del Proyecto de styles.css
+
+IMPORTANTE NO HACER MAS COSAS DE LAS QUE TE PIDO

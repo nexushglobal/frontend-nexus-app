@@ -86,22 +86,155 @@ export async function createProductAction(formData: FormData) {
     };
   }
 }
-export async function updateProductAction(id: number, formData: FormData) {}
+export async function updateProductAction(id: number, formData: FormData) {
+  try {
+    const response = await api.patch<ProductDetailAdmin>(
+      `/api/products/${id}`,
+      formData,
+      {
+        isFormData: true,
+        skipJsonStringify: true,
+      },
+    );
+    console.log('Product updated successfully:', response);
+
+    revalidateAdminProducts();
+
+    return {
+      data: response,
+      message: 'Producto actualizado exitosamente',
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Error al actualizar el producto',
+      errors: error instanceof Error ? error.message : 'Unknown error',
+      data: null,
+    };
+  }
+}
 
 export async function updateProductImageAction(
   productId: number,
   imageId: number,
   formData: FormData,
-) {}
+) {
+  try {
+    const response = await api.patch<ProductDetailAdmin>(
+      `/api/products/${productId}/images/${imageId}`,
+      formData,
+      {
+        isFormData: true,
+        skipJsonStringify: true,
+      },
+    );
+    console.log('Product image updated successfully:', response);
+
+    revalidateAdminProducts();
+
+    return {
+      data: response,
+      message: 'Imagen del producto actualizada exitosamente',
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Error al actualizar la imagen del producto',
+      errors: error instanceof Error ? error.message : 'Unknown error',
+      data: null,
+    };
+  }
+}
 
 export async function addProductImageAction(
   productId: number,
   formData: FormData,
-) {}
+) {
+  try {
+    const response = await api.post<ProductDetailAdmin>(
+      `/api/products/${productId}/images`,
+      formData,
+      {
+        isFormData: true,
+        skipJsonStringify: true,
+      },
+    );
+    console.log('Product image added successfully:', response);
+
+    revalidateAdminProducts();
+
+    return {
+      data: response,
+      message: 'Imagen del producto añadida exitosamente',
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Error al añadir la imagen del producto',
+      errors: error instanceof Error ? error.message : 'Unknown error',
+      data: null,
+    };
+  }
+}
 
 export async function deleteProductImageAction(
   productId: number,
   imageId: number,
-) {}
+) {
+  try {
+    const response = await api.delete(
+      `/api/products/${productId}/images/${imageId}`,
+    );
+    console.log('Product image deleted successfully:', response);
 
-export async function addStockProductAction(productId: number, stock: number) {}
+    revalidateAdminProducts();
+
+    return {
+      data: response,
+      message: 'Imagen del producto eliminada exitosamente',
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Error al eliminar la imagen del producto',
+      errors: error instanceof Error ? error.message : 'Unknown error',
+      data: null,
+    };
+  }
+}
+
+export async function addStockProductAction(
+  productId: number,
+  formData: FormData,
+) {
+  try {
+    const response = await api.post(
+      `/api/product-stock-history/${productId}/stock`,
+      formData,
+      {
+        isFormData: true,
+        skipJsonStringify: true,
+      },
+    );
+    console.log('Stock added successfully:', response);
+
+    revalidateAdminProducts();
+
+    return {
+      data: response,
+      message: 'Stock añadido exitosamente',
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Error al añadir el stock del producto',
+      errors: error instanceof Error ? error.message : 'Unknown error',
+      data: null,
+    };
+  }
+}

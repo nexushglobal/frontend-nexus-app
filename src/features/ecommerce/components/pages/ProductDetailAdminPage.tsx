@@ -1,6 +1,8 @@
-type Props = {};
+type Props = {
+  productId: string;
+};
 
-const ProductDetailAdminPage = (props: Props) => {
+const ProductDetailAdminPage = ({ productId }: Props) => {
   return <div>ProductDetailAdminPage</div>;
 };
 
