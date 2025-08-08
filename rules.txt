@@ -3,43 +3,19 @@ MODULO DE ECOMMERCE
 EL MODULO ECOMMERCE NOS PERMITIRA ADMINISTRAR TANTO LAS ORDENES COMO LOS PRODUCTOS DE LA PLATAFORMA
 se divide en 2 grandes secciones la vista para admin con el rol de FAC y la vista para usuarios con el rol de CLI
 
-nos centraremos en la vista para admin que a su vez tiene los siguientes modulos
+tenemos la vista para admin que a su vez tiene los siguientes modulos
 -Listado de productos con filtros y paginacion (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos
 -Crear product (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos/nuevo
--Detalle de producto (Pendiente) -> /dashboard/(facturacion)/fac-ecommerce/productos/detalle/:id
+-Detalle de producto (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos/detalle/:id
+-Listado de ordenes con filtros y paginacion (ya lo hicimos) -> /dashboard/(facturacion)/fac-pedidos
+-Detalle de orden (Pendiente) -> /dashboard/(facturacion)/fac-pedidos/detalle/:id
 
-DETALLE DE PRODUCTO
-1. lo primero que tenemos que hacer en consumir la api del action getCategoriesAction
-2. consultar el historial de stock del producto con el service getHistoryProductStock y el producto getProductAdmin
-3. la informacion la presentaremos en un formulario editable, donde el usuario podra editar los siguientes campos (solo esos campos) con el action updateProductAction que es un PATCH
-    - Nombre
-    - Categoria
-    - Descripcion
-    - Composicion
-    - Precio de miembro
-    - Precio publico
-    - Estado
-    - Beneficios
-4. las imagenes del producto se mostraran en grid y se podra realizar las siguientes acciones
-    - Agregar imagen con el action addProductImageAction que es un POST con el key 'image' y el valor es el archivo de imagen
-    - Actualizar imagen que abrira un modal con un formulario donde permitira cambiar isMain y  order con el action updateProductImageAction que es un PATCH
-    - Eliminar imagen con el action deleteProductImageAction que es un DELETE
-6. en la parte del stock se podra agrear stock mediante un formulario que tendra los siguientes campos
-    - actionType (select) con las opciones 'INCREASE' y 'DECREASE'
-    - quantity
-    - description siendo este un campo opcional
-   y se enviara al action addStockProductAction que es un POST
+DETALLE DE ORDEN
+1. lo primero que tenemos que hacer en consumir la api del service getAdminOrderDetails en el cual se consume en el client
+2. Debe haber un boton en la parte superior sea para enviar pedido el cual solo debe estar dispobile si el estado de la orden es APPROVED, el cual por ahora no hara nada
 
-si se realiza alguna accion mostrar la alerta en sonner una vez culminada la accion
-si se actualiza algo del producto se debe volver a consultar getProductAdmin, si se actualiza el stock se debe volver a consultar getHistoryProductStock
-
-CONSIDERACIONES
-- tomar de referencia la creacion de producto para las validaciones.
-- la ui debe ser parecida al detalle de pago (dashboard/fac-pagos/detalle/id) donde se tiene una seccion de menu y otra donde se mustra el detalle, considerar las secciones que creas conveniente
-- en page no colocamos logica, todo va en feature, considera que getCategoriesAction se consulta en el server y getHistoryProductStock con getProductAdmin en el client
-
-quiero que mantengas la estructura que vengo manejando
-usar los components de shared si es necesario
-mantener los colores del Proyecto de styles.css
+- usar los componentes de shared si es necesario
+- mantener los colores del Proyecto de styles.css
+- mantener la estructura que vengo manejando
 
 IMPORTANTE NO HACER MAS COSAS DE LAS QUE TE PIDO
