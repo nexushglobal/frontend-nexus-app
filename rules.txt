@@ -9,7 +9,7 @@ nos centraremos en la vista para admin que a su vez tiene los siguientes modulos
 -Detalle de producto (Pendiente) -> /dashboard/(facturacion)/fac-ecommerce/productos/detalle/:id
 
 DETALLE DE PRODUCTO
-1. lo primero que tenemos que hacer en consumir la api del action getProductAdminAction y getCategoriesAction
+1. lo primero que tenemos que hacer en consumir la api del action getCategoriesAction
 2. consultar el historial de stock del producto con el service getHistoryProductStock y el producto getProductAdmin
 3. la informacion la presentaremos en un formulario editable, donde el usuario podra editar los siguientes campos (solo esos campos) con el action updateProductAction que es un PATCH
     - Nombre
@@ -36,6 +36,7 @@ si se actualiza algo del producto se debe volver a consultar getProductAdmin, si
 CONSIDERACIONES
 - tomar de referencia la creacion de producto para las validaciones.
 - la ui debe ser parecida al detalle de pago (dashboard/fac-pagos/detalle/id) donde se tiene una seccion de menu y otra donde se mustra el detalle, considerar las secciones que creas conveniente
+- en page no colocamos logica, todo va en feature, considera que getCategoriesAction se consulta en el server y getHistoryProductStock con getProductAdmin en el client
 
 quiero que mantengas la estructura que vengo manejando
 usar los components de shared si es necesario

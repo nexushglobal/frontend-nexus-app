@@ -93,7 +93,6 @@ export async function updateProductAction(id: number, formData: FormData) {
       formData,
       {
         isFormData: true,
-        skipJsonStringify: true,
       },
     );
     console.log('Product updated successfully:', response);

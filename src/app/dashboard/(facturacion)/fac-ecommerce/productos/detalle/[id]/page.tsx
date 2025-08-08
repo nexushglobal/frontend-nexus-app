@@ -1,4 +1,4 @@
-import ProductDetailAdminPage from '@/features/ecommerce/components/pages/ProductDetailAdminPage';
+import { ProductAdminDetailPage } from '@/features/ecommerce/components/pages/ProductAdminDetailPage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -11,5 +11,5 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
-  return <ProductDetailAdminPage productId={id} />;
+  return <ProductAdminDetailPage productId={id} />;
 }
