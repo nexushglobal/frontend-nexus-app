@@ -19,35 +19,22 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  ProductEditFormType,
+  productEditSchema,
+} from '@/features/ecommerce/schemas/product-edit-form.schema';
 import { Switch } from '@/features/shared/components/form/Switch';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DollarSign, Edit, Loader2, Package, Tag } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { updateProductAction } from '../../../actions/post-product';
 import type {
   CategoryDetail,
   ProductDetailAdmin,
 } from '../../../types/product.type';
 import { ProductBenefitsManager } from './ProductBenefitsManager';
-
-const productEditSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'El nombre es requerido')
-    .max(255, 'El nombre es muy largo'),
-  categoryId: z.string().min(1, 'La categoría es requerida'),
-  description: z.string().optional(),
-  composition: z.string().optional(),
-  memberPrice: z.number().min(0, 'El precio debe ser mayor o igual a 0'),
-  publicPrice: z.number().min(0, 'El precio debe ser mayor o igual a 0'),
-  isActive: z.boolean(),
-  benefits: z.array(z.string()).optional(),
-});
-
-type ProductEditFormType = z.infer<typeof productEditSchema>;
 
 interface ProductDetailFormProps {
   product: ProductDetailAdmin;
@@ -80,21 +67,7 @@ export function ProductDetailForm({
   const onSubmit = (data: ProductEditFormType) => {
     startTransition(async () => {
       try {
-        const formData = new FormData();
-        formData.append('name', data.name);
-        formData.append('categoryId', data.categoryId);
-        formData.append('description', data.description || '');
-        formData.append('composition', data.composition || '');
-        formData.append('memberPrice', data.memberPrice.toString());
-        formData.append('publicPrice', data.publicPrice.toString());
-        formData.append('isActive', data.isActive.toString());
-        formData.append('benefits', JSON.stringify(benefits));
-        console.log(
-          'Submitting form data:',
-          Object.fromEntries(formData.entries()),
-        );
-
-        const result = await updateProductAction(product.id, formData);
+        const result = await updateProductAction(product.id, data);
 
         if (result.success) {
           toast.success(result.message);

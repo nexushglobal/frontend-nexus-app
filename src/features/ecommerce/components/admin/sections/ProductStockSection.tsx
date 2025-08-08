@@ -21,27 +21,22 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  stockFormSchema,
+  StockFormType,
+} from '@/features/ecommerce/schemas/product-edit-form.schema';
 import { TablePagination } from '@/features/shared/components/table/TablePagination';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { History, Loader2, Minus, Package, Plus } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 import { addStockProductAction } from '../../../actions/post-product';
 import { ProductService } from '../../../service/productService';
 import type {
   ProductDetailAdmin,
   StockProductHistoryResponse,
 } from '../../../types/product.type';
-
-const stockFormSchema = z.object({
-  actionType: z.enum(['INCREASE', 'DECREASE']),
-  quantity: z.number().min(1, 'La cantidad debe ser mayor a 0'),
-  description: z.string().optional(),
-});
-
-type StockFormType = z.infer<typeof stockFormSchema>;
 
 interface ProductStockSectionProps {
   product: ProductDetailAdmin;
@@ -106,12 +101,7 @@ export function ProductStockSection({
 
     startTransition(async () => {
       try {
-        const formData = new FormData();
-        formData.append('actionType', data.actionType);
-        formData.append('quantity', data.quantity.toString());
-        formData.append('description', data.description || '');
-
-        const result = await addStockProductAction(product.id, formData);
+        const result = await addStockProductAction(product.id, data);
 
         if (result.success) {
           toast.success(result.message);

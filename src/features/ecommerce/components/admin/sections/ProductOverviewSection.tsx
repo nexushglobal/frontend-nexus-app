@@ -1,4 +1,3 @@
-// src/features/ecommerce/components/admin/sections/ProductOverviewSection.tsx
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
@@ -14,7 +13,6 @@ export function ProductOverviewSection({
 }: ProductOverviewSectionProps) {
   return (
     <div className="space-y-6">
-      {/* Información Principal */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

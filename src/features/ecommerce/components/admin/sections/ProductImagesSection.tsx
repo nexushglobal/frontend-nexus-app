@@ -1,4 +1,3 @@
-// src/features/ecommerce/components/admin/sections/ProductImagesSection.tsx
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -96,14 +95,13 @@ export function ProductImagesSection({
 
     startTransition(async () => {
       try {
-        const formData = new FormData();
-        formData.append('order', editOrder.toString());
-        formData.append('isMain', editIsMain.toString());
-
         const result = await updateProductImageAction(
           product.id,
           editingImage.id,
-          formData,
+          {
+            order: editOrder,
+            isMain: editIsMain,
+          },
         );
 
         if (result.success) {

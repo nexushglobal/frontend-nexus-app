@@ -1,6 +1,10 @@
 'use server';
 
 import { api } from '@/features/shared/services/api';
+import {
+  ProductEditFormType,
+  StockFormType,
+} from '../schemas/product-edit-form.schema';
 import { ProductDetailAdmin } from '../types/product.type';
 import { revalidateAdminProducts } from './revalidate-product';
 
@@ -86,14 +90,14 @@ export async function createProductAction(formData: FormData) {
     };
   }
 }
-export async function updateProductAction(id: number, formData: FormData) {
+export async function updateProductAction(
+  id: number,
+  data: ProductEditFormType,
+) {
   try {
     const response = await api.patch<ProductDetailAdmin>(
       `/api/products/${id}`,
-      formData,
-      {
-        isFormData: true,
-      },
+      data,
     );
     console.log('Product updated successfully:', response);
 
@@ -117,16 +121,15 @@ export async function updateProductAction(id: number, formData: FormData) {
 export async function updateProductImageAction(
   productId: number,
   imageId: number,
-  formData: FormData,
+  data: {
+    order: number;
+    isMain: boolean;
+  },
 ) {
   try {
     const response = await api.patch<ProductDetailAdmin>(
       `/api/products/${productId}/images/${imageId}`,
-      formData,
-      {
-        isFormData: true,
-        skipJsonStringify: true,
-      },
+      data,
     );
     console.log('Product image updated successfully:', response);
 
@@ -208,16 +211,12 @@ export async function deleteProductImageAction(
 
 export async function addStockProductAction(
   productId: number,
-  formData: FormData,
+  data: StockFormType,
 ) {
   try {
     const response = await api.post(
       `/api/product-stock-history/${productId}/stock`,
-      formData,
-      {
-        isFormData: true,
-        skipJsonStringify: true,
-      },
+      data,
     );
     console.log('Stock added successfully:', response);
 
