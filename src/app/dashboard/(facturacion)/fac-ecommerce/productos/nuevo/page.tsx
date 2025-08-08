@@ -1,11 +1,11 @@
-import ProductDetailAdminPage from '@/features/ecommerce/components/pages/ProductDetailAdminPage';
+import ProductCreatePage from '@/features/ecommerce/components/pages/ProductCreatePage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Detalle del Producto | Dashboard',
-  description: 'Revisa los detalles del producto seleccionado en la tienda',
+  title: 'Crear Producto | Dashboard',
+  description: 'Crea un nuevo producto para la tienda',
 };
 
 export default function Page() {
-  return <ProductDetailAdminPage />;
+  return <ProductCreatePage />;
 }

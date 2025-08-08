@@ -68,6 +68,7 @@ export async function createProductAction(formData: FormData) {
         skipJsonStringify: true,
       },
     );
+    console.log('Product created successfully:', response);
 
     revalidateAdminProducts();
 
