@@ -26,4 +26,12 @@ export class ProductService {
   static async getProductAdmin(id: number): Promise<ProductDetailAdmin> {
     return api.get<ProductDetailAdmin>(`/api/products/${id}`);
   }
+
+  static async getClientProducts(
+    params: Record<string, string | number | boolean | undefined | null>,
+  ): Promise<ProductAdminResponse> {
+    return api.get<ProductAdminResponse>('/api/products/clients/list', {
+      params,
+    });
+  }
 }

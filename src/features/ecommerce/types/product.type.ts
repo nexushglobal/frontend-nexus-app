@@ -74,3 +74,12 @@ export interface StockProductHistory {
 export interface StockProductHistoryResponse extends PaginationMeta {
   items: StockProductHistory[];
 }
+
+interface BaseClientProduct {
+  id: number;
+  name: string;
+  sku: string;
+  price: number;
+  priceOff: number | null;
+  category: BaseCategory;
+}
