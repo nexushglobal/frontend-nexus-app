@@ -12,8 +12,8 @@ import {
     Package
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
 import { PaymentUser } from '../../types/response-payment'
+import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
 
 interface PaymentUserCardsProps {
     data: PaymentUser[]
@@ -113,7 +113,7 @@ export function PaymentUserCards({ data }: PaymentUserCardsProps) {
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => router.push(`/dashboard/mis-pagos/detalle/${payment.id}`)}
+                                        onClick={() => router.push(`/dashboard/cli-mis-pagos/detalle/${payment.id}`)}
                                         className="w-full flex items-center gap-2"
                                     >
                                         <Eye className="h-4 w-4" />

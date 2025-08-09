@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Check, Crown, Zap, DollarSign, TrendingUp, Users, Award } from "lucide-react";
-import { MembershipPlan, UserMembership } from "../types/membership.types";
 import { formatCurrency } from "@/features/shared/utils/formatCurrency";
+import { Award, Check, Crown, DollarSign, TrendingUp, Users, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { MembershipPlan, UserMembership } from "../types/membership.types";
 
 interface MembershipPlanCardProps {
     plan: MembershipPlan;
@@ -23,7 +23,7 @@ export function MembershipPlanCard({
     const { push } = useRouter();
     const isCurrentPlan = currentMembership.plan?.id === plan.id;
     const viewDetails = () => {
-        push(`/dashboard/membresias/planes/${plan.id}`);
+        push(`/dashboard/cli-membresias/planes/${plan.id}`);
     }
 
     return (

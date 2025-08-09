@@ -18,6 +18,7 @@ import {
   Eye,
   RotateCcw,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PaymentResult } from '../types/membership-detail.type';
 
@@ -48,7 +49,7 @@ export function PaymentResultModal({
 
   const handleViewPayment = () => {
     if (result.data?.payment.id) {
-      router.push(`/dashboard/mis-pagos/detalle/${result.data.payment.id}`);
+      router.push(`/dashboard/cli-mis-pagos/detalle/${result.data.payment.id}`);
       onClose();
     }
   };
@@ -142,14 +143,13 @@ export function PaymentResultModal({
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-3">
-          <Button
-            onClick={handleViewPayment}
-            variant="outline"
+          <Link
             className="flex items-center gap-2"
+            href={`/dashboard/cli-mis-pagos/detalle/${data.payment.id}`}
           >
             <Eye className="h-4 w-4" />
             Ver Pago
-          </Button>
+          </Link>
 
           <Button
             onClick={handleViewMembership}

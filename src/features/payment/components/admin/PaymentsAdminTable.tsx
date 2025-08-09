@@ -24,7 +24,7 @@ export function PaymentAdminTable({
     const columns = useMemo(() =>
         createPaymentAdminColumns({
             onViewDetail: (paymentId) => {
-                router.push(`/dashboard/pagos/detalle/${paymentId}`)
+                router.push(`/dashboard/fac-pagos/detalle/${paymentId}`)
             }
         }),
         [router]

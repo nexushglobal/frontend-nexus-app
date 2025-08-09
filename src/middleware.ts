@@ -26,9 +26,8 @@ export default withAuth(
       return NextResponse.redirect(new URL("/", req.url));
     }
 
-    if (isDashboardPage && isAuth) {
-      const userRole = token.role || token.user?.role;
-
+    if (isDashboardPage && isAuth) { 
+      const userRole = token.user.role.code || "GUE";
 
       const roleRoutePatterns = {
         CLI: /^\/dashboard\/cli-/, // Rutas que empiecen con cli-

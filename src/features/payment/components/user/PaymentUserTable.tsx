@@ -22,7 +22,7 @@ export function PaymentUserTable({
     const columns = useMemo(() =>
         createPaymentUserColumns({
             onViewDetail: (paymentId) => {
-                router.push(`/dashboard/mis-pagos/detalle/${paymentId}`)
+                router.push(`/dashboard/cli-mis-pagos/detalle/${paymentId}`)
             }
         }),
         [router]

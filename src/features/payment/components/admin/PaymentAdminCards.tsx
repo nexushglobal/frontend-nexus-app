@@ -7,16 +7,15 @@ import {
     Calendar,
     CreditCard,
     DollarSign,
-    Package,
     Eye,
-    User,
     FileText,
-    Phone,
-    Mail
+    Mail,
+    Package,
+    User
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
 import { PaymentAdmin } from '../../types/response-payment'
+import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
 
 interface PaymentAdminCardsProps {
     data: PaymentAdmin[]
@@ -149,7 +148,7 @@ export function PaymentAdminCards({ data }: PaymentAdminCardsProps) {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => router.push(`/dashboard/pagos/detalle/${payment.id}`)}
+                                    onClick={() => router.push(`/dashboard/fac-pagos/detalle/${payment.id}`)}
                                     className="w-full flex items-center gap-2"
                                 >
                                     <Eye className="h-4 w-4" />

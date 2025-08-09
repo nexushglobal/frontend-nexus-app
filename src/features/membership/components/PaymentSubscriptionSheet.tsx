@@ -5,30 +5,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
 } from '@/components/ui/sheet';
 import {
-  MembershipPlan,
-  Payment,
-  PaymentMethod,
-  PaymentResult,
-  UserMembership,
+    MembershipPlan,
+    Payment,
+    PaymentMethod,
+    PaymentResult,
+    UserMembership,
 } from '@/features/membership/types/membership-detail.type';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import {
-  AlertCircle,
-  CheckCircle,
-  CreditCard,
-  DollarSign,
-  FileText,
-  Loader2,
-  Plus,
-  Receipt,
-  Trash2,
-  Zap,
+    AlertCircle,
+    CheckCircle,
+    CreditCard,
+    DollarSign,
+    FileText,
+    Loader2,
+    Plus,
+    Receipt,
+    Trash2,
+    Zap,
 } from 'lucide-react';
 import { useState } from 'react';
 import { subscribeToPlanAction } from '../actions/suscription-to-plan';

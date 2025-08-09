@@ -23,7 +23,7 @@ export async function registerUserAction(data: CompleteRegistrationData) {
     };
 
     const response = await api.post(
-      "/api/user/register",
+      "/api/auth/register",
       requestData,
 
     );

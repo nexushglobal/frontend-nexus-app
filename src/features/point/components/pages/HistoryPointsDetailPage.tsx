@@ -37,7 +37,7 @@ export default function HistoryPointDetailPage({ id }: Props) {
         subtitle="Información detallada de la transacción y sus pagos asociados"
         variant="gradient"
         icon={PiggyBank}
-        backUrl="/dashboard/historial-puntos"
+        backUrl="/dashboard/cli-historial-puntos"
       />
 
       <div className="space-y-8 mt-6">
