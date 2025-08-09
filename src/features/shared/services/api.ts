@@ -1,6 +1,6 @@
-import { authOptions } from "@/lib/auth";
-import { env } from "@/lib/env";
-import { getServerSession } from "next-auth";
+import { authOptions } from '@/lib/auth';
+import { env } from '@/lib/env';
+import { getServerSession } from 'next-auth';
 
 // Tipos para el API wrapper
 export interface ApiResponse<T = any> {
@@ -18,10 +18,10 @@ export class ApiError extends Error {
   constructor(
     message: string | string[],
     errors: string | string[] | null = null,
-    statusCode: number = 500
+    statusCode: number = 500,
   ) {
-    super(Array.isArray(message) ? message.join(", ") : message);
-    this.name = "ApiError";
+    super(Array.isArray(message) ? message.join(', ') : message);
+    this.name = 'ApiError';
     this.success = false;
     this.errors = errors;
     this.statusCode = statusCode;
@@ -29,7 +29,7 @@ export class ApiError extends Error {
 }
 
 // Opciones para las llamadas API
-export interface ApiOptions extends Omit<RequestInit, "body"> {
+export interface ApiOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined | null>;
   body?: any;
   timeout?: number;
@@ -43,12 +43,12 @@ class ApiClient {
     const apiUrl = env.apiUrl;
 
     if (!apiUrl) {
-      const context = typeof window === "undefined" ? "server" : "client";
+      const context = typeof window === 'undefined' ? 'server' : 'client';
       throw new Error(
         `API URL no está configurada para contexto ${context}. ` +
           `Verifica que tengas ${
-            context === "server" ? "API_BACKENDL_URL" : "NEXT_PUBLIC_API_URL"
-          } en tu .env`
+            context === 'server' ? 'API_BACKENDL_URL' : 'NEXT_PUBLIC_API_URL'
+          } en tu .env`,
       );
     }
 
@@ -59,7 +59,7 @@ class ApiClient {
    * Obtiene el token de autenticación según el contexto
    */
   private async getAuthToken(): Promise<string | null> {
-    const isServer = typeof window === "undefined";
+    const isServer = typeof window === 'undefined';
 
     if (isServer) {
       // En servidor: usar getServerSession
@@ -67,13 +67,13 @@ class ApiClient {
         const session = await getServerSession(authOptions);
         return session?.accessToken || null;
       } catch (error) {
-        console.warn("Error getting server session:", error);
+        console.warn('Error getting server session:', error);
         return null;
       }
     } else {
       // En cliente: usar sessionStorage o fetch a API route
       try {
-        const response = await fetch("/api/auth/token");
+        const response = await fetch('/api/auth/token');
         if (response.ok) {
           const { accessToken } = await response.json();
           return accessToken;
@@ -81,7 +81,7 @@ class ApiClient {
 
         return null;
       } catch (error) {
-        console.warn("Error getting client token:", error);
+        console.warn('Error getting client token:', error);
         return null;
       }
     }
@@ -92,7 +92,7 @@ class ApiClient {
    */
   private buildUrl(
     endpoint: string,
-    params?: Record<string, string | number | boolean | undefined | null>
+    params?: Record<string, string | number | boolean | undefined | null>,
   ): string {
     const baseUrl = this.getBaseUrl();
     const url = new URL(endpoint, baseUrl);
@@ -118,7 +118,10 @@ class ApiClient {
 
     // Solo establecer Content-Type si no es FormData
     if (!options.isFormData && !(options.body instanceof FormData)) {
-      (headers as Record<string, string>)["Content-Type"] = "application/json";
+      (headers as Record<string, string>)['Content-Type'] = 'application/json';
+    } else if (options.isFormData) {
+      (headers as Record<string, string>)['Content-Type'] =
+        'multipart/form-data';
     }
 
     // Agregar autenticación si no se omite explícitamente
@@ -126,7 +129,7 @@ class ApiClient {
       const token = await this.getAuthToken();
       if (token) {
         (headers as Record<string, string>)[
-          "Authorization"
+          'Authorization'
         ] = `Bearer ${token}`;
       }
     }
@@ -139,12 +142,12 @@ class ApiClient {
    */
   private prepareBody(
     body: any,
-    options: ApiOptions
+    options: ApiOptions,
   ): string | FormData | undefined {
     if (!body) return undefined;
 
     // Si es FormData, devolverlo directamente
-    if (body instanceof FormData || options.isFormData) {
+    if (options.isFormData) {
       return body as FormData;
     }
 
@@ -154,15 +157,15 @@ class ApiClient {
     }
 
     // Por defecto, convertir a JSON
-    return typeof body === "string" ? body : JSON.stringify(body);
+    return typeof body === 'string' ? body : JSON.stringify(body);
   }
 
   /**
    * Maneja las respuestas HTTP
    */
   private async handleResponse<T>(response: Response): Promise<T> {
-    const contentType = response.headers.get("content-type");
-    const isJson = contentType?.includes("application/json");
+    const contentType = response.headers.get('content-type');
+    const isJson = contentType?.includes('application/json');
 
     let result: ApiResponse<T>;
 
@@ -173,7 +176,7 @@ class ApiClient {
       result = {
         success: response.ok,
         data: text as unknown as T,
-        message: response.ok ? "Success" : "Error",
+        message: response.ok ? 'Success' : 'Error',
         errors: response.ok ? null : text,
       };
     }
@@ -183,9 +186,9 @@ class ApiClient {
       // Token expirado o inválido
       this.handleAuthError();
       throw new ApiError(
-        "Token de autenticación inválido o expirado",
+        'Token de autenticación inválido o expirado',
         null,
-        401
+        401,
       );
     }
 
@@ -200,16 +203,16 @@ class ApiClient {
    * Maneja errores de autenticación
    */
   private handleAuthError(): void {
-    const isServer = typeof window === "undefined";
+    const isServer = typeof window === 'undefined';
 
     if (!isServer) {
       // En cliente: limpiar token y redirigir
-      sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem('accessToken');
 
       // Si usas next-auth, hacer signOut
-      if (typeof window !== "undefined") {
-        import("next-auth/react").then(({ signOut }) => {
-          signOut({ callbackUrl: "/login" });
+      if (typeof window !== 'undefined') {
+        import('next-auth/react').then(({ signOut }) => {
+          signOut({ callbackUrl: '/login' });
         });
       }
     }
@@ -244,7 +247,7 @@ class ApiClient {
     };
 
     // Solo agregar body si existe y no es GET
-    if (body && fetchOptions.method !== "GET") {
+    if (body && fetchOptions.method !== 'GET') {
       config.body = this.prepareBody(body, { skipJsonStringify, isFormData });
     }
 
@@ -258,15 +261,18 @@ class ApiClient {
         signal: controller.signal,
       });
 
-      // console.log(`API Call: ${fetchOptions.method || "GET"} ${url}`, {
-      //   headers: config.headers,
-      //   body: config.body instanceof FormData ? "FormData" : config.body,
-      //   response: {
-      //     status: response.status,
-      //     statusText: response.statusText,
-      //     url: response.url,
-      //   },
-      // });
+      if (fetchOptions.method === 'PATCH') {
+        console.log(`API Call: ${fetchOptions.method || 'GET'} ${url}`, {
+          headers: config.headers,
+          body: config.body,
+          response: {
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+          },
+        });
+      }
+
       clearTimeout(timeoutId);
       return this.handleResponse<T>(response);
     } catch (error) {
@@ -277,13 +283,13 @@ class ApiClient {
       }
 
       if (error instanceof Error) {
-        if (error.name === "AbortError") {
-          throw new ApiError("Request timeout", null, 408);
+        if (error.name === 'AbortError') {
+          throw new ApiError('Request timeout', null, 408);
         }
         throw new ApiError(error.message, null, 500);
       }
 
-      throw new ApiError("Unknown error occurred", null, 500);
+      throw new ApiError('Unknown error occurred', null, 500);
     }
   }
 
@@ -292,9 +298,9 @@ class ApiClient {
    */
   async get<T>(
     endpoint: string,
-    options: Omit<ApiOptions, "method"> = {}
+    options: Omit<ApiOptions, 'method'> = {},
   ): Promise<T> {
-    return this.call<T>(endpoint, { ...options, method: "GET" });
+    return this.call<T>(endpoint, { ...options, method: 'GET' });
   }
 
   /**
@@ -303,11 +309,11 @@ class ApiClient {
   async post<T>(
     endpoint: string,
     data?: any,
-    options: Omit<ApiOptions, "method" | "body"> = {}
+    options: Omit<ApiOptions, 'method' | 'body'> = {},
   ): Promise<T> {
     return this.call<T>(endpoint, {
       ...options,
-      method: "POST",
+      method: 'POST',
       body: data,
     });
   }
@@ -318,11 +324,11 @@ class ApiClient {
   async put<T>(
     endpoint: string,
     data?: any,
-    options: Omit<ApiOptions, "method" | "body"> = {}
+    options: Omit<ApiOptions, 'method' | 'body'> = {},
   ): Promise<T> {
     return this.call<T>(endpoint, {
       ...options,
-      method: "PUT",
+      method: 'PUT',
       body: data,
     });
   }
@@ -333,11 +339,11 @@ class ApiClient {
   async patch<T>(
     endpoint: string,
     data?: any,
-    options: Omit<ApiOptions, "method" | "body"> = {}
+    options: Omit<ApiOptions, 'method' | 'body'> = {},
   ): Promise<T> {
     return this.call<T>(endpoint, {
       ...options,
-      method: "PATCH",
+      method: 'PATCH',
       body: data,
     });
   }
@@ -347,9 +353,9 @@ class ApiClient {
    */
   async delete<T>(
     endpoint: string,
-    options: Omit<ApiOptions, "method"> = {}
+    options: Omit<ApiOptions, 'method'> = {},
   ): Promise<T> {
-    return this.call<T>(endpoint, { ...options, method: "DELETE" });
+    return this.call<T>(endpoint, { ...options, method: 'DELETE' });
   }
 
   /**
@@ -357,11 +363,11 @@ class ApiClient {
    */
   async getPublic<T>(
     endpoint: string,
-    options: Omit<ApiOptions, "method" | "skipAuth"> = {}
+    options: Omit<ApiOptions, 'method' | 'skipAuth'> = {},
   ): Promise<T> {
     return this.call<T>(endpoint, {
       ...options,
-      method: "GET",
+      method: 'GET',
       skipAuth: true,
     });
   }
@@ -372,11 +378,11 @@ class ApiClient {
   async postPublic<T>(
     endpoint: string,
     data?: any,
-    options: Omit<ApiOptions, "method" | "body" | "skipAuth"> = {}
+    options: Omit<ApiOptions, 'method' | 'body' | 'skipAuth'> = {},
   ): Promise<T> {
     return this.call<T>(endpoint, {
       ...options,
-      method: "POST",
+      method: 'POST',
       body: data,
       skipAuth: true,
     });
@@ -392,8 +398,8 @@ export const serverApi = {
    */
   static: <T>(
     endpoint: string,
-    params?: Record<string, string | number | boolean | undefined | null>
-  ) => api.get<T>(endpoint, { params, cache: "force-cache" }),
+    params?: Record<string, string | number | boolean | undefined | null>,
+  ) => api.get<T>(endpoint, { params, cache: 'force-cache' }),
 
   /**
    * Revalidación periódica con autenticación
@@ -401,7 +407,7 @@ export const serverApi = {
   revalidate: <T>(
     endpoint: string,
     seconds: number,
-    params?: Record<string, string | number | boolean | undefined | null>
+    params?: Record<string, string | number | boolean | undefined | null>,
   ) =>
     api.get<T>(endpoint, {
       params,
@@ -413,8 +419,8 @@ export const serverApi = {
    */
   fresh: <T>(
     endpoint: string,
-    params?: Record<string, string | number | boolean | undefined | null>
-  ) => api.get<T>(endpoint, { params, cache: "no-store" }),
+    params?: Record<string, string | number | boolean | undefined | null>,
+  ) => api.get<T>(endpoint, { params, cache: 'no-store' }),
 
   /**
    * Cache con tags para invalidación selectiva
@@ -422,7 +428,7 @@ export const serverApi = {
   tagged: <T>(
     endpoint: string,
     tags: string[],
-    params?: Record<string, string | number | boolean | undefined | null>
+    params?: Record<string, string | number | boolean | undefined | null>,
   ) =>
     api.get<T>(endpoint, {
       params,
@@ -435,19 +441,19 @@ export const serverApi = {
   public: {
     static: <T>(
       endpoint: string,
-      params?: Record<string, string | number | boolean | undefined | null>
-    ) => api.getPublic<T>(endpoint, { params, cache: "force-cache" }),
+      params?: Record<string, string | number | boolean | undefined | null>,
+    ) => api.getPublic<T>(endpoint, { params, cache: 'force-cache' }),
 
     fresh: <T>(
       endpoint: string,
-      params?: Record<string, string | number | boolean | undefined | null>
-    ) => api.getPublic<T>(endpoint, { params, cache: "no-store" }),
+      params?: Record<string, string | number | boolean | undefined | null>,
+    ) => api.getPublic<T>(endpoint, { params, cache: 'no-store' }),
   },
 };
 
 // Helper para construir params fácilmente
 export const buildParams = (
-  params: Record<string, any>
+  params: Record<string, any>,
 ): Record<string, string> => {
   const result: Record<string, string> = {};
 

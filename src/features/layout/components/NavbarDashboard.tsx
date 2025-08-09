@@ -1,18 +1,19 @@
-"use client";
+'use client';
 
-import { Separator } from "@/components/ui/separator";
-import ThemeSwitch from "@/features/shared/components/ThemeSwich";
-import { UserMenu } from "@/features/user/components/UserMenu";
-import { motion } from "framer-motion";
-import { Calendar } from "lucide-react";
+import { Separator } from '@/components/ui/separator';
+import NavbarCartIcon from '@/features/shared/components/cart/NavbarCartIcon';
+import ThemeSwitch from '@/features/shared/components/ThemeSwich';
+import { UserMenu } from '@/features/user/components/UserMenu';
+import { motion } from 'framer-motion';
+import { Calendar } from 'lucide-react';
 
 const Navbar = () => {
   const formatDate = () => {
-    return new Intl.DateTimeFormat("es-ES", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return new Intl.DateTimeFormat('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     }).format(new Date());
   };
 
@@ -37,6 +38,8 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
           <UserMenu />
+          <NavbarCartIcon />
+
           <Separator orientation="vertical" className="h-6 bg-border" />
           <ThemeSwitch />
         </div>

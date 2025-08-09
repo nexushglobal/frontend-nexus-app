@@ -127,14 +127,14 @@ Existen tres tipos de afiliado dentro del programa, cada una con característica
 
 ### Ejecutivo
 
-a. Costo: 235 soles (Pago único).
+a. Costo: 470 soles (Pago único).
 b. No incluye beneficios adicionales ni descuentos en Huertas Inmobiliaria.
 c. Acceso al programa de afiliados con derecho a invitar nuevos Afiliados.
 d. Requiere el pago mensual de 217 soles para mantener la condición de afiliado activo.
 
 ### VIP
 
-e. Costo: 799 soles (Pago único).
+e. Costo: 970 soles (Pago único).
 f. Descuento de 1,000 soles en la compra de un lote en Huertas Inmobiliaria.
 g. Acceso a Nexus Academy.
 h. Acceso al plan de compensación con un 10% de comisión en los productos que sean designados por "Nexus".
@@ -143,7 +143,7 @@ j. Requiere el pago mensual de 217 soles para mantener la condición de afiliado
 
 ### Premium
 
-k. Costo: 1,799 soles (Pago único).
+k. Costo: 2000 soles (Pago único).
 l. Bono de descuento de 2,500 soles en la compra de un lote en Huertas Inmobiliaria.
 m. Acceso a Nexus Academy.
 n. Acceso al plan de compensación con un 20% de comisión en los productos que sean designados por "Nexus".
@@ -154,10 +154,10 @@ Adicionalmente, el afiliado podrá hacer el upgrade de membresía en cualquier m
 
 Todos los pagos por afiliados deberán ser efectuado a las siguientes cuentas de "Nexus":
 
-Razón Social: NEXUS INNOVATION SAC  
-Entidad: Banco BBVA Continental  
-Moneda: Sol Peruano  
-Nro: Cta. 0011-0131-0100062588  
+Razón Social: NEXUS INNOVATION SAC
+Entidad: Banco BBVA Continental
+Moneda: Sol Peruano
+Nro: Cta. 0011-0131-0100062588
 Nro. CCI: 011-131-000100062588-07
 
 Si un Afiliado no paga el mantenimiento mensual, su afiliado será desactivada automáticamente y perderá los beneficios hasta que regularice su situación.
