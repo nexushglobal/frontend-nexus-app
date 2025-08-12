@@ -4,14 +4,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
-import { Eye, ShoppingCart, User } from 'lucide-react';
+import { Eye, ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { OrderAdminItem } from '../../types/order.type';
-import { OrderPreviewModal } from './OrderPreviewModal';
+import type { OrderClientItem } from '../../types/order.type';
+import { OrderPreviewModal } from '../admin/OrderPreviewModal';
 
-interface OrderAdminCardsProps {
-  data: OrderAdminItem[];
+interface OrderClientCardsProps {
+  data: OrderClientItem[];
 }
 
 const getStatusBadgeVariant = (status: string) => {
@@ -52,12 +52,14 @@ const getStatusLabel = (status: string) => {
   }
 };
 
-export function OrderAdminCards({ data }: OrderAdminCardsProps) {
+export function OrderClientCards({ data }: OrderClientCardsProps) {
   const router = useRouter();
-  const [previewOrder, setPreviewOrder] = useState<OrderAdminItem | null>(null);
+  const [previewOrder, setPreviewOrder] = useState<OrderClientItem | null>(
+    null,
+  );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-  const handlePreview = (order: OrderAdminItem) => {
+  const handlePreview = (order: OrderClientItem) => {
     setPreviewOrder(order);
     setIsPreviewOpen(true);
   };
@@ -68,7 +70,7 @@ export function OrderAdminCards({ data }: OrderAdminCardsProps) {
   };
 
   const handleViewDetail = (orderId: number) => {
-    router.push(`/dashboard/fac-pedidos/detalle/${orderId}`);
+    router.push(`/dashboard/cli-pedidos/detalle/${orderId}`);
   };
 
   if (data.length === 0) {
@@ -77,11 +79,10 @@ export function OrderAdminCards({ data }: OrderAdminCardsProps) {
         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
           <ShoppingCart className="h-12 w-12 text-muted-foreground/50 mb-4" />
           <h3 className="text-lg font-medium text-muted-foreground mb-2">
-            No hay pedidos
+            No tienes pedidos
           </h3>
           <p className="text-sm text-muted-foreground max-w-sm">
-            No hay pedidos registrados. Cuando los clientes realicen pedidos,
-            aparecerán aquí.
+            Cuando realices compras, tus pedidos aparecerán aquí.
           </p>
         </CardContent>
       </Card>
@@ -95,14 +96,9 @@ export function OrderAdminCards({ data }: OrderAdminCardsProps) {
           <Card key={order.id} className="shadow-sm">
             <CardContent className="p-4">
               <div className="space-y-3">
-                {/* Header */}
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-medium text-lg">Pedido #{order.id}</h3>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <User className="h-4 w-4" />
-                      <span>{order.userName}</span>
-                    </div>
                   </div>
                   <Badge
                     variant="outline"
@@ -112,12 +108,7 @@ export function OrderAdminCards({ data }: OrderAdminCardsProps) {
                   </Badge>
                 </div>
 
-                {/* Información principal */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Email:</span>
-                    <p className="font-medium truncate">{order.userEmail}</p>
-                  </div>
                   <div>
                     <span className="text-muted-foreground">Items:</span>
                     <p className="font-medium">{order.totalItems}</p>
@@ -136,7 +127,6 @@ export function OrderAdminCards({ data }: OrderAdminCardsProps) {
                   </div>
                 </div>
 
-                {/* Acciones */}
                 <div className="flex gap-2 pt-2">
                   <Button
                     variant="outline"
@@ -145,7 +135,7 @@ export function OrderAdminCards({ data }: OrderAdminCardsProps) {
                     className="flex-1 gap-2"
                   >
                     <ShoppingCart className="h-4 w-4" />
-                    Vista previa
+                    Resumen
                   </Button>
                   <Button
                     size="sm"
@@ -163,9 +153,12 @@ export function OrderAdminCards({ data }: OrderAdminCardsProps) {
       </div>
 
       <OrderPreviewModal
-        order={previewOrder}
+        order={previewOrder as any}
         isOpen={isPreviewOpen}
         onClose={handleClosePreview}
+        onViewDetail={(orderId) =>
+          router.push(`/dashboard/cli-pedidos/detalle/${orderId}`)
+        }
       />
     </>
   );

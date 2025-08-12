@@ -1,10 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { History } from 'lucide-react';
-import type { OrderAdminDetailResponse } from '../../types/order.type';
+import type {
+  OrderAdminDetailResponse,
+  OrderClientDetailResponse,
+} from '../../types/order.type';
 import { getActionLabel } from '../../utils/orderUtils';
 
 interface OrderHistoryProps {
-  order: OrderAdminDetailResponse;
+  order: OrderAdminDetailResponse | OrderClientDetailResponse;
 }
 
 export function OrderHistory({ order }: OrderHistoryProps) {

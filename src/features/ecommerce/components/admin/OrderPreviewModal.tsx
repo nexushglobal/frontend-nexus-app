@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { OrderAdminItem } from '../../types/order.type';
@@ -18,6 +19,7 @@ interface OrderPreviewModalProps {
   order: OrderAdminItem | null;
   isOpen: boolean;
   onClose: () => void;
+  onViewDetail?: (orderId: number) => void;
 }
 
 const getStatusBadgeVariant = (status: string) => {
@@ -62,13 +64,18 @@ export function OrderPreviewModal({
   order,
   isOpen,
   onClose,
+  onViewDetail,
 }: OrderPreviewModalProps) {
   const router = useRouter();
 
   if (!order) return null;
 
   const handleViewDetail = () => {
-    router.push(`/dashboard/fac-pedidos/detalle/${order.id}`);
+    if (onViewDetail) {
+      onViewDetail(order.id);
+    } else {
+      router.push(`/dashboard/fac-pedidos/detalle/${order.id}`);
+    }
     onClose();
   };
 
@@ -116,7 +123,7 @@ export function OrderPreviewModal({
                 <div>
                   <p className="text-sm text-muted-foreground">Monto total</p>
                   <p className="font-medium text-lg">
-                    ${order.totalAmount.toLocaleString()}
+                    {formatCurrency(order.totalAmount, 'PEN')}
                   </p>
                 </div>
                 <div>
@@ -155,14 +162,15 @@ export function OrderPreviewModal({
                       </div>
                       <div className="text-right">
                         <p className="font-medium">
-                          {producto.Cantidad} x $
-                          {producto.Precio.toLocaleString()}
+                          {producto.Cantidad} x{' '}
+                          {formatCurrency(producto.Precio, 'PEN')}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Total: $
-                          {(
-                            producto.Cantidad * producto.Precio
-                          ).toLocaleString()}
+                          Total:{' '}
+                          {formatCurrency(
+                            producto.Cantidad * producto.Precio,
+                            'PEN',
+                          )}
                         </p>
                       </div>
                     </div>

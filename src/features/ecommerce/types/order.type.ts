@@ -31,6 +31,9 @@ export interface OrderBase extends Client {
 export interface OrderAdminItem extends OrderBase {
   metadata: Metadata;
 }
+export interface OrderClientItem extends OrderBase {
+  metadata: Metadata;
+}
 
 export interface OrderDetails {
   id: string;
@@ -65,4 +68,13 @@ export interface Metadata {
 
 export interface OrderAdminResponse extends PaginationMeta {
   items: OrderAdminItem[];
+}
+
+export interface OrderClientResponse extends PaginationMeta {
+  items: OrderClientItem[];
+}
+
+export interface OrderClientDetailResponse extends OrderBase {
+  orderDetails: OrderDetails[];
+  orderHistory: OrderHistory[];
 }

@@ -1,10 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { Package } from 'lucide-react';
-import type { OrderAdminDetailResponse } from '../../types/order.type';
+import type {
+  OrderAdminDetailResponse,
+  OrderClientDetailResponse,
+} from '../../types/order.type';
 
 interface OrderProductDetailsProps {
-  order: OrderAdminDetailResponse;
+  order: OrderAdminDetailResponse | OrderClientDetailResponse;
 }
 
 export function OrderProductDetails({ order }: OrderProductDetailsProps) {
@@ -35,13 +39,13 @@ export function OrderProductDetails({ order }: OrderProductDetailsProps) {
                         Precio Unit.:
                       </span>
                       <span className="ml-2 font-medium">
-                        ${detail.price.toLocaleString()}
+                        {formatCurrency(detail.price, 'PEN')}
                       </span>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Subtotal:</span>
                       <span className="ml-2 font-medium">
-                        ${(detail.price * detail.quantity).toLocaleString()}
+                        {formatCurrency(detail.price * detail.quantity, 'PEN')}
                       </span>
                     </div>
                   </div>

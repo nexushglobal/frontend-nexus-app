@@ -1,9 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { Calendar, Clock, ShoppingBag } from 'lucide-react';
-import type { OrderAdminDetailResponse } from '../../types/order.type';
+import type {
+  OrderAdminDetailResponse,
+  OrderClientDetailResponse,
+} from '../../types/order.type';
 
 interface OrderGeneralInfoProps {
-  order: OrderAdminDetailResponse;
+  order: OrderAdminDetailResponse | OrderClientDetailResponse;
 }
 
 export function OrderGeneralInfo({ order }: OrderGeneralInfoProps) {
@@ -26,7 +30,7 @@ export function OrderGeneralInfo({ order }: OrderGeneralInfoProps) {
           <div className="space-y-1">
             <p className="text-sm font-medium text-muted-foreground">Total</p>
             <p className="text-lg font-semibold">
-              ${order.totalAmount.toLocaleString()}
+              {formatCurrency(order.totalAmount, 'PEN')}
             </p>
           </div>
         </div>
