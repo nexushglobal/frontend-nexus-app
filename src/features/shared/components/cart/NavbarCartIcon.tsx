@@ -3,14 +3,14 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/context/CartStore';
+import { useCartUIStore } from '@/features/shared/stores/cart-ui.store';
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
 import { CartSheet } from './CartSheet';
 
 export default function NavbarCartIcon() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const { itemCount } = useCartStore();
+  const { isOpen, setOpen } = useCartUIStore();
 
   return (
     <>
@@ -23,7 +23,7 @@ export default function NavbarCartIcon() {
           variant="ghost"
           size="icon"
           className="relative w-10 h-10 rounded-full"
-          onClick={() => setIsCartOpen(true)}
+          onClick={() => setOpen(true)}
         >
           <ShoppingCart size={20} className="text-muted-foreground" />
 
@@ -55,8 +55,7 @@ export default function NavbarCartIcon() {
           )}
         </Button>
       </motion.div>
-
-      <CartSheet open={isCartOpen} onOpenChange={setIsCartOpen} />
+      <CartSheet open={isOpen} onOpenChange={setOpen} />
     </>
   );
 }

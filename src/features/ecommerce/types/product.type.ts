@@ -83,3 +83,18 @@ interface BaseClientProduct {
   priceOff: number | null;
   category: BaseCategory;
 }
+
+export interface ProductClient extends BaseClientProduct {
+  mainImage: string;
+}
+
+export interface ProductClientResponse extends PaginationMeta {
+  items: ProductClient[];
+}
+
+export interface ProductClientDetail extends BaseClientProduct {
+  description: string;
+  composition: string;
+  benefits: string[];
+  images: ProductImage[];
+}

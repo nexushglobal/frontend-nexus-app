@@ -12,12 +12,14 @@ tenemos la vista para admin (FAC) que a su vez tiene los siguientes modulos
 
 tenemos la vista para usuario (CLI) que a su vez tiene los siguientes modulos
 - Listado de ordenes (ya lo hicimos) -> /dashboard/(cliente)/cli-pedidos
-- Detalle de orden (pendiente) -> /dashboard/(cliente)/cli-pedidos/detalle/:id
+- Detalle de orden (ya lo hicimos) -> /dashboard/(cliente)/cli-pedidos/detalle/:id
+- Listado de productos (ya lo hicimos) -> /dashboard/(cliente)/cli-tienda
+- Detalle de producto (ya lo hicimos) -> /dashboard/(cliente)/cli-tienda/detalle/:id
+- Pagina de carrito (pendiente) -> /dashboard/(cliente)/cli-tienda/carrito
 
-DETALLE DE ORDEN PARA USUARIO (CLI)
-1. lo primero que tenemos que hacer en consumir la api del service getClientOrderDetails en el cual se consume en el client que se encuentra en src/features/ecommerce/service/orderService.ts
-2. guiarte en la implementacion de Detalle de orden  -> /dashboard/(facturacion)/fac-pedidos/detalle/:id
-3. no es necesario tener una mostrar info del usuario
+PAGINA DE CARRITO (CLI)
+1. listar todos los productos del carrito
+2. Que haya un  boton procesar venta que por ahora solo muestre un alert de "procesar venta"
 
 - usar los componentes de shared si es necesario
 - mantener los colores del Proyecto de styles.css

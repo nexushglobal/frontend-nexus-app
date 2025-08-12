@@ -1,6 +1,8 @@
 import { api } from '@/features/shared/services/api';
 import type {
   ProductAdminResponse,
+  ProductClientDetail,
+  ProductClientResponse,
   ProductDetailAdmin,
   StockProductHistoryResponse,
 } from '../types/product.type';
@@ -33,5 +35,17 @@ export class ProductService {
     return api.get<ProductAdminResponse>('/api/products/clients/list', {
       params,
     });
+  }
+
+  static async getClientListProducts(
+    params: Record<string, string | number | boolean | undefined | null>, //name categoryId y params de pagination limit y page
+  ): Promise<ProductClientResponse> {
+    return api.get<ProductClientResponse>('/api/products/clients/list', {
+      params,
+    });
+  }
+
+  static async getClientProduct(id: number): Promise<ProductClientDetail> {
+    return api.get<ProductClientDetail>(`/api/products/${id}/client`);
   }
 }
