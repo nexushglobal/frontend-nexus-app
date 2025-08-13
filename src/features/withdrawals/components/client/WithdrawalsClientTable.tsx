@@ -10,20 +10,20 @@ import {
 import { ColumnDef } from '@tanstack/react-table';
 import { Eye, Info } from 'lucide-react';
 import Link from 'next/link';
-import { WithdrawalAdmin } from '../../types/withdrawals.types';
+import { WithdrawalClient } from '../../types/withdrawals.types';
 
-interface WithdrawalsAdminTableProps {
-  data: WithdrawalAdmin[];
+interface WithdrawalsClientTableProps {
+  data: WithdrawalClient[];
   isLoading?: boolean;
-  onOpenSummary: (withdrawal: WithdrawalAdmin) => void;
+  onOpenSummary: (withdrawal: WithdrawalClient) => void;
 }
 
-export function WithdrawalsAdminTable({
+export function WithdrawalsClientTable({
   data,
   isLoading,
   onOpenSummary,
-}: WithdrawalsAdminTableProps) {
-  const columns: ColumnDef<WithdrawalAdmin>[] = [
+}: WithdrawalsClientTableProps) {
+  const columns: ColumnDef<WithdrawalClient>[] = [
     {
       accessorKey: 'id',
       header: 'ID',
@@ -51,13 +51,13 @@ export function WithdrawalsAdminTable({
       cell: ({ row }) => <StatusBadge status={row.original.status} />,
     },
     {
-      accessorKey: 'user',
-      header: 'Usuario',
+      accessorKey: 'bankName',
+      header: 'Banco',
       cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="font-medium">{row.original.user.name}</span>
+          <span className="font-medium">{row.original.bankName}</span>
           <span className="text-xs text-muted-foreground">
-            {row.original.user.email}
+            {row.original.accountNumber}
           </span>
         </div>
       ),
@@ -75,7 +75,7 @@ export function WithdrawalsAdminTable({
             <Info className="h-4 w-4 mr-1" /> Resumen
           </Button>
           <Link
-            href={`/dashboard/(facturacion)/fac-retiros/detalle/${row.original.id}`}
+            href={`/dashboard/(cliente)/cli-mis-retiros/detalle/${row.original.id}`}
           >
             <Button variant="default" size="sm">
               <Eye className="h-4 w-4 mr-1" /> Detalle

@@ -1,6 +1,6 @@
 import { PaginationMeta } from '@/features/shared/types/api.types';
 
-export interface Withdrawal {
+export interface WithdrawalBase {
   id: number;
   amount: number;
   status: 'APPROVED' | 'REJECTED' | 'PENDING';
@@ -8,6 +8,10 @@ export interface Withdrawal {
   reviewedAt?: string;
   bankName: string;
   accountNumber: string;
+  metadata: Record<string, any>;
+}
+
+export interface WithdrawalAdmin extends WithdrawalBase {
   user: {
     id: number;
     name: string;
@@ -18,13 +22,23 @@ export interface Withdrawal {
     name: string;
     email: string;
   };
-  metadata: Record<string, any>;
 }
 
-export interface WithdrawalResponse {
-  items: Withdrawal[];
+export interface WithdrawalClient extends WithdrawalBase {
+  userId: number;
+  userEmail: string;
+  userName: string;
+  rejectionReason?: null | string;
+  reviewedById: number;
+  reviewedByEmail: string;
+  cci: string;
+  isArchived: boolean;
 }
 
 export interface WithdrawalAdminResponse extends PaginationMeta {
-  items: Withdrawal[];
+  items: WithdrawalAdmin[];
+}
+
+export interface WithdrawalClientResponse extends PaginationMeta {
+  items: WithdrawalClient[];
 }

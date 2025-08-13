@@ -2,20 +2,25 @@ MODULO DE RETIRO (withdrawals)
 
 EL MODULO DE RETIRO NOS PERMITIRA ADMINISTRAR TANTO LOS RETIROS DE FONDOS DE LOS USUARIOS (role=CLI) PASANDO POR LA APROVACION Y GESTION DE LOS ADMINASTRODORES (rol=FAC)
 tenemos la vista para admin (FAC) que a su vez tiene los siguientes modulos
-- Listado de retiros (pendiente) -> /dashboard/(facturacion)/fac-retiros
+- Listado de retiros (ya lo hicimos) -> /dashboard/(facturacion)/fac-retiros
 - Detalle de retiro (pendiente) -> /dashboard/(facturacion)/fac-retiros/detalle/:id
 
 tenemos la vista para usuario (CLI) que a su vez tiene los siguientes modulos
 - Listado de retiros (pendiente) -> /dashboard/(cliente)/cli-mis-retiros
 - Detalle de retiro (pendiente) -> /dashboard/(cliente)/cli-mis-retiros/detalle/:id
 
-DETALLE DE RETIRO (CLI)
-1. Lo primero es utilizar el servicio de WithdrawalService que se consulta desde el cliente se encuentra en src/features/withdrawals/services/withdrawalService.ts
+
+LISTADO DE RETIROS(CLI)
+1. Lo primero es utilizar el servicio de getClientWithdrawals que se consulta desde el cliente se encuentra en src/features/withdrawals/services/withdrawalService.ts
 2. Implementar la logica para mostar la tabla con su paginacion tomar de referencia el listado de ordenes src/app/dashboard/(cliente)/cli-pedidos/page.tsx
 3. Usar los componentes de shared que ya estan creados para la tabla y paginacion
 4. Debe haber dos acciones, una para ver un resumen en un modal donde se mostrara la metadata y las principales atrivutos, tendra dos obciones cerrar o ver detalle que redirigira a /dashboard/(cliente)/cli-mis-retiros/detalle/:id, la otra accion es directamente redigir al detalle
 5. Solo realizar la pagina del listado, el detalle lo dejaremos para mas adelante
 6. Recuerda que el page solo va logica de metadata, y todo lo demas en feature de withdrawals
+7. Esta vista es muy parecida a la vista de pedidos para admin /dashboard/(facturacion)/fac-retiros
+8. Recuerda que los filtros disponibles son  status, startDate, endDate, name ,email mas los de paginacion (limit y page) estos se deben hacer con params
+
+
 
 - usar los componentes de shared si es necesario
 - mantener los colores del Proyecto de styles.css

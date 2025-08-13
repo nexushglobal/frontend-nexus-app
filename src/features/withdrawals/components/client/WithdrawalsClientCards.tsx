@@ -9,14 +9,14 @@ import {
 } from '@/features/shared/utils/formatCurrency';
 import { Eye, Info } from 'lucide-react';
 import Link from 'next/link';
-import { WithdrawalAdmin } from '../../types/withdrawals.types';
+import { WithdrawalClient } from '../../types/withdrawals.types';
 
-export function WithdrawalsAdminCards({
+export function WithdrawalsClientCards({
   data,
   onOpenSummary,
 }: {
-  data: WithdrawalAdmin[];
-  onOpenSummary: (w: WithdrawalAdmin) => void;
+  data: WithdrawalClient[];
+  onOpenSummary: (w: WithdrawalClient) => void;
 }) {
   if (!data?.length) return null;
 
@@ -39,10 +39,10 @@ export function WithdrawalsAdminCards({
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-xs text-muted-foreground">Usuario</div>
-                <div className="font-medium">{w.user.name}</div>
+                <div className="text-xs text-muted-foreground">Banco</div>
+                <div className="font-medium">{w.bankName}</div>
                 <div className="text-xs text-muted-foreground">
-                  {w.user.email}
+                  {w.accountNumber}
                 </div>
               </div>
             </div>
@@ -55,7 +55,7 @@ export function WithdrawalsAdminCards({
                 <Info className="h-4 w-4 mr-1" /> Resumen
               </Button>
               <Link
-                href={`/dashboard/(facturacion)/fac-retiros/detalle/${w.id}`}
+                href={`/dashboard/(cliente)/cli-mis-retiros/detalle/${w.id}`}
               >
                 <Button size="sm">
                   <Eye className="h-4 w-4 mr-1" /> Detalle

@@ -6,17 +6,17 @@ import { PageHeader } from '@/features/shared/components/common/PageHeader';
 import { TablePagination } from '@/features/shared/components/table/TablePagination';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { useAdminWithdrawals } from '../../hooks/useWithdrawalsAdminQuery';
-import { useWithdrawalsAdminFiltersStore } from '../../stores/withdrawals-admin-filters.store';
-import { WithdrawalAdmin } from '../../types/withdrawals.types';
-import { WithdrawalsAdminCards } from '../admin/WithdrawalsAdminCards';
-import { WithdrawalsAdminFilters } from '../admin/WithdrawalsAdminFilters';
-import { WithdrawalsAdminTable } from '../admin/WithdrawalsAdminTable';
-import { WithdrawalSummaryModal } from '../admin/WithdrawalSummaryModal';
+import { useClientWithdrawals } from '../../hooks/useWithdrawalsClientQuery';
+import { useWithdrawalsClientFiltersStore } from '../../stores/withdrawals-client-filters.store';
+import { WithdrawalClient } from '../../types/withdrawals.types';
+import { WithdrawalClientSummaryModal } from '../client/WithdrawalClientSummaryModal';
+import { WithdrawalsClientCards } from '../client/WithdrawalsClientCards';
+import { WithdrawalsClientFilters } from '../client/WithdrawalsClientFilters';
+import { WithdrawalsClientTable } from '../client/WithdrawalsClientTable';
 
-export default function AdminWithdrawalsPage() {
-  const { filters, setFilter, setFilters } = useWithdrawalsAdminFiltersStore();
-  const [selected, setSelected] = useState<WithdrawalAdmin | null>(null);
+export default function ClientWithdrawalsPage() {
+  const { filters, setFilter, setFilters } = useWithdrawalsClientFiltersStore();
+  const [selected, setSelected] = useState<WithdrawalClient | null>(null);
   const [open, setOpen] = useState(false);
 
   const queryParams = useMemo(() => {
@@ -34,7 +34,7 @@ export default function AdminWithdrawalsPage() {
     return params;
   }, [filters]);
 
-  const { data, isLoading, error, isError } = useAdminWithdrawals(queryParams);
+  const { data, isLoading, error, isError } = useClientWithdrawals(queryParams);
 
   const handlePageChange = (page: number) => {
     setFilter('page', page);
@@ -44,7 +44,7 @@ export default function AdminWithdrawalsPage() {
     setFilters({ limit, page: 1 });
   };
 
-  const handleOpenSummary = (w: WithdrawalAdmin) => {
+  const handleOpenSummary = (w: WithdrawalClient) => {
     setSelected(w);
     setOpen(true);
   };
@@ -52,8 +52,8 @@ export default function AdminWithdrawalsPage() {
   return (
     <div className="container">
       <PageHeader
-        title="Retiros"
-        subtitle="Listado de solicitudes de retiro"
+        title="Mis Retiros"
+        subtitle="Historial de solicitudes de retiro"
         className="mb-6"
         variant="gradient"
       />
@@ -61,7 +61,7 @@ export default function AdminWithdrawalsPage() {
       <div className="space-y-6">
         <Card className="shadow-sm">
           <CardContent>
-            <WithdrawalsAdminFilters isLoading={isLoading} />
+            <WithdrawalsClientFilters isLoading={isLoading} />
           </CardContent>
         </Card>
 
@@ -91,7 +91,7 @@ export default function AdminWithdrawalsPage() {
         {data && (
           <>
             <div className="hidden md:block">
-              <WithdrawalsAdminTable
+              <WithdrawalsClientTable
                 data={data.items}
                 isLoading={isLoading}
                 onOpenSummary={handleOpenSummary}
@@ -99,7 +99,7 @@ export default function AdminWithdrawalsPage() {
             </div>
 
             <div className="md:hidden">
-              <WithdrawalsAdminCards
+              <WithdrawalsClientCards
                 data={data.items}
                 onOpenSummary={handleOpenSummary}
               />
@@ -119,7 +119,7 @@ export default function AdminWithdrawalsPage() {
         )}
       </div>
 
-      <WithdrawalSummaryModal
+      <WithdrawalClientSummaryModal
         open={open}
         onOpenChange={setOpen}
         withdrawal={selected}

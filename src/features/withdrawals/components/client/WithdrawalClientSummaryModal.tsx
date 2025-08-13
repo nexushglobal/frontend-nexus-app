@@ -21,16 +21,16 @@ import {
   formatDate,
 } from '@/features/shared/utils/formatCurrency';
 import Link from 'next/link';
-import { WithdrawalAdmin } from '../../types/withdrawals.types';
+import { WithdrawalClient } from '../../types/withdrawals.types';
 
-export function WithdrawalSummaryModal({
+export function WithdrawalClientSummaryModal({
   open,
   onOpenChange,
   withdrawal,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
-  withdrawal: WithdrawalAdmin | null;
+  withdrawal: WithdrawalClient | null;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -80,19 +80,6 @@ export function WithdrawalSummaryModal({
                   {withdrawal.accountNumber}
                 </div>
               </div>
-              {withdrawal.reviewedBy && (
-                <div>
-                  <div className="text-xs text-muted-foreground">
-                    Revisado por
-                  </div>
-                  <div className="font-medium">
-                    {withdrawal.reviewedBy.name}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {withdrawal.reviewedBy.email}
-                  </div>
-                </div>
-              )}
             </div>
 
             {withdrawal.metadata &&
@@ -133,7 +120,7 @@ export function WithdrawalSummaryModal({
               </Button>
               {withdrawal && (
                 <Link
-                  href={`/dashboard/(facturacion)/fac-retiros/detalle/${withdrawal.id}`}
+                  href={`/dashboard/(cliente)/cli-mis-retiros/detalle/${withdrawal.id}`}
                 >
                   <Button>Ver Detalle</Button>
                 </Link>
