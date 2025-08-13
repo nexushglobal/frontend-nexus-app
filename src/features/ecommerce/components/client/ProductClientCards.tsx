@@ -77,7 +77,7 @@ function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
         <div className="absolute top-2 right-2">
-          <Badge className="bg-primary text-white font-medium shadow-sm">
+          <Badge className="bg-primary/40   font-medium shadow-sm">
             {product.category.name}
           </Badge>
         </div>
@@ -98,7 +98,7 @@ function ProductCard({ product }: ProductCardProps) {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Link
-            href={`/dashboard/(cliente)/cli-tienda/detalle/${product.id}`}
+            href={`/dashboard/cli-tienda/detalle/${product.id}`}
             className="w-full"
           >
             <Button variant="outline" className="w-full h-9">

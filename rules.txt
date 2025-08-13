@@ -1,25 +1,21 @@
-MODULO DE ECOMMERCE
+MODULO DE RETIRO (withdrawals)
 
-EL MODULO ECOMMERCE NOS PERMITIRA ADMINISTRAR TANTO LAS ORDENES COMO LOS PRODUCTOS DE LA PLATAFORMA
-se divide en 2 grandes secciones la vista para admin con el rol de FAC y la vista para usuarios con el rol de CLI
-
+EL MODULO DE RETIRO NOS PERMITIRA ADMINISTRAR TANTO LOS RETIROS DE FONDOS DE LOS USUARIOS (role=CLI) PASANDO POR LA APROVACION Y GESTION DE LOS ADMINASTRODORES (rol=FAC)
 tenemos la vista para admin (FAC) que a su vez tiene los siguientes modulos
-- Listado de productos con filtros y paginacion (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos
-- Crear product (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos/nuevo
-- Detalle de producto (ya lo hicimos) -> /dashboard/(facturacion)/fac-ecommerce/productos/detalle/:id
-- Listado de ordenes con filtros y paginacion (ya lo hicimos) -> /dashboard/(facturacion)/fac-pedidos
-- Detalle de orden (ya lo hicimos) -> /dashboard/(facturacion)/fac-pedidos/detalle/:id
+- Listado de retiros (pendiente) -> /dashboard/(facturacion)/fac-retiros
+- Detalle de retiro (pendiente) -> /dashboard/(facturacion)/fac-retiros/detalle/:id
 
 tenemos la vista para usuario (CLI) que a su vez tiene los siguientes modulos
-- Listado de ordenes (ya lo hicimos) -> /dashboard/(cliente)/cli-pedidos
-- Detalle de orden (ya lo hicimos) -> /dashboard/(cliente)/cli-pedidos/detalle/:id
-- Listado de productos (ya lo hicimos) -> /dashboard/(cliente)/cli-tienda
-- Detalle de producto (ya lo hicimos) -> /dashboard/(cliente)/cli-tienda/detalle/:id
-- Pagina de carrito (pendiente) -> /dashboard/(cliente)/cli-tienda/carrito
+- Listado de retiros (pendiente) -> /dashboard/(cliente)/cli-mis-retiros
+- Detalle de retiro (pendiente) -> /dashboard/(cliente)/cli-mis-retiros/detalle/:id
 
-PAGINA DE CARRITO (CLI)
-1. listar todos los productos del carrito
-2. Que haya un  boton procesar venta que por ahora solo muestre un alert de "procesar venta"
+DETALLE DE RETIRO (CLI)
+1. Lo primero es utilizar el servicio de WithdrawalService que se consulta desde el cliente se encuentra en src/features/withdrawals/services/withdrawalService.ts
+2. Implementar la logica para mostar la tabla con su paginacion tomar de referencia el listado de ordenes src/app/dashboard/(cliente)/cli-pedidos/page.tsx
+3. Usar los componentes de shared que ya estan creados para la tabla y paginacion
+4. Debe haber dos acciones, una para ver un resumen en un modal donde se mostrara la metadata y las principales atrivutos, tendra dos obciones cerrar o ver detalle que redirigira a /dashboard/(cliente)/cli-mis-retiros/detalle/:id, la otra accion es directamente redigir al detalle
+5. Solo realizar la pagina del listado, el detalle lo dejaremos para mas adelante
+6. Recuerda que el page solo va logica de metadata, y todo lo demas en feature de withdrawals
 
 - usar los componentes de shared si es necesario
 - mantener los colores del Proyecto de styles.css

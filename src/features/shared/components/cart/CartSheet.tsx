@@ -44,7 +44,7 @@ export function CartSheet({ open, onOpenChange }: CartSheetProps) {
 
   const handleCheckout = () => {
     onOpenChange(false);
-    router.push('/tienda/carrito');
+    router.push('/dashboard/cli-tienda/carrito');
   };
 
   const handleClearCart = () => {
