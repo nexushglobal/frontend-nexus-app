@@ -119,9 +119,6 @@ class ApiClient {
     // Solo establecer Content-Type si no es FormData
     if (!options.isFormData && !(options.body instanceof FormData)) {
       (headers as Record<string, string>)['Content-Type'] = 'application/json';
-    } else if (options.isFormData) {
-      (headers as Record<string, string>)['Content-Type'] =
-        'multipart/form-data';
     }
 
     // Agregar autenticación si no se omite explícitamente
