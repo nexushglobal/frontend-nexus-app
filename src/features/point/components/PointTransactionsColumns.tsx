@@ -71,7 +71,7 @@ function ActionsColumn({ transaction }: ActionsColumnProps) {
         title="Ver detalle"
       >
         <Link
-          href={`/dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/${transaction.id}`}
+          href={`/dashboard/cli-puntos/historial-puntos/detalle-transaccion/${transaction.id}`}
         >
           <Eye className="h-4 w-4" />
         </Link>

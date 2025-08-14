@@ -225,7 +225,7 @@ export function PointTransactionsCards({ data }: PointTransactionsCardsProps) {
                     className="flex items-center gap-2"
                   >
                     <Link
-                      href={`/dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/${transaction.id}`}
+                      href={`/dashboard/cli-puntos/historial-puntos/detalle-transaccion/${transaction.id}`}
                     >
                       <Eye className="h-4 w-4" />
                       Detalle

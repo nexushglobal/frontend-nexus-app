@@ -1,44 +1,30 @@
-# 📋 ESPECIFICACIÓN TÉCNICA: VISTA "MIS PUNTOS"
+# 📋 ESPECIFICACIÓN TÉCNICA: VISTA "Volúmenes Semanales"
 
 ## 🎯 OBJETIVO
 
-Implementar la vista "Mis Puntos" que muestra el resumen de puntos del usuario y su historial de transacciones de la plataforma.
+Implementar la vista "Volúmenes Semanales" que muestra la información detallada de los volúmenes semanales de puntos del usuario.
 
 ## 📁 RUTA Y VISTA A IMPLEMENTAR
 
-### Vista: "Mis Puntos"
+### Vista: "Volúmenes Semanales"
 
-- **Ruta**: `/dashboard/(cliente)/cli-puntos/historial-puntos`
-- **Título**: "Mis Puntos"
+- **Ruta**: `/dashboard/(cliente)/cli-puntos/volumenes-semanales`
+- **Título**: "Volúmenes Semanales"
 - **Estado**: Pendiente de implementación
 
 ---
 
 ## 🔌 INTEGRACIÓN DE DATOS
 
-### Server-Side Data Fetching
-
-```typescript
-// Action a consumir (Server Component)
-Ubicación: src/features/point/action/get-points.action.ts
-Función: getUserPointsAction
-Uso: Obtener resumen de puntos del usuario para mostrar en cards superiores
-```
-
 ### Client-Side Data Fetching
 
 ```typescript
 // Service a consumir (Client Component)
-Ubicación: src/features/point/services/point.service.ts
-Función: getUserTransactions
-Uso: Obtener historial de transacciones con filtros y paginación
+Ubicación: src/features/point/services/weekly.service.ts
+Función: getWeeklyVolumes
+Uso: Obtener volúmenes semanales de puntos
 
 Parámetros disponibles:
-- userId: string
-- type: 'BINARY_COMMISSION' | 'DIRECT_BONUS' | 'WITHDRAWAL'
-- status: 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'FAILED'
-- startDate: string (ISO date)
-- endDate: string (ISO date)
 - limit: number (paginación)
 - page: number (paginación)
 ```
@@ -47,27 +33,14 @@ Parámetros disponibles:
 
 ## 🎨 ESPECIFICACIONES DE UI/UX
 
-### Sección Superior - Resumen de Puntos
+### Historial de volumenes semanas
 
-- **Fuente de datos**: `getUserPointsAction`
-- **Diseño**: Cards individuales por cada tipo de punto
-- **Estilo**: Diseño atractivo y moderno
-- **Responsivo**: Desktop y mobile
-
-### Sección Inferior - Historial de Transacciones
-
-- **Trigger**: Botón "Mostrar historial de transacciones"
-- **Fuente de datos**: `getUserTransactions`
+- **Fuente de datos**: `getWeeklyVolumes` especificamente listPayments
 - **Visualización**:
   - **Desktop**: Tabla con componentes compartidos
   - **Mobile**: Cards responsivas
 - **Filtros implementar**:
-  - Tipo de transacción (type)
-  - Estado (status)
-  - Rango de fechas (startDate, endDate)
   - Paginación (limit, page)
-
----
 
 ## 📋 REQUERIMIENTOS TÉCNICOS
 
@@ -77,23 +50,22 @@ Parámetros disponibles:
 
    - Usar componentes de tabla existentes (`/shared`)
    - Usar componentes de paginación existentes (`/shared`)
-   - Referencia: `src/app/dashboard/(cliente)/cli-mis-pagos/page.tsx`
+   - Referencia: `src/app/dashboard/(cliente)/cli-puntos/historial-puntos/page.tsx`
 
 2. **Constantes y Tipos**:
 
    ```typescript
    // Crear archivo: src/features/point/constants/index.ts
-   export const TRANSACTION_TYPES = {
-     BINARY_COMMISSION: 'Comisión Binaria',
-     DIRECT_BONUS: 'Bono Directo',
-     WITHDRAWAL: 'Retiro',
+
+   export const VOLUME_SITE = {
+     LEFT: 'Izquierda',
+     RIGHT: 'Derecha',
    };
 
-   export const TRANSACTION_STATUS = {
+   export const VOLUME_STATUS = {
      PENDING: 'Pendiente',
-     COMPLETED: 'Completado',
+     PROCESSED: 'Procesado',
      CANCELLED: 'Cancelado',
-     FAILED: 'Fallido',
    };
    ```
 
@@ -110,14 +82,7 @@ Parámetros disponibles:
 - **Implementación**: Lógica en el cliente
 - **Componentes**: Usar shared components existentes
 - **Estado**: Manejar page y limit en estado del componente
-- **Referencia**: Seguir patrón de `cli-mis-pagos`
-- **Se debe crear un componente donde solo pondremos las columnas de la tabla**
-
-### Filtros
-
-- **Tipos de filtro**: Dropdown, date pickers, status selector
-- **Persistencia**: Mantener filtros en URL params
-- **Reset**: Opción para limpiar todos los filtros
+- **Referencia**: Seguir patrón de `historial-puntos`
 
 ### Responsividad
 
@@ -131,10 +96,7 @@ Parámetros disponibles:
 
 ### Funcionales
 
-- [ ] Resumen de puntos carga desde `getUserPointsAction` y se muestra en cards atractivas
-- [ ] Botón "Mostrar historial de transacciones" funciona correctamente
-- [ ] Historial se carga desde `getUserTransactions` con paginación
-- [ ] Todos los filtros (type, status, fechas) funcionan correctamente
+- [ ] Historial de volumenes `getWeeklyVolumes` con paginación
 - [ ] Tabla responsive (desktop) y cards (mobile) implementadas
 
 ### Técnicos
@@ -143,7 +105,7 @@ Parámetros disponibles:
 - [ ] Componentes reutilizan shared components para tabla y paginación
 - [ ] Constantes creadas para traducir tipos y status
 - [ ] Código TypeScript con tipado correcto
-- [ ] Sigue el patrón de `cli-mis-pagos/page.tsx`
+- [ ] Sigue el patrón de `historial-puntos/page.tsx`
 
 ### UI/UX
 
@@ -156,10 +118,9 @@ Parámetros disponibles:
 
 ## 📚 REFERENCIAS Y RECURSOS
 
-- **Patrón de referencia**: `src/app/dashboard/(cliente)/cli-mis-pagos/page.tsx`
+- **Patrón de referencia**: `src/app/dashboard/(cliente)/cli-puntos/historial-puntos/page.tsx`
 - **Componentes shared**: `/src/shared/components` (tabla y paginación)
 - **Estilos globales**: `src/styles/globals.css`
-- **Action existente**: `src/features/point/action/get-points.action.ts`
 - **Service existente**: `src/features/point/services/point.service.ts`
 
 ---

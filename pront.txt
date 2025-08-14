@@ -44,3 +44,19 @@ II. Después debajo debe haber un boton de mostrar historial de transacciones el
 * mantener los colores del Proyecto de src/styles/globals.css
 * mantener la estructura que vengo manejando usando page como puente al feature donde esta todos los componentes y logica
 * crear un archivo de constans para tipos o status haciendo la traduccion correspondiente
+
+
+///
+
+Quiero que tomes de referencia src/app/dashboard/(cliente)/cli-puntos/historial-puntos/page.tsx
+
+para crear la vista de puntos de lote "Puntos Lote" en la ruta /dashboard/(cliente)/cli-puntos/historial-puntos-lote
+
+lo que cambia es la consulta a los datos, se tiene que usar
+-getUserPointsLotAction server
+-getUserLotTransactions client
+los tipos tambien cambian
+  type: 'LOT_BINARY_COMMISSION' | 'LOT_DIRECT_BONUS' | 'LOT_WITHDRAWAL';
+la tabla ya no tiene metadata por lo que no es necesario
+tampoco debe haber action para redirigir al detalle ya que esto no existe
+el resto se mantiene parecido
