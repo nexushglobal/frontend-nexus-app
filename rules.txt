@@ -1,26 +1,26 @@
-MODULO DE RETIRO (withdrawals)
+MODULO DE MEMBRESIAS (membership)
 
-EL MODULO DE RETIRO NOS PERMITIRA ADMINISTRAR TANTO LOS RETIROS DE FONDOS DE LOS USUARIOS (role=CLI) PASANDO POR LA APROVACION Y GESTION DE LOS ADMINASTRODORES (rol=FAC)
-tenemos la vista para admin (FAC) que a su vez tiene los siguientes modulos
-- Listado de retiros (ya lo hicimos) -> /dashboard/(facturacion)/fac-retiros
-- Detalle de retiro (pendiente) -> /dashboard/(facturacion)/fac-retiros/detalle/:id
+EL MODULO DE MEMBRESIAS NOS PERMITIRA ADMINISTRAR TANTO LAS MEMBRESIAS DE LOS USUARIOS (role=CLI)
 
 tenemos la vista para usuario (CLI) que a su vez tiene los siguientes modulos
-- Listado de retiros (pendiente) -> /dashboard/(cliente)/cli-mis-retiros
-- Detalle de retiro (pendiente) -> /dashboard/(cliente)/cli-mis-retiros/detalle/:id
+- Listado de planes (ya lo hicimos) -> /dashboard/(cliente)/cli-membresias
+- Detalle de plan (ya lo hicimos) -> /dashboard/(cliente)/cli-membresias/planes/:id
+- Detalle de membresia (ya lo hicimos) -> /dashboard/(cliente)/cli-membresias/mi-plan
+- Reconsumo (pendiente) -> /dashboard/(cliente)/cli-membresias/mis-reconsumos
 
 
-LISTADO DE RETIROS(CLI)
-1. Lo primero es utilizar el servicio de getClientWithdrawals que se consulta desde el cliente se encuentra en src/features/withdrawals/services/withdrawalService.ts
-2. Implementar la logica para mostar la tabla con su paginacion tomar de referencia el listado de ordenes src/app/dashboard/(cliente)/cli-pedidos/page.tsx
-3. Usar los componentes de shared que ya estan creados para la tabla y paginacion
-4. Debe haber dos acciones, una para ver un resumen en un modal donde se mostrara la metadata y las principales atrivutos, tendra dos obciones cerrar o ver detalle que redirigira a /dashboard/(cliente)/cli-mis-retiros/detalle/:id, la otra accion es directamente redigir al detalle
-5. Solo realizar la pagina del listado, el detalle lo dejaremos para mas adelante
-6. Recuerda que el page solo va logica de metadata, y todo lo demas en feature de withdrawals
-7. Esta vista es muy parecida a la vista de pedidos para admin /dashboard/(facturacion)/fac-retiros
-8. Recuerda que los filtros disponibles son  status, startDate, endDate, name ,email mas los de paginacion (limit y page) estos se deben hacer con params
-
-
+DETALLE DE MEMBRESIA(CLI)
+1. Lo primero es utilizar el servicio de getReconsumptionDetail que se consulta desde el cliente se encuentra en src/features/membership/services/membershipService.ts
+2. la informacion se debe dividir en dos partes
+-primera parte :
+   -  si canReconsume es true debe por ahora mostrar un alert "Puedes reconsumir tu membresía"
+   -  mostrar la info de autoRenewal, al darle editar debe abrir un modal donde se pueda editar, por ahora la funcion que imprima un console log
+   -  mostar el precio reconsumptionAmount
+ -segunda parte:
+   - mostrar en una tabla infoReconsumptions
+   - Usar los componentes de shared que ya estan creados para la tabla y paginacion
+   - No considerar filtros adicionales solo page y limit que son de paginacion
+   - si tiene paymentDetails debe mostrar un boton que abra un modal donde muestre la info clave valor
 
 - usar los componentes de shared si es necesario
 - mantener los colores del Proyecto de styles.css
