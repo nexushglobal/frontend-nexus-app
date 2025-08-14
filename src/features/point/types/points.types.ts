@@ -1,28 +1,24 @@
-export enum PointTransactionType {
-  BINARY_COMMISSION = 'BINARY_COMMISSION',
-  DIRECT_BONUS = 'DIRECT_BONUS',
-  WITHDRAWAL = 'WITHDRAWAL',
-}
+import { PaginationMeta } from '@/features/shared/types/api.types';
 
-export enum PointTransactionStatus {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED',
-  FAILED = 'FAILED',
-}
-
-export interface Transaction {
+export interface PointTransactionBase {
   id: number;
-  userId: string;
-  userEmail: string;
-  userName: string;
-  type: PointTransactionType;
+  type: 'BINARY_COMMISSION' | 'DIRECT_BONUS' | 'WITHDRAWAL';
   amount: number;
   pendingAmount: number;
   withdrawnAmount: number;
-  status: PointTransactionStatus;
+  status: 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'FAILED';
   isArchived: boolean;
   metadata?: Record<string, unknown>;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; //like "2025-08-11T09:00:00.115Z"
+  updatedAt: string; //like "2025-08-11T09:00:00.115Z"
+}
+
+export interface PointTransactionListResponse extends PaginationMeta {
+  items: PointTransactionBase[];
+}
+
+export interface PointUserResponse {
+  availablePoints: number;
+  totalEarnedPoints: number;
+  totalWithdrawnPoints: number;
 }
