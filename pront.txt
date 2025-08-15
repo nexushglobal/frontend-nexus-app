@@ -1,45 +1,41 @@
 MODULO DE PUNTOS (points)
  Este modulo nos permite gestionar el historial de puntos de un usuario que se divide en las siguientes categorias con sus vistas
  - puntos de la plataforma
-    * /dashboard/(cliente)/cli-puntos/historial-puntos - "Mis Puntos" < Estado=Pendiente >
-    * /dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/:id - "Detalle de Transacción" < Estado=Pendiente >
+    * /dashboard/(cliente)/cli-puntos/historial-puntos - "Mis Puntos" (ya lo hicimos)
+    * /dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/:id - "Detalle de Transacción" (ya lo hicimos)
  - puntos de lote
-    * /dashboard/(cliente)/cli-puntos/historial-puntos-lote - "Puntos Lote" < Estado=Pendiente >
-    * /dashboard/(cliente)/cli-puntos/historial-puntos-lote/detalle-transaccion/:id - "Detalle de Transacción" < Estado=Pendiente >
+    * /dashboard/(cliente)/cli-puntos/historial-puntos-lote - "Puntos Lote" (ya lo hicimos)
  - volumen semanal
-    * /dashboard/(cliente)/cli-puntos/volumenes-semanales - "Volúmenes Semanales" < Estado=Pendiente >
-    * /dashboard/(cliente)/cli-puntos/volumenes-semanales/semana/:id - "Detalle de Transacción" < Estado=Pendiente >
+    * /dashboard/(cliente)/cli-puntos/volumenes-semanales - "Volúmenes Semanales" (ya lo hicimos)
+    * /dashboard/(cliente)/cli-puntos/volumenes-semanales/semana/:id - "Detalle de Transacción" (pendiente)
 
 PUNTOS DE LA PLATAFORMA - "Mis Puntos"
 
 # DATA
-I. Consumir el action de getUserPointsAction
- - Ubicación: src/features/point/action/get-points.action.ts
+I. Consumir el action de getWeeklyVolumeAction pasandole el :id
+ - Ubicación: src/features/point/action/get-weekly.ts
  - Se consumi desde el server
 
-II. Consumir el service de getUserTransactions
- - Ubicación: src/features/point/services/point.service.ts
+II. Consumir el service de getWeeklyVolumeHistory pasandole el :id
+ - Ubicación: src/features/point/services/weekly.service.ts
  - Se consumi desde el client
- - params disponibles: userId, type, status, startDate, endDate y los de paginacion (limit y page)
+ - params disponibles: limit y page
 
 # UI
-I. En la parte superior de la vista se debe mostrar los datos del action getUserPointsAction
+I. En la parte superior de la vista se debe mostrar los datos del action getWeeklyVolumeAction
  - Debe ser una card por cada uno de los datos
  - Debe tener un diseño atractivo
 
-II. Después debajo debe haber un boton de mostrar historial de transacciones el cual consumira el servicio de getUserTransactions
+II. Después debajo debe haber un boton de mostrar historial de volumen el cual consumira el servicio de getWeeklyVolumeHistory
  - Debe mostrar la info en una tabla (desktop) y cards (mobile)
- - Los filtros disponible son de acuerdo al params userId, type, status, startDate, endDate y los de paginacion (limit y page)
- - type: 'BINARY_COMMISSION' | 'DIRECT_BONUS' | 'WITHDRAWAL';
- - status: 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'FAILED';
  - Usar los componentes de shared que ya estan creados para la tabla y paginacion
- - Tener como referencia src/app/dashboard/(cliente)/cli-mis-pagos/page.tsx
+ - Tener como referencia /dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/page.txt
 
 # CONSIDERACIONES
 * Para datos con paginacion
  - implementar la logica de paginacion en el cliente
  - Usar los componentes de shared que ya estan creados para la tabla y paginacion
- - Tener como referencia src/app/dashboard/(cliente)/cli-mis-pagos/page.tsx
+ - Tener como referencia /dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/page.txt
 * usar los componentes de shared si es necesario
 * mantener los colores del Proyecto de src/styles/globals.css
 * mantener la estructura que vengo manejando usando page como puente al feature donde esta todos los componentes y logica
