@@ -2,6 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { PAYMENT_METHODS } from '@/features/point/constants';
+import { PaymentItem } from '@/features/point/types/points.types';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';

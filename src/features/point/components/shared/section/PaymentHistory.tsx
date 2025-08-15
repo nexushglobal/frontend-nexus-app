@@ -51,7 +51,7 @@ export function PaymentHistory({
             <div className="hidden md:block">
               <DataTable
                 columns={paymentColumns}
-                data={transactionDetail.listPayments?.items || []}
+                data={transactionDetail?.listPayments?.items || []}
                 isLoading={isLoading}
                 emptyMessage="No hay pagos registrados para esta transacción"
               />
