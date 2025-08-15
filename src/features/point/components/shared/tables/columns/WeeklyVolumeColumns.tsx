@@ -14,6 +14,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { VOLUME_SITE, VOLUME_STATUS } from '@/features/point/constants';
+import { WeeklyVolume } from '@/features/point/types/weekly.types';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   CalendarDays,
@@ -25,8 +27,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { VOLUME_SITE, VOLUME_STATUS } from '../constants/index';
-import { WeeklyVolume } from '../types/weekly.types';
 
 interface MetadataModalProps {
   isOpen: boolean;

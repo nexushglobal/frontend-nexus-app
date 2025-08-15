@@ -1,8 +1,8 @@
 'use client';
 
+import { WeeklyVolume } from '@/features/point/types/weekly.types';
 import { DataTable } from '@/features/shared/components/table/DataTable';
-import { WeeklyVolume } from '../types/weekly.types';
-import { weeklyVolumeColumns } from './WeeklyVolumeColumns';
+import { weeklyVolumeColumns } from './columns/WeeklyVolumeColumns';
 
 interface WeeklyVolumeTableProps {
   data: WeeklyVolume[];

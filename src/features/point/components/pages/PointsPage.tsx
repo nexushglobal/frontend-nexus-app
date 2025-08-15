@@ -9,10 +9,10 @@ import { useMemo } from 'react';
 import { getUserPointsAction } from '../../action/get-points.action';
 import { useUserTransactions } from '../../hooks/usePointTransactions';
 import { usePointFiltersStore } from '../../stores/point-filters.store';
-import { PointFilters } from '../PointFilters';
-import { PointSummaryCards } from '../PointSummaryCards';
-import { PointTransactionsCards } from '../PointTransactionsCards';
-import { PointTransactionsTable } from '../PointTransactionsTable';
+import { PointSummaryCards } from '../shared/cards/PointSummaryCards';
+import { PointTransactionsCards } from '../shared/cards/PointTransactionsCards';
+import { PointFilters } from '../shared/filters/PointFilters';
+import { PointTransactionsTable } from '../shared/tables/PointTransactionsTable';
 
 interface PointsPageProps {
   initialPointsData: Awaited<ReturnType<typeof getUserPointsAction>>;

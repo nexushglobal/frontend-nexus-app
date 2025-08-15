@@ -10,6 +10,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import {
+  TRANSACTION_STATUS,
+  TRANSACTION_TYPES,
+} from '@/features/point/constants';
+import { PointTransactionBase } from '@/features/point/types/points.types';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -23,8 +28,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../constants';
-import { PointTransactionBase } from '../types/points.types';
 
 interface PointTransactionsCardsProps {
   data: PointTransactionBase[];

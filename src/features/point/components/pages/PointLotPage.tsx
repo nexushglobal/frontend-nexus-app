@@ -9,10 +9,10 @@ import { useMemo } from 'react';
 import { getUserPointsLotAction } from '../../action/get-points.action';
 import { useUserLotTransactions } from '../../hooks/useUserLotTransactions';
 import { usePointLotFiltersStore } from '../../stores/point-lot-filters.store';
-import { PointLotFilters } from '../PointLotFilters';
-import { PointLotSummaryCards } from '../PointLotSummaryCards';
-import { PointLotTransactionsCards } from '../PointLotTransactionsCards';
-import { PointLotTransactionsTable } from '../PointLotTransactionsTable';
+import { PointLotSummaryCards } from '../shared/cards/PointLotSummaryCards';
+import { PointLotTransactionsCards } from '../shared/cards/PointLotTransactionsCards';
+import { PointLotFilters } from '../shared/filters/PointLotFilters';
+import { PointLotTransactionsTable } from '../shared/tables/PointLotTransactionsTable';
 
 interface PointLotPageProps {
   initialPointsLotData: Awaited<ReturnType<typeof getUserPointsLotAction>>;

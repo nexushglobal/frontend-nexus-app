@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { WeeklyVolume } from '@/features/point/types/weekly.types';
 import { cn } from '@/lib/utils';
 import {
   Calendar,
@@ -10,7 +11,6 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useMemo } from 'react';
-import { WeeklyVolume } from '../types/weekly.types';
 
 interface WeeklyVolumeSummaryCardsProps {
   data: WeeklyVolume[] | null;

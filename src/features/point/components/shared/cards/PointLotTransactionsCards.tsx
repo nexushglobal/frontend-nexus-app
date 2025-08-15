@@ -3,12 +3,15 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import {
+  LOT_TRANSACTION_TYPES,
+  TRANSACTION_STATUS,
+} from '@/features/point/constants';
+import { PointLotTransactionBase } from '@/features/point/types/points.types';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, CircleDollarSign, Clock } from 'lucide-react';
-import { LOT_TRANSACTION_TYPES, TRANSACTION_STATUS } from '../constants';
-import { PointLotTransactionBase } from '../types/points.types';
 
 interface PointLotTransactionsCardsProps {
   data: PointLotTransactionBase[];

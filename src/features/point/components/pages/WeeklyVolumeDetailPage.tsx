@@ -8,8 +8,8 @@ import { es } from 'date-fns/locale';
 import { AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useWeeklyVolumeDetail } from '../../hooks/useWeeklyVolumeDetail';
-import { WeeklyVolumeHistoryComponent } from '../WeeklyVolumeHistory';
-import { WeeklyVolumeStats } from '../WeeklyVolumeStats';
+import { WeeklyVolumeHistoryComponent } from '../shared/section/WeeklyVolumeHistory';
+import { WeeklyVolumeStats } from '../shared/section/WeeklyVolumeStats';
 
 interface WeeklyVolumeDetailPageProps {
   volumeId: number;

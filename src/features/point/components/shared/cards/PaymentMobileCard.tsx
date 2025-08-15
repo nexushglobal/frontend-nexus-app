@@ -2,11 +2,11 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { PAYMENT_METHODS } from '@/features/point/constants';
+import { PaymentItem } from '@/features/point/types/points.types';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { PAYMENT_METHODS } from '../constants';
-import type { PaymentItem } from '../types/points.types';
 
 interface PaymentMobileCardProps {
   payment: PaymentItem;

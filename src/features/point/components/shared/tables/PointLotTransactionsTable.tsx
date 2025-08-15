@@ -1,8 +1,8 @@
 'use client';
 
+import { PointLotTransactionBase } from '@/features/point/types/points.types';
 import { DataTable } from '@/features/shared/components/table/DataTable';
-import { PointLotTransactionBase } from '../types/points.types';
-import { pointLotTransactionColumns } from './PointLotTransactionsColumns';
+import { pointLotTransactionColumns } from './columns/PointLotTransactionsColumns';
 
 interface PointLotTransactionsTableProps {
   data: PointLotTransactionBase[];

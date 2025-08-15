@@ -8,9 +8,9 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useWeeklyVolumes } from '../../hooks/useWeeklyVolumes';
 import { useWeeklyVolumeFiltersStore } from '../../stores/weekly-volume-filters.store';
-import { WeeklyVolumeCards } from '../WeeklyVolumeCards';
-import { WeeklyVolumeFilters } from '../WeeklyVolumeFilters';
-import { WeeklyVolumeTable } from '../WeeklyVolumeTable';
+import { WeeklyVolumeCards } from '../shared/cards/WeeklyVolumeCards';
+import { WeeklyVolumeFilters } from '../shared/filters/WeeklyVolumeFilters';
+import { WeeklyVolumeTable } from '../shared/tables/WeeklyVolumeTable';
 
 export function WeeklyVolumePage() {
   const { filters, setFilter, setFilters } = useWeeklyVolumeFiltersStore();

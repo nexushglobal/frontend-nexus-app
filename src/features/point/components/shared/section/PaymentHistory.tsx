@@ -1,12 +1,12 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PointTransactionDetailResponse } from '@/features/point/types/points.types';
 import { DataTable } from '@/features/shared/components/table/DataTable';
 import { TablePagination } from '@/features/shared/components/table/TablePagination';
 import { CreditCard } from 'lucide-react';
-import type { PointTransactionDetailResponse } from '../types/points.types';
-import { paymentColumns } from './PaymentColumns';
-import { PaymentMobileCard } from './PaymentMobileCard';
+import { PaymentMobileCard } from '../cards/PaymentMobileCard';
+import { paymentColumns } from '../tables/columns/PaymentColumns';
 
 interface PaymentHistoryProps {
   transactionDetail: PointTransactionDetailResponse;

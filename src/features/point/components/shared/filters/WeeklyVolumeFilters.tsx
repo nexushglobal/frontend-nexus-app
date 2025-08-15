@@ -9,20 +9,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { VOLUME_STATUS_OPTIONS } from '@/features/point/constants';
+import { useWeeklyVolumeFiltersStore } from '@/features/point/stores/weekly-volume-filters.store';
 import { Filter, RotateCcw } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
-import {
-  TRANSACTION_STATUS_OPTIONS,
-  TRANSACTION_TYPE_OPTIONS,
-} from '../constants';
-import { usePointFiltersStore } from '../stores/point-filters.store';
 
-interface PointFiltersProps {
+interface WeeklyVolumeFiltersProps {
   isLoading?: boolean;
 }
 
-export function PointFilters({ isLoading }: PointFiltersProps) {
-  const { filters, setFilter, resetFilters } = usePointFiltersStore();
+export function WeeklyVolumeFilters({ isLoading }: WeeklyVolumeFiltersProps) {
+  const { filters, setFilter, resetFilters } = useWeeklyVolumeFiltersStore();
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
     if (range?.from) {
@@ -47,8 +44,7 @@ export function PointFilters({ isLoading }: PointFiltersProps) {
       : undefined;
 
   const hasActiveFilters = Boolean(
-    (filters.type && filters.type !== 'all') ||
-      (filters.status && filters.status !== 'all') ||
+    (filters.status && filters.status !== 'all') ||
       filters.startDate ||
       filters.endDate,
   );
@@ -57,33 +53,10 @@ export function PointFilters({ isLoading }: PointFiltersProps) {
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
         <Filter className="h-4 w-4" />
-        Filtrar transacciones
+        Filtrar volúmenes semanales
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        {/* Tipo de transacción */}
-        <div className="flex-1">
-          <Select
-            value={filters.type || 'all'}
-            onValueChange={(value) =>
-              setFilter('type', value === 'all' ? undefined : value)
-            }
-            disabled={isLoading}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Tipo de transacción" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos los tipos</SelectItem>
-              {TRANSACTION_TYPE_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Estado */}
         <div className="flex-1">
           <Select
@@ -98,7 +71,7 @@ export function PointFilters({ isLoading }: PointFiltersProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos los estados</SelectItem>
-              {TRANSACTION_STATUS_OPTIONS.map((option) => (
+              {VOLUME_STATUS_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>

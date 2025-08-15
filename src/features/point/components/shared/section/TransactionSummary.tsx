@@ -2,12 +2,15 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  TRANSACTION_STATUS,
+  TRANSACTION_TYPES,
+} from '@/features/point/constants';
+import { PointTransactionDetailResponse } from '@/features/point/types/points.types';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, DollarSign, Hash } from 'lucide-react';
-import { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../constants';
-import type { PointTransactionDetailResponse } from '../types/points.types';
 
 interface TransactionSummaryProps {
   transaction: PointTransactionDetailResponse;

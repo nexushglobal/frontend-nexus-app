@@ -16,6 +16,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { VOLUME_SITE, VOLUME_STATUS } from '@/features/point/constants';
+import { WeeklyVolume } from '@/features/point/types/weekly.types';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
@@ -29,8 +31,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { VOLUME_SITE, VOLUME_STATUS } from '../constants';
-import { WeeklyVolume } from '../types/weekly.types';
 
 interface MetadataModalProps {
   isOpen: boolean;

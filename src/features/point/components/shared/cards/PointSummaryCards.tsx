@@ -2,9 +2,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PointUserResponse } from '@/features/point/types/points.types';
 import { cn } from '@/lib/utils';
 import { CircleDollarSign, Download, TrendingUp } from 'lucide-react';
-import { PointUserResponse } from '../types/points.types';
 
 interface PointSummaryCardsProps {
   data: PointUserResponse | null;

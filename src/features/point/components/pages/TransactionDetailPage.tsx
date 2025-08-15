@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import { PointService } from '../../services/point.service';
 import type { PointTransactionDetailResponse } from '../../types/points.types';
-import { PaymentHistory } from '../PaymentHistory';
-import { TransactionDetailSkeleton } from '../TransactionDetailSkeleton';
-import { TransactionErrorState } from '../TransactionErrorState';
-import { TransactionHeader } from '../TransactionHeader';
-import { TransactionSummary } from '../TransactionSummary';
+import { PaymentHistory } from '../shared/section/PaymentHistory';
+import { TransactionErrorState } from '../shared/section/TransactionErrorState';
+import { TransactionHeader } from '../shared/section/TransactionHeader';
+import { TransactionSummary } from '../shared/section/TransactionSummary';
+import { TransactionDetailSkeleton } from '../shared/skeletons/TransactionDetailSkeleton';
 
 interface TransactionDetailPageProps {
   transactionId: number;

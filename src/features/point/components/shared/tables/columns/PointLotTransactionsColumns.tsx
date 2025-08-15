@@ -1,12 +1,15 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import {
+  LOT_TRANSACTION_TYPES,
+  TRANSACTION_STATUS,
+} from '@/features/point/constants';
+import { PointLotTransactionBase } from '@/features/point/types/points.types';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { LOT_TRANSACTION_TYPES, TRANSACTION_STATUS } from '../constants';
-import { PointLotTransactionBase } from '../types/points.types';
 
 const statusVariants = {
   PENDING: 'outline' as const,

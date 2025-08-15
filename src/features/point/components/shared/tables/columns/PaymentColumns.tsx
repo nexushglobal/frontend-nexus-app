@@ -1,12 +1,11 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import { PAYMENT_METHODS } from '@/features/point/constants';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { PAYMENT_METHODS } from '../constants';
-import { PaymentItem } from '../types/points.types';
 
 const paymentMethodVariants = {
   VOUCHER: 'secondary' as const,
