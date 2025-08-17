@@ -13,7 +13,7 @@ export function MembershipHistoryCards({
   onOpenMetadata,
 }: {
   items: MembershipHistoryItem[];
-  onOpenChanges: (data: Record<string, any>) => void;
+  onOpenChanges: (changes: Record<string, any>, metadata?: Record<string, any>) => void;
   onOpenMetadata: (data: Record<string, any>) => void;
 }) {
   if (!items || items.length === 0) {
@@ -51,29 +51,18 @@ export function MembershipHistoryCards({
               </div>
             )}
 
-            <div className="flex gap-2">
-              {item.changes && (
+            {(item.changes || item.metadata) && (
+              <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   className="flex-1"
-                  onClick={() => onOpenChanges(item.changes!)}
+                  onClick={() => onOpenChanges(item.changes || {}, item.metadata)}
                 >
-                  <FileText className="h-4 w-4 mr-1" /> Cambios
+                  <FileText className="h-4 w-4 mr-1" /> Ver Detalles
                 </Button>
-              )}
-
-              {item.metadata && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => onOpenMetadata(item.metadata!)}
-                >
-                  <FileText className="h-4 w-4 mr-1" /> Metadata
-                </Button>
-              )}
-            </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       ))}

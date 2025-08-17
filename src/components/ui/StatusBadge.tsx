@@ -314,6 +314,26 @@ export function StatusBadge({ status }: { status: string }) {
           <span>Vendedor de Campo</span>
         </Badge>
       );
+    case 'DELETED':
+      return (
+        <Badge
+          variant="outline"
+          className="flex items-center gap-1.5 border-red-200 bg-red-50 px-2 py-0.5 text-red-700 dark:border-red-800/40 dark:bg-red-900/20 dark:text-red-400"
+        >
+          <XCircle className="h-3 w-3" />
+          <span>Eliminado</span>
+        </Badge>
+      );
+    case 'SUSPENDED':
+      return (
+        <Badge
+          variant="outline"
+          className="flex items-center gap-1.5 border-amber-200 bg-amber-50 px-2 py-0.5 text-amber-700 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-400"
+        >
+          <XCircle className="h-3 w-3" />
+          <span>Suspendido</span>
+        </Badge>
+      );
     default:
       return <Badge variant="outline">{status}</Badge>;
   }

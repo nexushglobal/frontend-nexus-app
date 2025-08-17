@@ -9,12 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { VOLUME_SITE, VOLUME_STATUS } from '@/features/point/constants';
 import { WeeklyVolume } from '@/features/point/types/weekly.types';
@@ -25,7 +19,6 @@ import {
   CircleDollarSign,
   Eye,
   FileText,
-  MoreHorizontal,
   TrendingDown,
   TrendingUp,
 } from 'lucide-react';
@@ -55,49 +48,48 @@ function MetadataModal({ isOpen, onClose, metadata }: MetadataModalProps) {
   );
 }
 
-interface ActionsMenuProps {
+interface ActionsButtonsProps {
   volume: WeeklyVolume;
 }
 
-function ActionsMenu({ volume }: ActionsMenuProps) {
+function ActionsButtons({ volume }: ActionsButtonsProps) {
   const [showMetadata, setShowMetadata] = useState(false);
   const hasMetadata =
     volume.metadata && Object.keys(volume.metadata).length > 0;
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal className="h-4 w-4" />
-            <span className="sr-only">Abrir menú</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <Link
-              href={`/dashboard/cli-puntos/volumenes-semanales/semana/${volume.id}`}
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              Ver detalle
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            disabled={!hasMetadata}
-            onClick={() => setShowMetadata(true)}
-          >
-            <FileText className="mr-2 h-4 w-4" />
-            Ver metadata
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="flex items-center gap-2">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setShowMetadata(true)}
+        disabled={!hasMetadata}
+        className="h-8 w-8 p-0"
+        title={hasMetadata ? 'Ver metadata' : 'Sin metadata disponible'}
+      >
+        <FileText className="h-4 w-4" />
+      </Button>
+
+      <Button
+        variant="outline"
+        size="sm"
+        asChild
+        className="h-8 w-8 p-0"
+        title="Ver detalle"
+      >
+        <Link
+          href={`/dashboard/cli-puntos/volumenes-semanales/semana/${volume.id}`}
+        >
+          <Eye className="h-4 w-4" />
+        </Link>
+      </Button>
 
       <MetadataModal
         isOpen={showMetadata}
         onClose={() => setShowMetadata(false)}
         metadata={volume.metadata}
       />
-    </>
+    </div>
   );
 }
 
@@ -132,14 +124,22 @@ interface WeeklyVolumeCardProps {
 }
 
 function WeeklyVolumeCard({ volume }: WeeklyVolumeCardProps) {
-  const statusVariant = {
+  const statusVariants = {
     PENDING: 'outline' as const,
     PROCESSED: 'secondary' as const,
     CANCELLED: 'destructive' as const,
   };
 
+  const statusColors = {
+    PENDING: 'text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-600',
+    PROCESSED: 'text-green-800 dark:text-green-300 bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600',
+    CANCELLED: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600',
+  };
+
+  const isPending = volume.status === 'PENDING';
+
   return (
-    <Card className="shadow-sm">
+    <Card className={`shadow-sm ${isPending ? 'bg-yellow-50/30 dark:bg-yellow-900/10 border-l-4 border-l-yellow-400' : ''}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -160,10 +160,13 @@ function WeeklyVolumeCard({ volume }: WeeklyVolumeCardProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant={statusVariant[volume.status]}>
+            <Badge 
+              variant={statusVariants[volume.status]} 
+              className={statusColors[volume.status]}
+            >
               {VOLUME_STATUS[volume.status]}
             </Badge>
-            <ActionsMenu volume={volume} />
+            <ActionsButtons volume={volume} />
           </div>
         </div>
       </CardHeader>
@@ -201,9 +204,11 @@ function WeeklyVolumeCard({ volume }: WeeklyVolumeCardProps) {
               <span className="text-sm text-muted-foreground">
                 Lado Seleccionado:
               </span>
-              <Badge
-                variant={
-                  volume.selectedSide === 'LEFT' ? 'outline' : 'secondary'
+              <Badge 
+                variant="outline" 
+                className={volume.selectedSide === 'LEFT' 
+                  ? 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600'
+                  : 'text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-600'
                 }
               >
                 {VOLUME_SITE[volume.selectedSide]}

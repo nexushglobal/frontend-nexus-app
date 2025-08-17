@@ -56,3 +56,5 @@ los tipos tambien cambian
 la tabla ya no tiene metadata por lo que no es necesario
 tampoco debe haber action para redirigir al detalle ya que esto no existe
 el resto se mantiene parecido
+
+///

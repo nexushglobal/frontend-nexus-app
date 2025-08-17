@@ -1,22 +1,11 @@
 'use client';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { PageHeader } from '@/features/shared/components/common/PageHeader';
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MembershipKeyValueModal } from '../components/MembershipKeyValueModal';
-import { ReconsumptionTypeModal } from '../components/ReconsumptionTypeModal';
 import { ReconsumptionsSummary } from '../components/ReconsumptionsSummary';
 import { ReconsumptionsTable } from '../components/ReconsumptionsTable';
 import { MembershipService } from '../services/membershipService';
@@ -34,10 +23,6 @@ export default function MembershipReconsumptionsPage() {
     any
   > | null>(null);
 
-  const [openEditAuto, setOpenEditAuto] = useState(false);
-  const [autoRenewalDraft, setAutoRenewalDraft] = useState(false);
-  const [openEditType, setOpenEditType] = useState(false);
-
   const params = useMemo(() => ({ page, limit }), [page, limit]);
 
   const { data, isLoading, isError, error } = useQuery<ReconsumtionResponse>({
@@ -46,17 +31,6 @@ export default function MembershipReconsumptionsPage() {
     staleTime: 0,
     refetchOnWindowFocus: false,
   });
-
-  // Keep modal draft synced when opening
-  useEffect(() => {
-    if (openEditAuto && typeof data?.autoRenewal === 'boolean') {
-      setAutoRenewalDraft(data.autoRenewal);
-    }
-  }, [openEditAuto, data?.autoRenewal]);
-  console.log(
-    'data?.membership?.typeReconsumption',
-    data?.membership?.typeReconsumption,
-  );
 
   if (isError) {
     return (
@@ -88,16 +62,7 @@ export default function MembershipReconsumptionsPage() {
         backUrl="/dashboard/cli-membresias/mi-plan"
       />
 
-      <ReconsumptionsSummary
-        canReconsume={data?.canReconsume}
-        autoRenewal={data?.autoRenewal}
-        reconsumptionAmount={data?.reconsumptionAmount}
-        isLoading={isLoading}
-        onEditAutoRenewal={() => setOpenEditAuto(true)}
-        typeReconsumption={data?.membership?.typeReconsumption}
-        useCard={data?.membership?.useCard}
-        onEditType={() => setOpenEditType(true)}
-      />
+      <ReconsumptionsSummary membership={data?.membership} />
 
       <ReconsumptionsTable
         items={data?.infoReconsumptions.items || []}
@@ -118,49 +83,6 @@ export default function MembershipReconsumptionsPage() {
         title="Detalles de pago"
         data={paymentDetailsData}
       />
-
-      <ReconsumptionTypeModal
-        open={openEditType}
-        onOpenChange={setOpenEditType}
-        value={data?.membership?.typeReconsumption}
-        useCard={data?.membership?.useCard}
-        onSave={({ typeReconsumption, useCard }) => {
-          // Por ahora solo imprime en consola
-          console.log('Guardar typeReconsumption/useCard:', {
-            typeReconsumption,
-            useCard,
-          });
-        }}
-      />
-
-      <Dialog open={openEditAuto} onOpenChange={setOpenEditAuto}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Editar auto-renovación</DialogTitle>
-          </DialogHeader>
-          <div className="flex items-center gap-3 py-2">
-            <Switch
-              id="auto-renewal"
-              checked={autoRenewalDraft}
-              onCheckedChange={setAutoRenewalDraft}
-            />
-            <Label htmlFor="auto-renewal">
-              {autoRenewalDraft ? 'Activada' : 'Desactivada'}
-            </Label>
-          </div>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                // Por ahora solo imprime en consola
-                console.log('Guardar autoRenewal:', autoRenewalDraft);
-                setOpenEditAuto(false);
-              }}
-            >
-              Guardar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

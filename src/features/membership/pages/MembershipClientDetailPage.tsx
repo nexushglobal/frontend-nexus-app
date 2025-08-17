@@ -17,13 +17,11 @@ import {
 } from '../types/membership.types';
 
 export default function MembershipClientDetailPage() {
-  // UI state
   const [showHistory, setShowHistory] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const [openChanges, setOpenChanges] = useState(false);
-  const [openMetadata, setOpenMetadata] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
   const [selectedChanges, setSelectedChanges] = useState<Record<
     string,
     any
@@ -61,13 +59,22 @@ export default function MembershipClientDetailPage() {
     refetchOnWindowFocus: false,
   });
 
+  const handleOpenDetails = (changes: Record<string, any>, metadata?: Record<string, any>) => {
+    setSelectedChanges(changes);
+    setSelectedMetadata(metadata || null);
+    setOpenDetails(true);
+  };
+
+  // Mantener compatibilidad para funciones separadas si es necesario
   const handleOpenChanges = (data: Record<string, any>) => {
     setSelectedChanges(data);
-    setOpenChanges(true);
+    setSelectedMetadata(null);
+    setOpenDetails(true);
   };
   const handleOpenMetadata = (data: Record<string, any>) => {
+    setSelectedChanges(null);
     setSelectedMetadata(data);
-    setOpenMetadata(true);
+    setOpenDetails(true);
   };
 
   if (isErrorDetail) {
@@ -110,19 +117,38 @@ export default function MembershipClientDetailPage() {
         showReconsumoLink={showReconsumoLink}
       />
 
-      <Card className="shadow-sm mb-4">
-        <CardContent className="pt-4 flex justify-end">
-          <Button variant="outline" onClick={() => setShowHistory((v) => !v)}>
-            {showHistory ? (
-              <>
-                <ChevronUp className="h-4 w-4 mr-1" /> Ocultar movimientos
-              </>
-            ) : (
-              <>
-                <ChevronDown className="h-4 w-4 mr-1" /> Mostrar movimientos
-              </>
-            )}
-          </Button>
+      <Card className="shadow-sm mb-6">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                <ChevronDown className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Historial de Movimientos</h3>
+                <p className="text-sm text-muted-foreground">
+                  Consulta todos los cambios y actualizaciones de tu membresía
+                </p>
+              </div>
+            </div>
+            <Button 
+              variant={showHistory ? "default" : "outline"} 
+              onClick={() => setShowHistory((v) => !v)}
+              className="gap-2"
+            >
+              {showHistory ? (
+                <>
+                  <ChevronUp className="h-4 w-4" /> 
+                  Ocultar Historial
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4" /> 
+                  Ver Historial
+                </>
+              )}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -139,23 +165,18 @@ export default function MembershipClientDetailPage() {
               ? (errorHistory as any)?.message || 'Error desconocido'
               : null
           }
-          onOpenChanges={handleOpenChanges}
+          onOpenChanges={handleOpenDetails}
           onOpenMetadata={handleOpenMetadata}
         />
       )}
 
       {/* Modals */}
       <MembershipKeyValueModal
-        open={openChanges}
-        onOpenChange={setOpenChanges}
-        title="Cambios"
-        data={selectedChanges}
-      />
-      <MembershipKeyValueModal
-        open={openMetadata}
-        onOpenChange={setOpenMetadata}
-        title="Metadata"
-        data={selectedMetadata}
+        open={openDetails}
+        onOpenChange={setOpenDetails}
+        title="Detalles del Movimiento"
+        changes={selectedChanges}
+        metadata={selectedMetadata}
       />
     </div>
   );

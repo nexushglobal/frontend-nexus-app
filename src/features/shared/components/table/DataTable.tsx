@@ -40,6 +40,7 @@ interface DataTableProps<TData, TValue> {
   onColumnVisibilityChange?: OnChangeFn<VisibilityState>;
   showColumnToggle?: boolean;
   emptyMessage?: string;
+  getRowClassName?: (row: any) => string;
 }
 
 export function DataTable<TData, TValue>({
@@ -53,6 +54,7 @@ export function DataTable<TData, TValue>({
   onColumnVisibilityChange,
   showColumnToggle = true,
   emptyMessage = 'No hay resultados.',
+  getRowClassName,
 }: DataTableProps<TData, TValue>) {
   const [internalSorting, setInternalSorting] = useState<SortingState>(sorting);
   const [internalVisibility, setInternalVisibility] = useState<
@@ -204,7 +206,9 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="hover:bg-muted/50 transition-colors"
+                    className={`hover:bg-muted/50 transition-colors ${
+                      getRowClassName ? getRowClassName(row) : ''
+                    }`}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

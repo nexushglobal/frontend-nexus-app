@@ -8,12 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { VOLUME_SITE, VOLUME_STATUS } from '@/features/point/constants';
 import { WeeklyVolume } from '@/features/point/types/weekly.types';
 import { ColumnDef } from '@tanstack/react-table';
@@ -21,7 +15,6 @@ import {
   CalendarDays,
   Eye,
   FileText,
-  MoreHorizontal,
   TrendingDown,
   TrendingUp,
 } from 'lucide-react';
@@ -51,49 +44,48 @@ function MetadataModal({ isOpen, onClose, metadata }: MetadataModalProps) {
   );
 }
 
-interface ActionsMenuProps {
+interface ActionsColumnProps {
   volume: WeeklyVolume;
 }
 
-function ActionsMenu({ volume }: ActionsMenuProps) {
+function ActionsColumn({ volume }: ActionsMenuProps) {
   const [showMetadata, setShowMetadata] = useState(false);
   const hasMetadata =
     volume.metadata && Object.keys(volume.metadata).length > 0;
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Abrir menú</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <Link
-              href={`/dashboard/cli-puntos/volumenes-semanales/semana/${volume.id}`}
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              Ver detalle
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            disabled={!hasMetadata}
-            onClick={() => setShowMetadata(true)}
-          >
-            <FileText className="mr-2 h-4 w-4" />
-            Ver metadata
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="flex items-center gap-2">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setShowMetadata(true)}
+        disabled={!hasMetadata}
+        className="h-8 w-8 p-0"
+        title={hasMetadata ? 'Ver metadata' : 'Sin metadata disponible'}
+      >
+        <FileText className="h-4 w-4" />
+      </Button>
+
+      <Button
+        variant="outline"
+        size="sm"
+        asChild
+        className="h-8 w-8 p-0"
+        title="Ver detalle"
+      >
+        <Link
+          href={`/dashboard/cli-puntos/volumenes-semanales/semana/${volume.id}`}
+        >
+          <Eye className="h-4 w-4" />
+        </Link>
+      </Button>
 
       <MetadataModal
         isOpen={showMetadata}
         onClose={() => setShowMetadata(false)}
         metadata={volume.metadata}
       />
-    </>
+    </div>
   );
 }
 
@@ -160,7 +152,13 @@ export const weeklyVolumeColumns: ColumnDef<WeeklyVolume>[] = [
       if (!side) return <span className="text-muted-foreground">-</span>;
 
       return (
-        <Badge variant={side === 'LEFT' ? 'outline' : 'secondary'}>
+        <Badge 
+          variant="outline" 
+          className={side === 'LEFT' 
+            ? 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600'
+            : 'text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-600'
+          }
+        >
           {VOLUME_SITE[side]}
         </Badge>
       );
@@ -185,20 +183,31 @@ export const weeklyVolumeColumns: ColumnDef<WeeklyVolume>[] = [
     header: 'Estado',
     cell: ({ row }) => {
       const status = row.original.status;
-      const statusVariant = {
+      const statusVariants = {
         PENDING: 'outline' as const,
         PROCESSED: 'secondary' as const,
         CANCELLED: 'destructive' as const,
       };
 
+      const statusColors = {
+        PENDING: 'text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-600',
+        PROCESSED: 'text-green-800 dark:text-green-300 bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600',
+        CANCELLED: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600',
+      };
+
       return (
-        <Badge variant={statusVariant[status]}>{VOLUME_STATUS[status]}</Badge>
+        <Badge 
+          variant={statusVariants[status]} 
+          className={statusColors[status]}
+        >
+          {VOLUME_STATUS[status]}
+        </Badge>
       );
     },
   },
   {
     id: 'actions',
     header: 'Acciones',
-    cell: ({ row }) => <ActionsMenu volume={row.original} />,
+    cell: ({ row }) => <ActionsColumn volume={row.original} />,
   },
 ];

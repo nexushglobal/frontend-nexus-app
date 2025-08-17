@@ -1,16 +1,22 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import { DataTable } from '@/features/shared/components/table/DataTable';
 import { TablePagination } from '@/features/shared/components/table/TablePagination';
 import {
   formatCurrency,
   formatDate,
 } from '@/features/shared/utils/formatCurrency';
-import { cn } from '@/lib/utils';
-import type { ColumnDef } from '@tanstack/react-table';
+import { VisibilityState } from '@tanstack/react-table';
+import { Eye, Receipt } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import type { ReconsumtionItem } from '../types/reconsumption.type';
+import {
+  createReconsumptionsColumns,
+  defaultColumnVisibility,
+} from './columns/reconsumptionsColumns';
 
 interface Props {
   items: ReconsumtionItem[];
@@ -34,147 +40,128 @@ export function ReconsumptionsTable({
   onLimitChange,
   onOpenPaymentDetails,
 }: Props) {
-  const columns: ColumnDef<ReconsumtionItem>[] = [
-    {
-      header: 'Periodo',
-      accessorKey: 'periodDate',
-      cell: ({ row }) => (
-        <span className="text-sm">{formatDate(row.original.periodDate)}</span>
-      ),
-    },
-    {
-      header: 'Monto',
-      accessorKey: 'amount',
-      cell: ({ row }) => (
-        <span className="font-medium">
-          {formatCurrency(row.original.amount)}
-        </span>
-      ),
-    },
-    {
-      header: 'Estado',
-      accessorKey: 'status',
-      cell: ({ getValue }) => (
-        <span className="uppercase text-xs px-2 py-1 rounded bg-muted">
-          {String(getValue())}
-        </span>
-      ),
-    },
-    {
-      header: 'Referencia',
-      accessorKey: 'paymentReference',
-      cell: ({ getValue }) => (
-        <span className="text-muted-foreground text-sm">
-          {String(getValue() || '-')}
-        </span>
-      ),
-    },
-    {
-      header: 'Detalles de pago',
-      cell: ({ row }) =>
-        row.original.paymentDetails ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              onOpenPaymentDetails(
-                row.original.paymentDetails as Record<string, any>,
-              )
-            }
-          >
-            Ver detalles
-          </Button>
-        ) : (
-          <span className="text-muted-foreground">-</span>
-        ),
-      enableSorting: false,
-    },
-    {
-      header: 'Notas',
-      accessorKey: 'notes',
-      cell: ({ getValue }) => (
-        <span className="text-muted-foreground text-sm">
-          {String(getValue() || '-')}
-        </span>
-      ),
-    },
-    {
-      header: 'Creado',
-      accessorKey: 'createdAt',
-      cell: ({ row }) => (
-        <span className="text-sm">
-          {formatDate(row.original.createdAt, 'dd/MM/yyyy HH:mm')}
-        </span>
-      ),
-    },
-  ];
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    defaultColumnVisibility,
+  );
+
+  const columns = useMemo(
+    () =>
+      createReconsumptionsColumns({
+        onOpenPaymentDetails,
+      }),
+    [onOpenPaymentDetails],
+  );
 
   return (
-    <div className="space-y-4">
-      {/* Mobile: Cards */}
-      <div className="grid gap-3 sm:hidden">
-        {(!items || items.length === 0) && (
-          <div className="text-center text-muted-foreground py-8 text-sm">
-            Sin reconsumos
-          </div>
-        )}
-        {items?.map((it) => (
-          <Card key={it.id} className="shadow-sm">
-            <CardContent className="p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="font-semibold">{formatDate(it.periodDate)}</div>
-                <div
-                  className={cn('text-xs px-2 py-1 rounded bg-muted uppercase')}
-                >
-                  {it.status}
-                </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Receipt className="h-5 w-5" />
+            Historial de Reconsumos
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Mobile: Enhanced Cards */}
+          <div className="grid gap-4 sm:hidden">
+            {(!items || items.length === 0) && (
+              <div className="text-center text-muted-foreground py-12">
+                <Receipt className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-medium">Sin reconsumos</p>
+                <p className="text-sm">Aún no tienes reconsumos registrados</p>
               </div>
-              <div className="text-lg font-semibold">
-                {formatCurrency(it.amount)}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Ref: {it.paymentReference || '-'}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {it.notes || '-'}
-              </div>
-              <div className="flex justify-end">
-                {it.paymentDetails ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      onOpenPaymentDetails(
-                        it.paymentDetails as Record<string, any>,
-                      )
-                    }
-                  >
-                    Ver detalles
-                  </Button>
-                ) : (
-                  <span className="text-muted-foreground text-xs">
-                    Sin detalles
-                  </span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            )}
+            {items?.map((it) => (
+              <Card
+                key={it.id}
+                className="shadow-sm border-l-4 border-l-primary/60"
+              >
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-primary/60"></div>
+                      <span className="font-semibold">
+                        {formatDate(it.periodDate)}
+                      </span>
+                    </div>
+                    <StatusBadge status={it.status} />
+                  </div>
 
-      {/* Desktop: Table */}
-      <div className="hidden sm:block">
-        <DataTable<ReconsumtionItem, unknown>
-          columns={columns}
-          data={items || []}
-          isLoading={isLoading}
-          emptyMessage="Sin reconsumos"
-        />
-      </div>
+                  <div className="text-2xl font-bold text-primary">
+                    {formatCurrency(it.amount)}
+                  </div>
+
+                  {it.paymentReference && (
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground font-medium">
+                        REFERENCIA DE PAGO
+                      </p>
+                      <div className="bg-muted/50 px-2 py-1 rounded-md">
+                        <code className="text-xs font-mono">
+                          {it.paymentReference}
+                        </code>
+                      </div>
+                    </div>
+                  )}
+
+                  {it.notes && (
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground font-medium">
+                        NOTAS
+                      </p>
+                      <p className="text-sm">{it.notes}</p>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-xs text-muted-foreground">
+                      {formatDate(it.createdAt, 'dd/MM/yyyy HH:mm')}
+                    </span>
+                    {it.paymentDetails ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          onOpenPaymentDetails(
+                            it.paymentDetails as Record<string, any>,
+                          )
+                        }
+                        className="gap-1"
+                      >
+                        <Eye className="h-3 w-3" />
+                        Ver detalles
+                      </Button>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop: Enhanced Table */}
+          <div className="hidden sm:block">
+            <DataTable<ReconsumtionItem, unknown>
+              columns={columns}
+              data={items || []}
+              isLoading={isLoading}
+              columnVisibility={columnVisibility}
+              onColumnVisibilityChange={setColumnVisibility}
+              emptyMessage="Sin reconsumos registrados"
+              getRowClassName={(row) => {
+                const item = row.original as ReconsumtionItem;
+                const isPending = item.status === 'PENDING';
+                return isPending
+                  ? 'bg-yellow-50/50 dark:bg-yellow-900/10 border-l-4 border-l-yellow-400'
+                  : '';
+              }}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {pagination && (
-        <Card className="shadow-sm p-1">
-          <CardContent>
+        <Card className="shadow-sm">
+          <CardContent className="p-4">
             <TablePagination
               pagination={pagination}
               onPageChange={onPageChange}

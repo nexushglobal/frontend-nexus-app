@@ -17,14 +17,23 @@ export interface InfoReconsumptions extends PaginationMeta {
 }
 
 export interface MembershipReconsumption {
-  typeReconsumption: 'POINTLOT' | 'PRODUCT' | 'SERVICE' | 'AUTOMATIC';
   useCard: boolean;
+  canReconsume: boolean;
+  autoRenewal: boolean;
+  status:
+    | 'PENDING'
+    | 'ACTIVE'
+    | 'INACTIVE'
+    | 'EXPIRED'
+    | 'DELETED'
+    | 'SUSPENDED';
+  reconsumptionAmount: number;
+  isPointLot: boolean;
+  startDate: string; //like '2025-07-14';
+  endDate: string; //like '2025-08-13';
 }
 
 export interface ReconsumtionResponse {
   infoReconsumptions: InfoReconsumptions;
-  canReconsume: boolean;
-  autoRenewal: boolean;
-  reconsumptionAmount: number;
   membership: MembershipReconsumption;
 }

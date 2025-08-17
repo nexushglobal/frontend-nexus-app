@@ -1,16 +1,18 @@
 'use client';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/features/shared/components/table/DataTable';
 import { TablePagination } from '@/features/shared/components/table/TablePagination';
-import { formatDate } from '@/features/shared/utils/formatCurrency';
-import type { ColumnDef } from '@tanstack/react-table';
-import { AlertCircle } from 'lucide-react';
+import { VisibilityState } from '@tanstack/react-table';
+import { AlertCircle, History } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { MembershipHistoryItem } from '../types/membership.types';
-import { translateHistoryAction } from '../utils/membershipTranslations';
 import { MembershipHistoryCards } from './MembershipHistoryCards';
+import {
+  createMembershipHistoryColumns,
+  defaultColumnVisibility,
+} from './columns/membershipHistoryColumns';
 
 export function MembershipHistoryTable({
   items,
@@ -33,95 +35,57 @@ export function MembershipHistoryTable({
   onPageChange: (p: number) => void;
   onLimitChange: (l: number) => void;
   errorMessage?: string | null;
-  onOpenChanges: (data: Record<string, any>) => void;
+  onOpenChanges: (changes: Record<string, any>, metadata?: Record<string, any>) => void;
   onOpenMetadata: (data: Record<string, any>) => void;
 }) {
-  const columns: ColumnDef<MembershipHistoryItem>[] = [
-    {
-      header: 'Fecha',
-      accessorKey: 'createdAt',
-      cell: ({ row }) => (
-        <span className="text-sm">
-          {formatDate(row.original.createdAt, 'dd/MM/yyyy HH:mm')}
-        </span>
-      ),
-    },
-    {
-      header: 'Acción',
-      accessorKey: 'action',
-      cell: ({ row }) => (
-        <span className="font-medium">
-          {translateHistoryAction(row.original.action)}
-        </span>
-      ),
-    },
-    {
-      header: 'Notas',
-      accessorKey: 'notes',
-      cell: ({ getValue }) => (
-        <span className="text-muted-foreground text-sm">
-          {String(getValue() || '-')}
-        </span>
-      ),
-    },
-    {
-      header: 'Cambios',
-      cell: ({ row }) =>
-        row.original.changes ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onOpenChanges(row.original.changes!)}
-          >
-            Ver cambios
-          </Button>
-        ) : (
-          <span className="text-muted-foreground">-</span>
-        ),
-      enableSorting: false,
-    },
-    {
-      header: 'Metadata',
-      cell: ({ row }) =>
-        row.original.metadata ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onOpenMetadata(row.original.metadata!)}
-          >
-            Ver metadata
-          </Button>
-        ) : (
-          <span className="text-muted-foreground">-</span>
-        ),
-      enableSorting: false,
-    },
-  ];
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    defaultColumnVisibility,
+  );
+
+  const columns = useMemo(
+    () =>
+      createMembershipHistoryColumns({
+        onOpenChanges,
+      }),
+    [onOpenChanges],
+  );
 
   return (
-    <div className="space-y-4">
-      {/* Desktop table */}
-      <div className="hidden md:block">
-        <DataTable<MembershipHistoryItem, unknown>
-          columns={columns}
-          data={items || []}
-          isLoading={isLoading}
-          emptyMessage="Sin movimientos"
-        />
-      </div>
+    <div className="space-y-6">
+      <Card className="shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <History className="h-5 w-5" />
+            Historial de Movimientos
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Desktop table */}
+          <div className="hidden md:block">
+            <DataTable<MembershipHistoryItem, unknown>
+              columns={columns}
+              data={items || []}
+              isLoading={isLoading}
+              columnVisibility={columnVisibility}
+              onColumnVisibilityChange={setColumnVisibility}
+              emptyMessage="Sin movimientos registrados en tu membresía"
+            />
+          </div>
 
-      {/* Mobile cards */}
-      <div className="md:hidden">
-        <MembershipHistoryCards
-          items={items || []}
-          onOpenChanges={onOpenChanges}
-          onOpenMetadata={onOpenMetadata}
-        />
-      </div>
+          {/* Mobile cards */}
+          <div className="md:hidden">
+            <MembershipHistoryCards
+              items={items || []}
+              onOpenChanges={onOpenChanges}
+              onOpenMetadata={onOpenMetadata}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {pagination && (
-        <Card className="shadow-sm p-1">
-          <CardContent>
+        <Card className="shadow-sm">
+          <CardContent className="p-4">
             <TablePagination
               pagination={pagination}
               onPageChange={onPageChange}
@@ -130,7 +94,6 @@ export function MembershipHistoryTable({
                 onPageChange(1);
               }}
               isLoading={isLoading}
-              compact
             />
           </CardContent>
         </Card>
