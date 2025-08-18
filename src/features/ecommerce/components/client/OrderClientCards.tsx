@@ -2,9 +2,10 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
-import { Eye, ShoppingCart } from 'lucide-react';
+import { CalendarDays, Eye, Package2, ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { OrderClientItem } from '../../types/order.type';
@@ -70,17 +71,17 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
   };
 
   const handleViewDetail = (orderId: number) => {
-    router.push(`/dashboard/cli-pedidos/detalle/${orderId}`);
+    router.push(`/dashboard/cli-tienda/pedidos/detalle/${orderId}`);
   };
 
   if (data.length === 0) {
     return (
-      <Card className="shadow-sm">
-        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-          <ShoppingCart className="h-12 w-12 text-muted-foreground/50 mb-4" />
-          <h3 className="text-lg font-medium text-muted-foreground mb-2">
-            No tienes pedidos
-          </h3>
+      <Card className="border-dashed border-2 border-muted-foreground/25">
+        <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted mb-4">
+            <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-semibold mb-2">No tienes pedidos</h3>
           <p className="text-sm text-muted-foreground max-w-sm">
             Cuando realices compras, tus pedidos aparecerán aquí.
           </p>
@@ -93,41 +94,58 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
     <>
       <div className="space-y-4">
         {data.map((order) => (
-          <Card key={order.id} className="shadow-sm">
-            <CardContent className="p-4">
-              <div className="space-y-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-medium text-lg">Pedido #{order.id}</h3>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className={getStatusBadgeVariant(order.status)}
-                  >
-                    {getStatusLabel(order.status)}
-                  </Badge>
-                </div>
+          <Card
+            key={order.id}
+            className="shadow-sm border-l-4 border-l-primary/20 hover:shadow-md transition-shadow"
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Package2 className="h-5 w-5 text-primary" />
+                  Pedido #{order.id}
+                </CardTitle>
+                <Badge
+                  variant="outline"
+                  className={getStatusBadgeVariant(order.status)}
+                >
+                  {getStatusLabel(order.status)}
+                </Badge>
+              </div>
+            </CardHeader>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Items:</span>
-                    <p className="font-medium">{order.totalItems}</p>
+            <CardContent className="pt-0">
+              <div className="space-y-4">
+                {/* Quick Stats */}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center p-3 bg-muted/50 rounded-lg">
+                    <p className="text-2xl font-bold text-primary">
+                      {order.totalItems}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Items</p>
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">Total:</span>
-                    <p className="font-medium text-lg">
+                  <div className="text-center p-3 bg-muted/50 rounded-lg">
+                    <p className="text-lg font-bold">
                       {formatCurrency(order.totalAmount, 'PEN')}
                     </p>
+                    <p className="text-xs text-muted-foreground">Total</p>
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">Fecha:</span>
-                    <p className="font-medium">
-                      {new Date(order.createdAt).toLocaleDateString('es-ES')}
+                  <div className="text-center p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <CalendarDays className="h-3 w-3" />
+                    </div>
+                    <p className="text-xs font-medium">
+                      {new Date(order.createdAt).toLocaleDateString('es-ES', {
+                        day: '2-digit',
+                        month: 'short',
+                      })}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-2 pt-2">
+                <Separator />
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -135,7 +153,7 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
                     className="flex-1 gap-2"
                   >
                     <ShoppingCart className="h-4 w-4" />
-                    Resumen
+                    Vista rápida
                   </Button>
                   <Button
                     size="sm"
@@ -143,7 +161,7 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
                     className="flex-1 gap-2"
                   >
                     <Eye className="h-4 w-4" />
-                    Ver detalle
+                    Ver detalle completo
                   </Button>
                 </div>
               </div>
@@ -157,7 +175,7 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
         isOpen={isPreviewOpen}
         onClose={handleClosePreview}
         onViewDetail={(orderId) =>
-          router.push(`/dashboard/cli-pedidos/detalle/${orderId}`)
+          router.push(`/dashboard/cli-tienda/pedidos/detalle/${orderId}`)
         }
       />
     </>

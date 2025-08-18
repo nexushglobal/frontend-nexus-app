@@ -120,7 +120,7 @@ export function WithdrawalClientSummaryModal({
               </Button>
               {withdrawal && (
                 <Link
-                  href={`/dashboard/(cliente)/cli-mis-retiros/detalle/${withdrawal.id}`}
+                  href={`/dashboard/cli-mis-retiros/detalle/${withdrawal.id}`}
                 >
                   <Button>Ver Detalle</Button>
                 </Link>

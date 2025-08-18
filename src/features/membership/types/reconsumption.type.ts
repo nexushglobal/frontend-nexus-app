@@ -1,4 +1,5 @@
 import { PaginationMeta } from '@/features/shared/types/api.types';
+import { BasePaymentRequest } from './membership-detail.type';
 
 export interface ReconsumtionItem {
   id: number;
@@ -17,6 +18,7 @@ export interface InfoReconsumptions extends PaginationMeta {
 }
 
 export interface MembershipReconsumption {
+  membershipId: number;
   useCard: boolean;
   canReconsume: boolean;
   autoRenewal: boolean;
@@ -36,4 +38,16 @@ export interface MembershipReconsumption {
 export interface ReconsumtionResponse {
   infoReconsumptions: InfoReconsumptions;
   membership: MembershipReconsumption;
+}
+
+export interface PaymentReconsumptionRequest extends BasePaymentRequest {
+  membershipId: number;
+}
+
+export interface ReconsumtionResult {
+  totalAmount: number;
+  paymentId: number;
+  reconsumption: {
+    periodDate: string;
+  };
 }

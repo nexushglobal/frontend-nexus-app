@@ -20,12 +20,12 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { PaymentResult } from '../types/membership-detail.type';
+import { SubscribeResult } from '../types/membership-detail.type';
 
 interface PaymentResponse {
   success: boolean;
   message: string;
-  data?: PaymentResult;
+  data?: SubscribeResult;
   errors?: string;
 }
 interface PaymentResultModalProps {

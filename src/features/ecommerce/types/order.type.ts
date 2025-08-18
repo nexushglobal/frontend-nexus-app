@@ -1,3 +1,4 @@
+import { BasePaymentRequest } from '@/features/membership/types/membership-detail.type';
 import { PaginationMeta } from '@/features/shared/types/api.types';
 
 export interface Client {
@@ -77,4 +78,28 @@ export interface OrderClientResponse extends PaginationMeta {
 export interface OrderClientDetailResponse extends OrderBase {
   orderDetails: OrderDetails[];
   orderHistory: OrderHistory[];
+}
+
+export interface OrderItem {
+  productId: number;
+  quantity: number;
+}
+export interface PaymentOrderRequest extends BasePaymentRequest {
+  notes?: string;
+  paymentReference?: string;
+  totalAmount: number;
+  items: OrderItem[];
+}
+
+export interface OrderResult {
+  totalAmount: number;
+  paymentId: number;
+  order: {
+    totalItems: number;
+    items: {
+      productId: number;
+      name: string;
+      quantity: number;
+    }[];
+  };
 }

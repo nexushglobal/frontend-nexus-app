@@ -1,7 +1,7 @@
 export enum PaymentMethod {
-  VOUCHER = "VOUCHER",
-  POINTS = "POINTS",
-  PAYMENT_GATEWAY = "PAYMENT_GATEWAY",
+  VOUCHER = 'VOUCHER',
+  POINTS = 'POINTS',
+  PAYMENT_GATEWAY = 'PAYMENT_GATEWAY',
 }
 
 export interface Payment {
@@ -49,15 +49,18 @@ export interface PlanDetailResponse {
   userMembership: UserMembership;
 }
 
-export interface PaymentSubscribeRequest {
-  planId: number;
+export interface BasePaymentRequest {
   paymentMethod: PaymentMethod;
   payments?: Payment[];
   paymentImages?: File[];
   source_id?: string;
 }
 
-export interface PaymentResult {
+export interface PaymentSubscribeRequest extends BasePaymentRequest {
+  planId: number;
+}
+
+export interface SubscribeResult {
   isUpgrade: boolean;
   totalAmount: number;
   membership: {

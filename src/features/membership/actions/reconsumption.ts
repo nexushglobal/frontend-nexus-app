@@ -1,12 +1,12 @@
 'use server';
 
 import { api } from '@/features/shared/services/api';
-import { SubscribeResult } from '../types/membership-detail.type';
+import { ReconsumtionResult } from '../types/reconsumption.type';
 
-export async function subscribeToPlanAction(formData: FormData) {
+export async function reconsumtionAction(formData: FormData) {
   try {
-    const response = await api.post<SubscribeResult>(
-      '/api/membership/subscribe',
+    const response = await api.post<ReconsumtionResult>(
+      '/api/membership/reconsumption',
       formData,
       {
         isFormData: true,
@@ -15,14 +15,14 @@ export async function subscribeToPlanAction(formData: FormData) {
     );
     return {
       success: true,
-      message: 'Suscripción procesada exitosamente',
+      message: 'Reconsumo procesado exitosamente',
       data: response,
     };
   } catch (error) {
-    console.error('Error al suscribirse al plan:', error);
+    console.error('Error al reconsumir el plan:', error);
 
     // Handle different types of errors
-    let errorMessage = 'Error al procesar la suscripción';
+    let errorMessage = 'Error al procesar la reconsumción';
     let errorDetails = 'Error desconocido';
 
     if (error instanceof Error) {

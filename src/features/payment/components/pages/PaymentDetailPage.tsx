@@ -1,10 +1,10 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { PageHeader } from "@/features/shared/components/common/PageHeader";
-import { AlertTriangle } from "lucide-react";
-import { Suspense } from "react";
-import { getPaymentDetailAction } from "../../actions/get-payment-detail";
-import { PaymentDetailLoading } from "../shared/skeleton/PaymentDetailLoading";
-import { PaymentDetailContent } from "../user/PaymentDetailContent";
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { PageHeader } from '@/features/shared/components/common/PageHeader';
+import { AlertTriangle } from 'lucide-react';
+import { Suspense } from 'react';
+import { getPaymentDetailAction } from '../../actions/get-payment-detail';
+import { PaymentDetailLoading } from '../shared/skeleton/PaymentDetailLoading';
+import { PaymentDetailContent } from '../user/PaymentDetailContent';
 
 interface PaymentDetailPageProps {
   paymentId: string;
@@ -18,7 +18,7 @@ async function PaymentDetailData({ paymentId }: { paymentId: string }) {
       <Alert variant="destructive">
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
-          {result.message || "No se pudo cargar el detalle del pago"}
+          {result.message || 'No se pudo cargar el detalle del pago'}
         </AlertDescription>
       </Alert>
     );
@@ -34,7 +34,7 @@ export function PaymentDetailPage({ paymentId }: PaymentDetailPageProps) {
         title={`Detalle de Pago #${paymentId}`}
         subtitle="Información completa y detallada del pago"
         variant="gradient"
-        backUrl="/dashboard/mis-pagos"
+        backUrl="/dashboard/cli-transacciones/mis-pagos"
         className="mb-6"
       />
 

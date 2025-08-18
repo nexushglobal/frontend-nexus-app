@@ -1,12 +1,12 @@
 'use server';
 
 import { api } from '@/features/shared/services/api';
-import { SubscribeResult } from '../types/membership-detail.type';
+import { OrderResult } from '../types/order.type';
 
-export async function subscribeToPlanAction(formData: FormData) {
+export async function createOrderAction(formData: FormData) {
   try {
-    const response = await api.post<SubscribeResult>(
-      '/api/membership/subscribe',
+    const response = await api.post<OrderResult>(
+      '/api/ecommerce/order',
       formData,
       {
         isFormData: true,
@@ -15,14 +15,14 @@ export async function subscribeToPlanAction(formData: FormData) {
     );
     return {
       success: true,
-      message: 'Suscripción procesada exitosamente',
+      message: 'Pedido procesado exitosamente',
       data: response,
     };
   } catch (error) {
-    console.error('Error al suscribirse al plan:', error);
+    console.error('Error al crear el pedido:', error);
 
     // Handle different types of errors
-    let errorMessage = 'Error al procesar la suscripción';
+    let errorMessage = 'Error al procesar el pedido';
     let errorDetails = 'Error desconocido';
 
     if (error instanceof Error) {

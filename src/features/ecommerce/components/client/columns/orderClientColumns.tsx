@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { ColumnDef, VisibilityState } from '@tanstack/react-table';
-import { Eye, ShoppingCart } from 'lucide-react';
+import { CalendarDays, Eye, Package2, ShoppingCart } from 'lucide-react';
 import type { OrderClientItem } from '../../../types/order.type';
 
 export interface OrderClientColumnsProps {
@@ -57,11 +57,16 @@ export function createOrderClientColumns({
   return [
     {
       accessorKey: 'id',
-      header: 'ID',
-      cell: ({ row }) => (
-        <div className="font-medium">#{row.getValue('id')}</div>
+      header: () => (
+        <div className="flex items-center gap-2">
+          <Package2 className="h-4 w-4 text-primary" />
+          <span>Pedido</span>
+        </div>
       ),
-      size: 80,
+      cell: ({ row }) => (
+        <div className="font-medium text-primary">#{row.getValue('id')}</div>
+      ),
+      size: 100,
     },
     {
       accessorKey: 'status',
@@ -69,22 +74,24 @@ export function createOrderClientColumns({
       cell: ({ row }) => {
         const status = row.getValue('status') as string;
         return (
-          <Badge variant="outline" className={getStatusBadgeVariant(status)}>
+          <Badge variant="outline" className={`${getStatusBadgeVariant(status)} font-medium`}>
             {getStatusLabel(status)}
           </Badge>
         );
       },
-      size: 120,
+      size: 130,
     },
     {
       accessorKey: 'totalItems',
       header: 'Items',
       cell: ({ row }) => (
-        <div className="text-center font-medium">
-          {row.getValue('totalItems')}
+        <div className="text-center">
+          <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+            {row.getValue('totalItems')} items
+          </span>
         </div>
       ),
-      size: 80,
+      size: 100,
     },
     {
       accessorKey: 'totalAmount',
@@ -92,22 +99,31 @@ export function createOrderClientColumns({
       cell: ({ row }) => {
         const amount = row.getValue('totalAmount') as number;
         return (
-          <div className="font-medium">{formatCurrency(amount, 'PEN')}</div>
+          <div className="font-bold text-lg">{formatCurrency(amount, 'PEN')}</div>
         );
       },
-      size: 120,
+      size: 130,
     },
     {
       accessorKey: 'createdAt',
-      header: 'Fecha',
+      header: () => (
+        <div className="flex items-center gap-2">
+          <CalendarDays className="h-4 w-4" />
+          <span>Fecha</span>
+        </div>
+      ),
       cell: ({ row }) => {
         const date = new Date(row.getValue('createdAt'));
         return (
-          <div>
+          <div className="space-y-1">
             <div className="font-medium">
-              {date.toLocaleDateString('es-ES')}
+              {date.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+              })}
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs text-muted-foreground">
               {date.toLocaleTimeString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -116,36 +132,39 @@ export function createOrderClientColumns({
           </div>
         );
       },
-      size: 120,
+      size: 140,
     },
     {
       id: 'actions',
-      header: '',
+      header: 'Acciones',
       cell: ({ row }) => {
         const order = row.original;
 
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onPreview(order)}
-              title="Resumen"
+              className="h-8 w-8 p-0 hover:bg-primary/10"
+              title="Vista rápida"
             >
               <ShoppingCart className="h-4 w-4" />
             </Button>
             <Button
-              variant="ghost"
+              variant="default"
               size="sm"
               onClick={() => onViewDetail(order.id)}
-              title="Ver detalle"
+              className="h-8 px-3 text-xs"
+              title="Ver detalle completo"
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="h-3 w-3 mr-1" />
+              Detalle
             </Button>
           </div>
         );
       },
-      size: 100,
+      size: 120,
     },
   ];
 }

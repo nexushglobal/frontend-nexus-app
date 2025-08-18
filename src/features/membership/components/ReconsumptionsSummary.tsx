@@ -5,13 +5,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Switch } from '@/components/ui/switch';
+import { formatDate } from '@/features/shared/utils/formatCurrency';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, Calendar, CreditCard, DollarSign, RefreshCw, Zap } from 'lucide-react';
+import {
+  AlertTriangle,
+  Calendar,
+  CreditCard,
+  DollarSign,
+  RefreshCw,
+  Zap,
+} from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { UpdateMembershipAction } from '../actions/update-membership';
 import { MembershipReconsumption } from '../types/reconsumption.type';
-import { formatDate } from '@/features/shared/utils/formatCurrency';
+import { ReconsumptionPaymentSheet } from '@/features/shared/components/payment/ReconsumptionPaymentSheet';
 
 interface Props {
   membership?: MembershipReconsumption;
@@ -20,16 +28,17 @@ interface Props {
 export function ReconsumptionsSummary({ membership }: Props) {
   const queryClient = useQueryClient();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showPaymentSheet, setShowPaymentSheet] = useState(false);
 
   // Calcular el progreso del período de membresía
   const calculateProgress = (startDate: string, endDate: string) => {
     const start = new Date(startDate).getTime();
     const end = new Date(endDate).getTime();
     const now = new Date().getTime();
-    
+
     if (now < start) return 0;
     if (now > end) return 100;
-    
+
     const progress = ((now - start) / (end - start)) * 100;
     return Math.min(Math.max(progress, 0), 100);
   };
@@ -75,6 +84,14 @@ export function ReconsumptionsSummary({ membership }: Props) {
     updateMutation.mutate({ [field]: value });
   };
 
+  const handleReconsumptionSuccess = () => {
+    toast.success('Reconsumo procesado exitosamente');
+    queryClient.invalidateQueries({
+      queryKey: ['membership-reconsumptions'],
+    });
+    setShowPaymentSheet(false);
+  };
+
   if (!membership) {
     return (
       <Card className="mb-6">
@@ -97,48 +114,59 @@ export function ReconsumptionsSummary({ membership }: Props) {
     <div className="mb-6 space-y-4">
       {/* Banner de Alerta */}
       {needsAttention && (
-        <Card className={`border-2 ${
-          isExpired 
-            ? 'border-red-500 bg-red-50 dark:bg-red-900/10' 
-            : 'border-amber-500 bg-amber-50 dark:bg-amber-900/10'
-        }`}>
+        <Card
+          className={`border-2 ${
+            isExpired
+              ? 'border-red-500 bg-red-50 dark:bg-red-900/10'
+              : 'border-amber-500 bg-amber-50 dark:bg-amber-900/10'
+          }`}
+        >
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${
-                isExpired 
-                  ? 'bg-red-100 dark:bg-red-900/20' 
-                  : 'bg-amber-100 dark:bg-amber-900/20'
-              }`}>
-                <AlertTriangle className={`h-5 w-5 ${
-                  isExpired 
-                    ? 'text-red-600 dark:text-red-400' 
-                    : 'text-amber-600 dark:text-amber-400'
-                }`} />
+              <div
+                className={`p-2 rounded-full ${
+                  isExpired
+                    ? 'bg-red-100 dark:bg-red-900/20'
+                    : 'bg-amber-100 dark:bg-amber-900/20'
+                }`}
+              >
+                <AlertTriangle
+                  className={`h-5 w-5 ${
+                    isExpired
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-amber-600 dark:text-amber-400'
+                  }`}
+                />
               </div>
               <div className="flex-1">
-                <h3 className={`font-semibold ${
-                  isExpired 
-                    ? 'text-red-900 dark:text-red-100' 
-                    : 'text-amber-900 dark:text-amber-100'
-                }`}>
-                  {isExpired ? '¡Tu membresía ha vencido!' : '¡Tu membresía vence pronto!'}
+                <h3
+                  className={`font-semibold ${
+                    isExpired
+                      ? 'text-red-900 dark:text-red-100'
+                      : 'text-amber-900 dark:text-amber-100'
+                  }`}
+                >
+                  {isExpired
+                    ? '¡Tu membresía ha vencido!'
+                    : '¡Tu membresía vence pronto!'}
                 </h3>
-                <p className={`text-sm ${
-                  isExpired 
-                    ? 'text-red-700 dark:text-red-300' 
-                    : 'text-amber-700 dark:text-amber-300'
-                }`}>
-                  {isExpired 
+                <p
+                  className={`text-sm ${
+                    isExpired
+                      ? 'text-red-700 dark:text-red-300'
+                      : 'text-amber-700 dark:text-amber-300'
+                  }`}
+                >
+                  {isExpired
                     ? 'Renueva tu membresía ahora para mantener todos los beneficios activos.'
-                    : `Te quedan ${daysRemaining} días. Configura tu reconsumo automático para evitar interrupciones.`
-                  }
+                    : `Te quedan ${daysRemaining} días. Configura tu reconsumo automático para evitar interrupciones.`}
                 </p>
               </div>
               {membership.canReconsume && (
-                <Button 
-                  variant={isExpired ? "destructive" : "default"}
+                <Button
+                  variant={isExpired ? 'destructive' : 'default'}
                   className={`gap-2 ${needsAttention ? 'animate-pulse' : ''}`}
-                  onClick={() => toast.info('Funcionalidad de reconsumo próximamente disponible')}
+                  onClick={() => setShowPaymentSheet(true)}
                 >
                   <Zap className="h-4 w-4" />
                   {isExpired ? 'Renovar Ahora' : 'Configurar Reconsumo'}
@@ -162,47 +190,70 @@ export function ReconsumptionsSummary({ membership }: Props) {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-primary" />
-                <span className="font-semibold">Período de Membresía Actual</span>
+                <span className="font-semibold">
+                  Período de Membresía Actual
+                </span>
               </div>
               <div className="text-right">
-                <p className={`text-xs font-medium ${
-                  isExpired 
-                    ? 'text-red-600 dark:text-red-400' 
-                    : isExpiringSoon 
-                    ? 'text-amber-600 dark:text-amber-400' 
-                    : 'text-muted-foreground'
-                }`}>
+                <p
+                  className={`text-xs font-medium ${
+                    isExpired
+                      ? 'text-red-600 dark:text-red-400'
+                      : isExpiringSoon
+                      ? 'text-amber-600 dark:text-amber-400'
+                      : 'text-muted-foreground'
+                  }`}
+                >
                   {isExpired ? '¡Vencido!' : `${daysRemaining} días restantes`}
                 </p>
               </div>
             </div>
             <div className="flex items-center justify-between">
               <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">FECHA DE INICIO</p>
-                <p className="font-semibold">{formatDate(membership.startDate)}</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  FECHA DE INICIO
+                </p>
+                <p className="font-semibold">
+                  {formatDate(membership.startDate)}
+                </p>
               </div>
               <div className="flex-1 mx-4">
                 <div className="h-2 bg-primary/20 rounded-full relative">
-                  <div 
+                  <div
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      isExpired 
-                        ? 'bg-red-500' 
-                        : isExpiringSoon 
-                        ? 'bg-amber-500' 
+                      isExpired
+                        ? 'bg-red-500'
+                        : isExpiringSoon
+                        ? 'bg-amber-500'
                         : 'bg-primary'
                     }`}
-                    style={{ width: `${calculateProgress(membership.startDate, membership.endDate)}%` }}
+                    style={{
+                      width: `${calculateProgress(
+                        membership.startDate,
+                        membership.endDate,
+                      )}%`,
+                    }}
                   ></div>
                 </div>
                 <div className="text-center mt-1">
                   <span className="text-xs text-muted-foreground">
-                    {Math.round(calculateProgress(membership.startDate, membership.endDate))}% completado
+                    {Math.round(
+                      calculateProgress(
+                        membership.startDate,
+                        membership.endDate,
+                      ),
+                    )}
+                    % completado
                   </span>
                 </div>
               </div>
               <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">FECHA DE VENCIMIENTO</p>
-                <p className="font-semibold">{formatDate(membership.endDate)}</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  FECHA DE VENCIMIENTO
+                </p>
+                <p className="font-semibold">
+                  {formatDate(membership.endDate)}
+                </p>
               </div>
             </div>
           </div>
@@ -248,22 +299,22 @@ export function ReconsumptionsSummary({ membership }: Props) {
             </div>
 
             {membership.canReconsume && (
-              <div className={`p-4 rounded-lg border ${
-                needsAttention 
-                  ? isExpired 
-                    ? 'bg-red-50 border-red-200 dark:bg-red-900/10 dark:border-red-800/40' 
-                    : 'bg-amber-50 border-amber-200 dark:bg-amber-900/10 dark:border-amber-800/40'
-                  : 'bg-primary/5'
-              }`}>
+              <div
+                className={`p-4 rounded-lg border ${
+                  needsAttention
+                    ? isExpired
+                      ? 'bg-red-50 border-red-200 dark:bg-red-900/10 dark:border-red-800/40'
+                      : 'bg-amber-50 border-amber-200 dark:bg-amber-900/10 dark:border-amber-800/40'
+                    : 'bg-primary/5'
+                }`}
+              >
                 <Button
                   size="sm"
-                  className={`w-full gap-2 ${needsAttention ? 'animate-pulse' : ''}`}
-                  variant={needsAttention ? "destructive" : "default"}
-                  onClick={() =>
-                    toast.info(
-                      'Funcionalidad de reconsumo próximamente disponible',
-                    )
-                  }
+                  className={`w-full gap-2 ${
+                    needsAttention ? 'animate-pulse' : ''
+                  }`}
+                  variant={needsAttention ? 'destructive' : 'default'}
+                  onClick={() => setShowPaymentSheet(true)}
                 >
                   {needsAttention ? (
                     <Zap className="h-4 w-4" />
@@ -401,6 +452,16 @@ export function ReconsumptionsSummary({ membership }: Props) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Reconsumption Payment Sheet */}
+      {membership && (
+        <ReconsumptionPaymentSheet
+          isOpen={showPaymentSheet}
+          onClose={() => setShowPaymentSheet(false)}
+          membership={membership}
+          onSuccess={handleReconsumptionSuccess}
+        />
+      )}
     </div>
   );
 }

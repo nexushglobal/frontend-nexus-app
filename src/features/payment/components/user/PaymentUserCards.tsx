@@ -1,130 +1,127 @@
-'use client'
+'use client';
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import {
-    Calendar,
-    CreditCard,
-    DollarSign,
-    Eye,
-    Package
-} from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { PaymentUser } from '../../types/response-payment'
-import { formatAmount, formatDate, formatTime, getStatusConfig } from '../../utils/payement.utils'
+  CalendarDays,
+  CreditCard,
+  DollarSign,
+  Eye,
+  Package2,
+} from 'lucide-react';
+import Link from 'next/link';
+import { PaymentUser } from '../../types/response-payment';
+import {
+  formatAmount,
+  formatDate,
+  getStatusConfig,
+} from '../../utils/payement.utils';
 
 interface PaymentUserCardsProps {
-    data: PaymentUser[]
+  data: PaymentUser[];
 }
 
 export function PaymentUserCards({ data }: PaymentUserCardsProps) {
-    const router = useRouter()
-
-    if (!data?.length) {
-        return (
-            <Card className="shadow-sm">
-                <CardContent className="flex items-center justify-center py-12">
-                    <div className="text-center space-y-3">
-                        <Package className="h-12 w-12 text-muted-foreground mx-auto" />
-                        <div>
-                            <h3 className="text-lg font-medium">No tienes pagos registrados</h3>
-                            <p className="text-muted-foreground text-sm">
-                                Cuando realices pagos, aparecerán aquí
-                            </p>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-        )
-    }
-
+  if (!data?.length) {
     return (
-        <div className="space-y-4">
-            {data.map((payment) => {
-                const statusConfig = getStatusConfig(payment.status)
+      <Card className="border-dashed border-2 border-muted-foreground/25">
+        <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted mb-4">
+            <CreditCard className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-semibold mb-2">
+            No tienes pagos registrados
+          </h3>
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Cuando realices pagos, aparecerán aquí para tu seguimiento.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
-                return (
-                    <Card key={payment.id} className="shadow-sm">
-                        <CardContent className="p-4">
-                            <div className="space-y-4">
-                                {/* Header con Estado y ID */}
-                                <div className="flex items-center justify-between">
-                                    <Badge
-                                        variant={statusConfig.variant}
-                                        className={statusConfig.className}
-                                    >
-                                        {statusConfig.label}
-                                    </Badge>
-                                    <span className="text-xs text-muted-foreground font-mono">
-                                        #{payment.id}
-                                    </span>
-                                </div>
+  return (
+    <div className="space-y-4">
+      {data.map((payment) => {
+        const statusConfig = getStatusConfig(payment.status);
 
-                                {/* Información del Pago */}
-                                <div className="space-y-3">
-                                    <div className="flex items-start gap-3">
-                                        <Package className="h-5 w-5 text-blue-500 mt-0.5" />
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="font-medium text-sm">{payment.paymentConfig.name}</h3>
-                                            <p className="text-xs text-muted-foreground line-clamp-2">
-                                                {payment.paymentConfig.description}
-                                            </p>
-                                        </div>
-                                    </div>
+        return (
+          <Card
+            key={payment.id}
+            className="shadow-sm hover:shadow-md transition-shadow"
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Package2 className="h-5 w-5 text-primary" />
+                  Pago #{payment.id}
+                </CardTitle>
+                <Badge
+                  variant={statusConfig.variant}
+                  className={`${statusConfig.className} font-medium`}
+                >
+                  {statusConfig.label}
+                </Badge>
+              </div>
+            </CardHeader>
 
-                                    <Separator />
+            <CardContent className="pt-0">
+              <div className="space-y-4">
+                {/* Payment Info */}
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <h4 className="font-medium text-sm mb-1">
+                    {payment.paymentConfig.name}
+                  </h4>
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    {payment.paymentConfig.description}
+                  </p>
+                </div>
 
-                                    {/* Monto */}
-                                    <div className="flex items-center gap-3">
-                                        <DollarSign className="h-5 w-5 text-green-500" />
-                                        <div>
-                                            <p className="text-sm font-medium">{formatAmount(payment.amount)}</p>
-                                            <p className="text-xs text-muted-foreground">Monto del pago</p>
-                                        </div>
-                                    </div>
+                {/* Quick Stats */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center p-3 bg-muted/50 rounded-lg">
+                    <DollarSign className="h-4 w-4 mx-auto mb-1 text-green-600" />
+                    <p className="text-sm font-bold">
+                      {formatAmount(payment.amount)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Monto</p>
+                  </div>
 
-                                    {/* Método de Pago */}
-                                    {payment.paymentMethod && (
-                                        <div className="flex items-center gap-3">
-                                            <CreditCard className="h-5 w-5 text-gray-500" />
-                                            <div>
-                                                <p className="text-sm">{payment.paymentMethod}</p>
-                                                <p className="text-xs text-muted-foreground">Método de pago</p>
-                                            </div>
-                                        </div>
-                                    )}
+                  <div className="text-center p-3 bg-muted/50 rounded-lg">
+                    <CreditCard className="h-4 w-4 mx-auto mb-1" />
+                    <p className="text-xs font-medium truncate">
+                      {payment.paymentMethod || 'N/A'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Método</p>
+                  </div>
 
-                                    {/* Fecha */}
-                                    <div className="flex items-center gap-3">
-                                        <Calendar className="h-5 w-5 text-gray-500" />
-                                        <div>
-                                            <p className="text-sm">{formatDate(payment.createdAt)}</p>
-                                            <p className="text-xs text-muted-foreground">
-                                                {formatTime(payment.createdAt)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                  <div className="text-center p-3 bg-muted/50 rounded-lg">
+                    <CalendarDays className="h-4 w-4 mx-auto mb-1" />
+                    <p className="text-xs font-medium">
+                      {formatDate(payment.createdAt)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Fecha</p>
+                  </div>
+                </div>
 
-                                {/* Acción */}
-                                <div className="pt-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => router.push(`/dashboard/cli-mis-pagos/detalle/${payment.id}`)}
-                                        className="w-full flex items-center gap-2"
-                                    >
-                                        <Eye className="h-4 w-4" />
-                                        Ver Detalle
-                                    </Button>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                )
-            })}
-        </div>
-    )
+                <Separator />
+
+                {/* Action Button */}
+                <Link
+                  href={`/dashboard/cli-transacciones/mis-pagos/detalle/${payment.id}`}
+                >
+                  <Button variant="default" size="sm" className="w-full gap-2">
+                    <Eye className="h-4 w-4" />
+                    Ver Detalle Completo
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
 }
