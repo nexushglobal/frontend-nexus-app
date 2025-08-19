@@ -1,9 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { revalidateAdminPaymentDetail } from '../../actions/revalidate-payments';
@@ -67,32 +65,12 @@ export function PaymentAdminDetailContent({
   };
 
   const handleBackToPayments = () => {
-    router.push('/dashboard/pagos');
+    router.push('/dashboard/fac-pagos');
   };
 
   if (isMobile) {
     return (
       <div className="space-y-6">
-        {/* Mobile Header */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3 mb-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleBackToPayments}
-                className="h-8 w-8 p-0"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div className="flex-1">
-                <CardTitle className="text-lg">Pago #{paymentId}</CardTitle>
-                <p className="text-sm text-muted-foreground">Vista móvil</p>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
-
         {/* Admin Actions - Always visible on mobile */}
         <PaymentAdminActions
           payment={payment}

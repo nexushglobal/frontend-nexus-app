@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -41,7 +41,6 @@
   /* Sidebar - Siempre oscuro y vibrante */
   --sidebar-border: hsl(235, 25%, 20%);
   --sidebar-separator: hsl(235, 25%, 25%);
-
   /* Navigation */
   --nav-item: transparent;
   --nav-item-foreground: hsl(210, 40%, 85%);
@@ -425,7 +424,7 @@
     overflow: hidden;
   }
 
-  .tabs-trigger[data-state="active"] {
+  .tabs-trigger[data-state='active'] {
     background-color: hsl(var(--background));
     color: hsl(var(--primary));
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -433,7 +432,7 @@
   }
 
   /* Dark mode specific enhancements */
-  .dark .tabs-trigger[data-state="active"] {
+  .dark .tabs-trigger[data-state='active'] {
     background-color: hsl(var(--card));
     box-shadow: 0 0 0 1px hsl(var(--primary) / 20%),
       0 1px 2px rgba(0, 0, 0, 0.2);
@@ -442,8 +441,8 @@
   }
 
   /* Add a subtle indicator beneath the active tab */
-  .tabs-trigger[data-state="active"]::after {
-    content: "";
+  .tabs-trigger[data-state='active']::after {
+    content: '';
     position: absolute;
     bottom: 4px;
     left: 50%;
@@ -454,17 +453,17 @@
     border-radius: 2px;
   }
 
-  .dark .tabs-trigger[data-state="active"]::after {
+  .dark .tabs-trigger[data-state='active']::after {
     background-color: hsl(var(--primary));
     box-shadow: 0 0 8px hsl(var(--primary));
   }
 
   /* Change hover state to be more noticeable */
-  .tabs-trigger:hover:not([data-state="active"]) {
+  .tabs-trigger:hover:not([data-state='active']) {
     background-color: hsl(var(--muted) / 80%);
   }
 
-  .dark .tabs-trigger:hover:not([data-state="active"]) {
+  .dark .tabs-trigger:hover:not([data-state='active']) {
     background-color: hsl(var(--muted) / 40%);
   }
 
@@ -568,7 +567,7 @@
   }
 
   /* Custom styling for the TabsTrigger - active state */
-  .custom-tabs-trigger[data-state="active"] {
+  .custom-tabs-trigger[data-state='active'] {
     position: relative;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
@@ -576,7 +575,7 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
-  .dark .custom-tabs-trigger[data-state="active"] {
+  .dark .custom-tabs-trigger[data-state='active'] {
     background-color: hsl(var(--card));
     color: hsl(var(--primary));
     border: 1px solid hsl(var(--primary) / 20%);
@@ -584,8 +583,8 @@
   }
 
   /* Add a custom indicator for active tabs */
-  .custom-tabs-trigger[data-state="active"]::after {
-    content: "";
+  .custom-tabs-trigger[data-state='active']::after {
+    content: '';
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -596,17 +595,17 @@
     border-radius: 2px;
   }
 
-  .dark .custom-tabs-trigger[data-state="active"]::after {
+  .dark .custom-tabs-trigger[data-state='active']::after {
     background-color: hsl(var(--primary));
     box-shadow: 0 0 6px hsl(var(--primary)), 0 0 12px hsl(var(--primary) / 50%);
   }
 
   /* Hover state for inactive tabs */
-  .custom-tabs-trigger:hover:not([data-state="active"]) {
+  .custom-tabs-trigger:hover:not([data-state='active']) {
     background-color: hsl(var(--muted) / 80%);
   }
 
-  .dark .custom-tabs-trigger:hover:not([data-state="active"]) {
+  .dark .custom-tabs-trigger:hover:not([data-state='active']) {
     background-color: hsl(var(--muted) / 50%);
   }
 
@@ -627,16 +626,16 @@
   }
 
   /* Override the default Tabs component classes */
-  [role="tablist"] {
+  [role='tablist'] {
     @apply dark:bg-gray-800/50 dark:border-gray-700;
   }
 
-  [role="tab"][aria-selected="true"] {
+  [role='tab'][aria-selected='true'] {
     @apply dark:bg-gray-700 dark:text-primary-foreground dark:shadow-sm;
   }
 
-  [role="tab"][aria-selected="true"]::after {
-    content: "";
+  [role='tab'][aria-selected='true']::after {
+    content: '';
     position: absolute;
     bottom: 2px;
     left: 50%;

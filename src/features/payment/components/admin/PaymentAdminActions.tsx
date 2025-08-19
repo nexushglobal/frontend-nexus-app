@@ -89,21 +89,25 @@ export function PaymentAdminActions({ payment, onPaymentUpdate }: PaymentAdminAc
         switch (payment.status) {
             case PaymentStatus.PENDING:
                 return (
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             onClick={() => setShowApprovalModal(true)}
-                            className="flex-1"
+                            className="flex-1 w-full"
+                            size="sm"
                         >
                             <CheckCircle className="h-4 w-4 mr-2" />
-                            Aprobar
+                            <span className="hidden xs:inline">Aprobar</span>
+                            <span className="xs:hidden">✓</span>
                         </Button>
                         <Button
                             onClick={() => setShowRejectionModal(true)}
                             variant="destructive"
-                            className="flex-1"
+                            className="flex-1 w-full"
+                            size="sm"
                         >
                             <AlertTriangle className="h-4 w-4 mr-2" />
-                            Rechazar
+                            <span className="hidden xs:inline">Rechazar</span>
+                            <span className="xs:hidden">✗</span>
                         </Button>
                     </div>
                 );
@@ -114,9 +118,11 @@ export function PaymentAdminActions({ payment, onPaymentUpdate }: PaymentAdminAc
                     <Button
                         onClick={handleCompletePayment}
                         className="w-full"
+                        size="sm"
                     >
                         <RefreshCw className="h-4 w-4 mr-2" />
-                        Actualizar Información
+                        <span className="hidden xs:inline">Actualizar Información</span>
+                        <span className="xs:hidden">Actualizar</span>
                     </Button>
                 );
 

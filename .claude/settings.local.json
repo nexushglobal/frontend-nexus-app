@@ -1,6 +1,9 @@
 {
   "permissions": {
-    "defaultMode": "acceptEdits"
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(rm:*)"
+    ]
   },
   "outputStyle": "default"
 }

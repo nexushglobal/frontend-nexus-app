@@ -1,8 +1,14 @@
-"use client";
-import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
-import { Sun, Moon } from "lucide-react";
-import { motion } from "framer-motion";
+'use client';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Check, ChevronDown, Monitor, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 const ThemeSwitch = () => {
   const { theme, setTheme } = useTheme();
@@ -14,82 +20,119 @@ const ThemeSwitch = () => {
 
   if (!mounted) return null;
 
-  const isDark = theme === "dark";
+  const getThemeIcon = (currentTheme: string | undefined) => {
+    switch (currentTheme) {
+      case 'dark':
+        return <Moon className="h-4 w-4" />;
+      case 'light':
+        return <Sun className="h-4 w-4" />;
+      case 'system':
+      default:
+        return <Monitor className="h-4 w-4" />;
+    }
+  };
+
+  const getThemeLabel = (currentTheme: string | undefined) => {
+    switch (currentTheme) {
+      case 'dark':
+        return 'Oscuro';
+      case 'light':
+        return 'Claro';
+      case 'system':
+      default:
+        return 'Sistema';
+    }
+  };
+
+  const themeOptions = [
+    {
+      value: 'light',
+      label: 'Modo Claro',
+      icon: <Sun className="h-4 w-4" />,
+    },
+    {
+      value: 'dark',
+      label: 'Modo Oscuro',
+      icon: <Moon className="h-4 w-4" />,
+    },
+    {
+      value: 'system',
+      label: 'Modo Sistema',
+      icon: <Monitor className="h-4 w-4" />,
+    },
+  ];
 
   return (
-    <div
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="group relative flex h-8 w-16 cursor-pointer items-center rounded-full p-1 transition-all duration-500"
-    >
-      <div className="absolute inset-0 rounded-full transition-all duration-500 bg-gray-300 dark:bg-gray-900">
-        <div className="absolute inset-0 transition-opacity duration-500 dark:opacity-100 opacity-0">
-          {[...Array(6)].map((_, i) => (
-            <motion.span
-              key={i}
-              className="absolute inline-block h-[2px] w-[2px] bg-white rounded-full"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      <motion.div
-        className="absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-white to-blue-50 shadow-lg dark:from-gray-900 dark:to-gray-800 transition-colors duration-500"
-        animate={{
-          x: isDark ? 32 : 0,
-          rotate: isDark ? 360 : 0,
-        }}
-        transition={{
-          x: { type: "spring", stiffness: 200, damping: 15 },
-          rotate: { duration: 0.5 },
-        }}
-      >
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 0.5,
-          }}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted transition-colors duration-200 text-sm font-medium"
         >
-          {isDark ? (
-            <Moon className="h-4 w-4 text-blue-400 transition-transform" />
-          ) : (
-            <Sun className="h-4 w-4 text-yellow-500 transition-transform" />
-          )}
-        </motion.div>
-
-        <motion.div
-          className="absolute inset-0 rounded-full bg-white"
-          animate={{
-            opacity: [0, 0.2, 0],
-          }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-        />
-      </motion.div>
-
-      {/* Se eliminó el efecto de shimmer horizontal aquí */}
-      <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        {/* Efecto de hover simple sin animación de desplazamiento */}
-        <div className="absolute inset-0 rounded-full bg-white/10" />
-      </div>
-    </div>
+          <motion.div
+            initial={false}
+            animate={{
+              rotate: theme === 'dark' ? 360 : 0,
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              rotate: { duration: 0.3 },
+              scale: { duration: 0.2 },
+            }}
+            className="text-foreground"
+          >
+            {getThemeIcon(theme)}
+          </motion.div>
+          <span className="hidden sm:inline text-foreground">
+            {getThemeLabel(theme)}
+          </span>
+          <ChevronDown className="h-3 w-3 text-muted-foreground" />
+        </motion.button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <AnimatePresence>
+          {themeOptions.map((option, index) => (
+            <motion.div
+              key={option.value}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <DropdownMenuItem
+                onClick={() => setTheme(option.value)}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <div className="flex items-center gap-2 flex-1">
+                  <motion.div
+                    animate={{
+                      scale: theme === option.value ? [1, 1.2, 1] : 1,
+                      rotate:
+                        theme === option.value && option.value === 'dark'
+                          ? 360
+                          : 0,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {option.icon}
+                  </motion.div>
+                  <span>{option.label}</span>
+                </div>
+                {theme === option.value && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 200 }}
+                  >
+                    <Check className="h-4 w-4 text-primary" />
+                  </motion.div>
+                )}
+              </DropdownMenuItem>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

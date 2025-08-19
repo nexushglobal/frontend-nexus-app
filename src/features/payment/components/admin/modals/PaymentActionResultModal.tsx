@@ -26,7 +26,7 @@ export function PaymentActionResultModal({
     const router = useRouter();
 
     const handleNavigateToPayments = () => {
-        router.push('/dashboard/pagos');
+        router.push('/dashboard/fac-pagos');
         onClose();
     };
 

@@ -1,12 +1,16 @@
-"use server";
+'use server';
 
-import { api } from "@/features/shared/services/api";
-import { CompleteRegistrationData } from "../schemas/register-schemas";
-import { DocumentValidationRequest, DocumentValidationResponse, RegisterUserRequest } from "../types/register.types";
+import { api } from '@/features/shared/services/api';
+import { CompleteRegistrationData } from '../schemas/register-schemas';
+import {
+  DocumentValidationRequest,
+  DocumentValidationResponse,
+  RegisterUserRequest,
+} from '../types/register.types';
 
 export async function registerUserAction(data: CompleteRegistrationData) {
   try {
-      const requestData: RegisterUserRequest = {
+    const requestData: RegisterUserRequest = {
       email: data.email,
       password: data.password,
       firstName: data.firstName,
@@ -22,21 +26,16 @@ export async function registerUserAction(data: CompleteRegistrationData) {
       documentNumber: data.documentNumber,
     };
 
-    const response = await api.post(
-      "/api/auth/register",
-      requestData,
-
-    );
+    const response = await api.post('/api/auth/register', requestData);
 
     return {
       success: true,
-      message: "Usuario registrado exitosamente",
+      message: 'Usuario registrado exitosamente',
       data: response,
     };
   } catch (error) {
-
-    let errorMessage = "Error al procesar la suscripción";
-    let errorDetails = "Error desconocido";
+    let errorMessage = 'Error al procesar la suscripción';
+    let errorDetails = 'Error desconocido';
 
     if (error instanceof Error) {
       errorDetails = error.message;
@@ -48,7 +47,7 @@ export async function registerUserAction(data: CompleteRegistrationData) {
         }
         if (errorData.errors) {
           errorDetails = Array.isArray(errorData.errors)
-            ? errorData.errors.join(", ")
+            ? errorData.errors.join(', ')
             : errorData.errors;
         }
       } catch {
@@ -66,7 +65,7 @@ export async function registerUserAction(data: CompleteRegistrationData) {
 }
 export async function validateDocumentAction(
   documentNumber: string,
-  documentType: "dni" | "ruc"
+  documentType: 'dni' | 'ruc',
 ) {
   try {
     const requestData: DocumentValidationRequest = {
@@ -74,18 +73,18 @@ export async function validateDocumentAction(
       documentType: documentType,
     };
     const response = await api.post<DocumentValidationResponse>(
-      "/api/integration/document/validate",
-      requestData
+      '/api/integration/document/validate',
+      requestData,
     );
 
     return {
       success: true,
-      message: "Documento validado exitosamente",
+      message: 'Documento validado exitosamente',
       data: response,
     };
   } catch (error) {
-    let errorMessage = "Error al validar el documento";
-    let errorDetails = "Error desconocido";
+    let errorMessage = 'Error al validar el documento';
+    let errorDetails = 'Error desconocido';
 
     if (error instanceof Error) {
       errorDetails = error.message;
@@ -97,7 +96,7 @@ export async function validateDocumentAction(
         }
         if (errorData.errors) {
           errorDetails = Array.isArray(errorData.errors)
-            ? errorData.errors.join(", ")
+            ? errorData.errors.join(', ')
             : errorData.errors;
         }
       } catch {
