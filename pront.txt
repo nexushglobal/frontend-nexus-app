@@ -1,146 +1,176 @@
-MODULO DE PUNTOS (points)
- Este modulo nos permite gestionar el historial de puntos de un usuario que se divide en las siguientes categorias con sus vistas
- - puntos de la plataforma
-    * /dashboard/(cliente)/cli-puntos/historial-puntos - "Mis Puntos" (ya lo hicimos)
-    * /dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/:id - "Detalle de Transacción" (ya lo hicimos)
- - puntos de lote
-    * /dashboard/(cliente)/cli-puntos/historial-puntos-lote - "Puntos Lote" (ya lo hicimos)
- - volumen semanal
-    * /dashboard/(cliente)/cli-puntos/volumenes-semanales - "Volúmenes Semanales" (ya lo hicimos)
-    * /dashboard/(cliente)/cli-puntos/volumenes-semanales/semana/:id - "Detalle de Transacción" (pendiente)
-
-PUNTOS DE LA PLATAFORMA - "Mis Puntos"
-
-# DATA
-I. Consumir el action de getWeeklyVolumeAction pasandole el :id
- - Ubicación: src/features/point/action/get-weekly.ts
- - Se consumi desde el server
-
-II. Consumir el service de getWeeklyVolumeHistory pasandole el :id
- - Ubicación: src/features/point/services/weekly.service.ts
- - Se consumi desde el client
- - params disponibles: limit y page
-
-# UI
-I. En la parte superior de la vista se debe mostrar los datos del action getWeeklyVolumeAction
- - Debe ser una card por cada uno de los datos
- - Debe tener un diseño atractivo
-
-II. Después debajo debe haber un boton de mostrar historial de volumen el cual consumira el servicio de getWeeklyVolumeHistory
- - Debe mostrar la info en una tabla (desktop) y cards (mobile)
- - Usar los componentes de shared que ya estan creados para la tabla y paginacion
- - Tener como referencia /dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/page.txt
-
-# CONSIDERACIONES
-* Para datos con paginacion
- - implementar la logica de paginacion en el cliente
- - Usar los componentes de shared que ya estan creados para la tabla y paginacion
- - Tener como referencia /dashboard/(cliente)/cli-puntos/historial-puntos/detalle-transaccion/page.txt
-* usar los componentes de shared si es necesario
-* mantener los colores del Proyecto de src/styles/globals.css
-* mantener la estructura que vengo manejando usando page como puente al feature donde esta todos los componentes y logica
-* crear un archivo de constans para tipos o status haciendo la traduccion correspondiente
-
-
-///
-
-Quiero que tomes de referencia src/app/dashboard/(cliente)/cli-puntos/historial-puntos/page.tsx
-
-para crear la vista de puntos de lote "Puntos Lote" en la ruta /dashboard/(cliente)/cli-puntos/historial-puntos-lote
-
-lo que cambia es la consulta a los datos, se tiene que usar
--getUserPointsLotAction server
--getUserLotTransactions client
-los tipos tambien cambian
-  type: 'LOT_BINARY_COMMISSION' | 'LOT_DIRECT_BONUS' | 'LOT_WITHDRAWAL';
-la tabla ya no tiene metadata por lo que no es necesario
-tampoco debe haber action para redirigir al detalle ya que esto no existe
-el resto se mantiene parecido
-
-///
-
-Quiero que implementemos la parte de realizar un reconsumo que dejamos pendiente, en el archivo src/features/membership/components/ReconsumptionsSummary.tsx
-por ahora tenemos un onClick que muestra una alerta, vamos a cambiar eso por algo muy similar a lo que tenemos cuando adquirimos un plan
-en el archivo src/features/membership/components/PaymentSubscriptionSheet.tsx
-
-de hecho la logica es muy parecida solo cambia unos cuantos  datos y el output
--suscription
-   (action)
-   src/features/membership/actions/suscription-to-plan.ts (subscribeToPlanAction)
-   (input)
-   ```export interface PaymentReconsumptionRequest extends BasePaymentRequest {
-      membershipId: number;
-   }```
-   (output)
-  ``` export interface ReconsumptionResult {
-   totalAmount: number;
-      membership: {
-         id: number;
-         planName: string;
-         status: string;
-         endDate: string;
-      };
-      payment: {
-         id: string;
-      };
-   }```
--reconsumption
-   (action)
-   src/features/membership/actions/reconsumption.ts (reconsumtionAction)
-   (input)
-   ```export interface PaymentReconsumptionRequest extends BasePaymentRequest {
-      membershipId: number;
-   }
-   ```
-   (output)
-   ```export interface ReconsumtionResult {
-      totalAmount: number;
-      paymentId: number;
-      reconsumption: {
-         periodDate: string;
-      };
-   }```
-
-como podras darte cuenta ambos parten de un BasePaymentRequest
-los metodos en el pago son 3, uno por puntos que por ahora no estara impletando pero los otros dos metodos si estaran implementados los cuales son:
-- pasarela de pago
-- mediante voucher
-
-mientras que en el plan se evalua el precio del plan o el descuento en caso de ser upgrade, en reconsumo se evalua el consto del reconsumo
-
-lo que quiero es que estraigas todo esta logica a un componente src/feature/shared y lo reutilices en ambos casos, por que en un futuro tendre
-otros pagos como pagar entrada y evento y se maneja partiendo de BasePaymentRequest, el output siempre cambiara.
-es importande por ahora dejar inavilitado la parte de pago con puntos
-tener en cuenta que al terminar la ejecucion debe mostrar un modal del resultado
+Ahora quiero que integres la siguiente api
+api/withdrawals/:id (GET)
+esto nos permitira ver el detalle de un retiro
+la estructura del response es la siguiente
+    ## ejemplo 1
+"id": 26,
+        "amount": 653,
+        "status": "APPROVED",
+        "createdAt": "2025-07-21T16:15:10.239Z",
+        "reviewedAt": "2025-07-21T21:30:14.099Z",
+        "rejectionReason": null,
+        "isArchived": false,
+        "metadata": {
+            "Creado el": "2025-07-21T16:15:10.297Z",
+            "Monto solicitado": 653,
+            "Puntos disponibles": 653
+        },
+        "bankName": "BBVA",
+        "accountNumber": "0011-0814-0266178617",
+        "cci": "01181400026617861714",
+        "user": {
+            "id": "68a2aca731a376f93a9ba4cd",
+            "email": "luis.mas.ochentaysiete@gmail.com",
+            "personalInfo": {
+                "firstName": "Luis",
+                "lastName": "miguel Aguilar Silva"
+            },
+            "bankInfo": {
+                "bankName": "BBVA",
+                "accountNumber": "0011-0814-0266178617",
+                "cci": "01181400026617861714"
+            }
+        },
+        "reviewedBy": {
+            "id": "68a2aca731a376f93a9ba4be",
+            "email": "finanzas@nexusplatform.com"
+        },
+        "withdrawalPoints": [
+            {
+                "id": 81,
+                "amountUsed": 378,
+                "pointsTransactionId": "301",
+                "pointsAmount": 400,
+                "metadata": {
+                    "tipo_transaccion": "DIRECT_BONUS",
+                    "monto_puntos": 400,
+                    "estado_transaccion": "COMPLETED",
+                    "monto_pendiente": 0,
+                    "monto_retirado": 400,
+                    "fecha_creacion": "2025-07-20T17:50:26.353008",
+                    "metadata_original": {
+                        "Nombre del plan": "Premium",
+                        "Precio del plan": 2000,
+                        "Usuario referido": "Noemí Anyosa Cáceres",
+                        "Comisión directa": 20
+                    },
+                    "plan_membresia": {
+                        "id": 1,
+                        "nombre": "Premium",
+                        "precio": 2000,
+                        "puntos_binarios": 2200,
+                        "porcentaje_comision": 10
+                    }
+                },
+                "createdAt": "2025-07-21T16:15:10.239Z",
+                "points": {
+                    "transactionId": "301",
+                    "amount": 400
+                }
+            },
+            {
+                "id": 82,
+                "amountUsed": 275,
+                "pointsTransactionId": "308",
+                "pointsAmount": 550,
+                "metadata": {
+                    "tipo_transaccion": "BINARY_COMMISSION",
+                    "monto_puntos": 550,
+                    "estado_transaccion": "COMPLETED",
+                    "monto_pendiente": 0,
+                    "monto_retirado": 275,
+                    "fecha_creacion": "2025-07-21T09:00:00.144526",
+                    "metadata_original": {
+                        "Limite aplicado": "Sin limite",
+                        "Volumen derecho": 5500,
+                        "Directos activos": 6,
+                        "Volumen izquierdo": 43011,
+                        "Selección de lado": "Derecho",
+                        "Fecha de fin de semana": "2025-07-20",
+                        "Volumen efectivo menor": 5500,
+                        "Volumen menor original": 5500,
+                        "Porcentaje de comisión": 10,
+                        "Fecha de inicio de semana": "2025-07-14"
+                    },
+                    "plan_membresia": {
+                        "id": 1,
+                        "nombre": "Premium",
+                        "precio": 2000,
+                        "puntos_binarios": 2200,
+                        "porcentaje_comision": 10
+                    }
+                },
+                "createdAt": "2025-07-21T16:15:10.239Z",
+                "points": {
+                    "transactionId": "308",
+                    "amount": 550
+                }
+            }
+        ]
 
 
-bien ahora quiero que implementemos para crear un pedido en el archivo CartClientPage src/features/ecommerce/components/pages/CartClientPage.tsx
-
--order
-   (action)
-   src/features/ecommerce/actions/create-order.ts (createOrderAction)
-   (input)
-   ```export interface OrderItem {
-  productId: number;
-  quantity: number;
-}
-export interface PaymentOrderRequest extends BasePaymentRequest {
-  notes?: string;
-  paymentReference?: string;
-  totalAmount: number;
-  items: OrderItem[];
-}
-   ```
-   (output)
-   ```export interface OrderResult {
-  totalAmount: number;
-  paymentId: number;
-  order: {
-    totalItems: number;
-    items: {
-      productId: number;
-      name: string;
-      quantity: number;
-    }[];
-  };
-}```
+       ## ejemplo 2
+        "id": 30,
+        "amount": 20,
+        "status": "PENDING",
+        "createdAt": "2025-08-19T01:26:11.395Z",
+        "reviewedAt": null,
+        "rejectionReason": null,
+        "isArchived": false,
+        "metadata": {
+            "createdAt": "2025-08-19T01:26:14.424Z",
+            "requestedAmount": 20,
+            "Monto solicitado": 20,
+            "Puntos disponibles": 20
+        },
+        "bankName": "BCP",
+        "accountNumber": "121221212211212",
+        "cci": "1221121221212211212",
+        "user": {
+            "id": "68a2aca731a376f93a9ba4cd",
+            "email": "luis.mas.ochentaysiete@gmail.com",
+            "personalInfo": {
+                "firstName": "Luis",
+                "lastName": "miguel"
+            },
+            "bankInfo": {
+                "bankName": "BCP",
+                "accountNumber": "121221212211212",
+                "cci": "1221121221212211212"
+            }
+        },
+        "reviewedBy": null,
+        "withdrawalPoints": [
+            {
+                "id": 94,
+                "amountUsed": 20,
+                "pointsTransactionId": "308",
+                "pointsAmount": 550,
+                "metadata": {
+                    "tipo_transaccion": "BINARY_COMMISSION",
+                    "monto_original": 550,
+                    "monto_usado_retiro": 20,
+                    "estado_transaccion": "COMPLETED",
+                    "monto_pendiente_original": 20,
+                    "monto_retirado_original": 275,
+                    "fecha_creacion": "2025-07-21T09:00:00.144Z",
+                    "metadata_original": {
+                        "Limite aplicado": "Sin limite",
+                        "Volumen derecho": 5500,
+                        "Directos activos": 6,
+                        "Volumen izquierdo": 43011,
+                        "Selección de lado": "Derecho",
+                        "Fecha de fin de semana": "2025-07-20",
+                        "Volumen efectivo menor": 5500,
+                        "Volumen menor original": 5500,
+                        "Porcentaje de comisión": 10,
+                        "Fecha de inicio de semana": "2025-07-14"
+                    }
+                },
+                "createdAt": "2025-08-19T01:26:11.395Z",
+                "points": {
+                    "transactionId": "308",
+                    "amount": 550
+                }
+            }
+        ]

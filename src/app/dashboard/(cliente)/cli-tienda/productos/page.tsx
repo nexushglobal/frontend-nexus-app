@@ -1,6 +1,8 @@
 import { getCategoriesAction } from '@/features/ecommerce/actions/get-products';
 import ProductListClientPage from '@/features/ecommerce/components/pages/ProductListClientPage';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   const result = await getCategoriesAction();
   const categories = result.success && result.data ? result.data : [];

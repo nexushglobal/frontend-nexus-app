@@ -1,5 +1,5 @@
-import type { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 // Interfaces para el nuevo estándar de API
 interface ApiResponse<T> {
@@ -35,10 +35,10 @@ interface RefreshData {
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
@@ -47,13 +47,13 @@ export const authOptions: NextAuthOptions = {
           const res = await fetch(
             `${process.env.API_BACKENDL_URL}/api/auth/login`,
             {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 email: credentials.email,
                 password: credentials.password,
               }),
-            }
+            },
           );
 
           const response: ApiResponse<LoginData> = await res.json();
@@ -69,12 +69,12 @@ export const authOptions: NextAuthOptions = {
 
           // Si hay errores específicos, los logueamos
           if (response.errors) {
-            console.error("Login errors:", response.errors);
+            console.error('Login errors:', response.errors);
           }
 
           return null;
         } catch (error) {
-          console.error("Login error:", error);
+          console.error('Login error:', error);
           return null;
         }
       },
@@ -102,24 +102,27 @@ export const authOptions: NextAuthOptions = {
 
       // Verificar si el token ha expirado
       try {
-        const tokenData = JSON.parse(atob(token.accessToken.split(".")[1]));
+        const tokenData = JSON.parse(atob(token.accessToken.split('.')[1]));
         const currentTimestamp = Math.floor(Date.now() / 1000);
 
         // Si el token está por expirar (con 1 minuto de margen)
         if (tokenData.exp < currentTimestamp + 60) {
+          console.log('Token expired, refreshing...');
+          console.log('token.refreshToken:', token.refreshToken);
           try {
             const response = await fetch(
               `${process.env.API_BACKENDL_URL}/api/auth/refresh`,
               {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refreshToken: token.refreshToken }),
-              }
+              },
             );
+            console.log('Response status:', response.status);
 
             const refreshResponse: ApiResponse<RefreshData> =
               await response.json();
-
+            console.log('Refresh response:', refreshResponse);
             if (
               response.ok &&
               refreshResponse.success &&
@@ -133,19 +136,19 @@ export const authOptions: NextAuthOptions = {
               delete token.error;
             } else {
               console.error(
-                "Refresh token error:",
-                refreshResponse.errors || refreshResponse.message
+                'Refresh token error:',
+                refreshResponse.errors || refreshResponse.message,
               );
-              return { ...token, error: "RefreshAccessTokenError" };
+              return { ...token, error: 'RefreshAccessTokenError' };
             }
           } catch (error) {
-            console.error("Error refreshing token:", error);
-            return { ...token, error: "RefreshAccessTokenError" };
+            console.error('Error refreshing token:', error);
+            return { ...token, error: 'RefreshAccessTokenError' };
           }
         }
       } catch (error) {
-        console.error("Error parsing token:", error);
-        return { ...token, error: "InvalidTokenError" };
+        console.error('Error parsing token:', error);
+        return { ...token, error: 'InvalidTokenError' };
       }
 
       return token;
@@ -165,11 +168,11 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/",
-    error: "/error",
+    signIn: '/',
+    error: '/error',
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 horas
   },
 };

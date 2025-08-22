@@ -5,32 +5,49 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, Loader2, Phone, Mail, MessageSquare, UserCheck } from "lucide-react";
-import { createLead } from "../actions/create-lead";
+import { CheckCircle, Loader2, Phone, Mail, MessageSquare, UserCheck, User } from "lucide-react";
+import { createLead } from "@/features/leads/actions/create-lead";
+import confetti from "canvas-confetti";
 
 export function LeadFormSection() {
     const [isPending, startTransition] = useTransition();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [formData, setFormData] = useState({
+        fullName: "",
         email: "",
         phone: "",
         message: "Hola, estoy interesado en conocer más sobre las oportunidades de inversión inmobiliaria de Nexus Global. Me gustaría que un asesor se comunique conmigo para brindarme más información sobre los paquetes de membresía y cómo puedo comenzar a construir mi patrimonio inmobiliario."
     });
 
+    const triggerConfetti = () => {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         startTransition(async () => {
             try {
-                await createLead(formData);
-                setIsSubmitted(true);
-                setTimeout(() => {
-                    setIsSubmitted(false);
-                    setFormData({
-                        email: "",
-                        phone: "",
-                        message: "Hola, estoy interesado en conocer más sobre las oportunidades de inversión inmobiliaria de Nexus Global. Me gustaría que un asesor se comunique conmigo para brindarme más información sobre los paquetes de membresía y cómo puedo comenzar a construir mi patrimonio inmobiliario."
-                    });
-                }, 3000);
+                const result = await createLead(formData);
+                
+                if (result.success) {
+                    setIsSubmitted(true);
+                    triggerConfetti();
+                    setTimeout(() => {
+                        setIsSubmitted(false);
+                        setFormData({
+                            fullName: "",
+                            email: "",
+                            phone: "",
+                            message: "Hola, estoy interesado en conocer más sobre las oportunidades de inversión inmobiliaria de Nexus Global. Me gustaría que un asesor se comunique conmigo para brindarme más información sobre los paquetes de membresía y cómo puedo comenzar a construir mi patrimonio inmobiliario."
+                        });
+                    }, 3000);
+                } else {
+                    console.error("Error creating lead:", result.message);
+                }
             } catch (error) {
                 console.error("Error creating lead:", error);
             }
@@ -147,6 +164,22 @@ export function LeadFormSection() {
                                     </div>
 
                                     <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="fullName" className="flex items-center gap-2 text-foreground">
+                                                <User className="w-4 h-4" />
+                                                Nombre Completo *
+                                            </Label>
+                                            <Input
+                                                id="fullName"
+                                                type="text"
+                                                placeholder="Tu nombre completo"
+                                                value={formData.fullName}
+                                                onChange={(e) => handleInputChange("fullName", e.target.value)}
+                                                required
+                                                className="w-full h-12"
+                                            />
+                                        </div>
+
                                         <div className="space-y-2">
                                             <Label htmlFor="email" className="flex items-center gap-2 text-foreground">
                                                 <Mail className="w-4 h-4" />

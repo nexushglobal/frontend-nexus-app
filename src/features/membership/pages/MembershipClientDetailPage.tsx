@@ -59,7 +59,10 @@ export default function MembershipClientDetailPage() {
     refetchOnWindowFocus: false,
   });
 
-  const handleOpenDetails = (changes: Record<string, any>, metadata?: Record<string, any>) => {
+  const handleOpenDetails = (
+    changes: Record<string, any>,
+    metadata?: Record<string, any>,
+  ) => {
     setSelectedChanges(changes);
     setSelectedMetadata(metadata || null);
     setOpenDetails(true);
@@ -131,19 +134,19 @@ export default function MembershipClientDetailPage() {
                 </p>
               </div>
             </div>
-            <Button 
-              variant={showHistory ? "default" : "outline"} 
+            <Button
+              variant={showHistory ? 'default' : 'outline'}
               onClick={() => setShowHistory((v) => !v)}
               className="gap-2"
             >
               {showHistory ? (
                 <>
-                  <ChevronUp className="h-4 w-4" /> 
+                  <ChevronUp className="h-4 w-4" />
                   Ocultar Historial
                 </>
               ) : (
                 <>
-                  <ChevronDown className="h-4 w-4" /> 
+                  <ChevronDown className="h-4 w-4" />
                   Ver Historial
                 </>
               )}

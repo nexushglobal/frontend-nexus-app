@@ -1,9 +1,11 @@
 {
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
-      "Bash(rm:*)"
-    ]
+      "Bash(rm:*)",
+      "Bash(bun run:*)",
+      "Bash(bun add:*)"
+    ],
+    "defaultMode": "acceptEdits"
   },
   "outputStyle": "default"
 }

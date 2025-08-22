@@ -54,9 +54,7 @@ export function WithdrawalsAdminCards({
               >
                 <Info className="h-4 w-4 mr-1" /> Resumen
               </Button>
-              <Link
-                href={`/dashboard/(facturacion)/fac-retiros/detalle/${w.id}`}
-              >
+              <Link href={`/dashboard/fac-retiros/detalle/${w.id}`}>
                 <Button size="sm">
                   <Eye className="h-4 w-4 mr-1" /> Detalle
                 </Button>

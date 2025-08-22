@@ -36,6 +36,7 @@ export interface ApiOptions extends Omit<RequestInit, 'body'> {
   skipAuth?: boolean; // Para endpoints públicos
   skipJsonStringify?: boolean; // No convertir body a JSON
   isFormData?: boolean; // Indicar que es FormData
+  expectBlob?: boolean; // Esperar respuesta Blob para descargas
 }
 
 class ApiClient {
@@ -160,9 +161,19 @@ class ApiClient {
   /**
    * Maneja las respuestas HTTP
    */
-  private async handleResponse<T>(response: Response): Promise<T> {
+  private async handleResponse<T>(response: Response, expectBlob = false): Promise<T> {
     const contentType = response.headers.get('content-type');
     const isJson = contentType?.includes('application/json');
+
+    // Si esperamos un blob, devolverlo directamente
+    if (expectBlob) {
+      if (!response.ok) {
+        // En caso de error con blob, intentar leer como texto para el mensaje de error
+        const text = await response.text();
+        throw new ApiError(text || 'Error al descargar archivo', null, response.status);
+      }
+      return (await response.blob()) as unknown as T;
+    }
 
     let result: ApiResponse<T>;
 
@@ -227,6 +238,7 @@ class ApiClient {
       skipAuth = false,
       skipJsonStringify = false,
       isFormData = false,
+      expectBlob = false,
       ...fetchOptions
     } = options;
 
@@ -271,7 +283,7 @@ class ApiClient {
       }
 
       clearTimeout(timeoutId);
-      return this.handleResponse<T>(response);
+      return this.handleResponse<T>(response, expectBlob);
     } catch (error) {
       clearTimeout(timeoutId);
 
@@ -382,6 +394,36 @@ class ApiClient {
       method: 'POST',
       body: data,
       skipAuth: true,
+    });
+  }
+
+  /**
+   * Descarga un archivo como Blob
+   */
+  async downloadFile(
+    endpoint: string,
+    options: Omit<ApiOptions, 'method' | 'expectBlob'> = {},
+  ): Promise<Blob> {
+    return this.call<Blob>(endpoint, {
+      ...options,
+      method: 'GET',
+      expectBlob: true,
+    });
+  }
+
+  /**
+   * Descarga un archivo con POST y devuelve Blob
+   */
+  async downloadFilePost(
+    endpoint: string,
+    data?: any,
+    options: Omit<ApiOptions, 'method' | 'body' | 'expectBlob'> = {},
+  ): Promise<Blob> {
+    return this.call<Blob>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: data,
+      expectBlob: true,
     });
   }
 }

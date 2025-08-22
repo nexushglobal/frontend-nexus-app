@@ -74,9 +74,7 @@ export function WithdrawalsAdminTable({
           >
             <Info className="h-4 w-4 mr-1" /> Resumen
           </Button>
-          <Link
-            href={`/dashboard/(facturacion)/fac-retiros/detalle/${row.original.id}`}
-          >
+          <Link href={`/dashboard/fac-retiros/detalle/${row.original.id}`}>
             <Button variant="default" size="sm">
               <Eye className="h-4 w-4 mr-1" /> Detalle
             </Button>

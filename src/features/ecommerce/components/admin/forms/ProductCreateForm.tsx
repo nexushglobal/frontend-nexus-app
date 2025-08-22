@@ -254,14 +254,23 @@ export function ProductCreateForm({ onSuccess }: ProductCreateFormProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem
-                                key={category.id}
-                                value={category.id.toString()}
-                              >
-                                {category.name}
+                            {categories?.length > 0 ? (
+                              categories.map((category) => (
+                                <SelectItem
+                                  key={category.id}
+                                  value={category.id.toString()}
+                                >
+                                  {category.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="" disabled>
+                                {isLoadingCategories 
+                                  ? 'Cargando categorías...' 
+                                  : 'No hay categorías disponibles'
+                                }
                               </SelectItem>
-                            ))}
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />

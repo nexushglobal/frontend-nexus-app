@@ -1,6 +1,8 @@
 import { MembershipPlansPage } from '@/features/membership/pages/MembershipPlansPage';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Planes de Membresía | Dashboard',
   description:

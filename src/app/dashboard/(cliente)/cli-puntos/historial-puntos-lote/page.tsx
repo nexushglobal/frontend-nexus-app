@@ -2,6 +2,8 @@ import { getUserPointsLotAction } from '@/features/point/action/get-points.actio
 import { PointLotPage } from '@/features/point/components/pages/PointLotPage';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Puntos Lote | Dashboard',
   description:
