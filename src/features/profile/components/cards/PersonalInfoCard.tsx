@@ -11,9 +11,10 @@ import { PersonalInfoModal } from '../modals/PersonalInfoModal'
 interface PersonalInfoCardProps {
     profile: ProfileData
     onUpdate: () => void
+    isUpdating?: boolean
 }
 
-export const PersonalInfoCard = ({ profile, onUpdate }: PersonalInfoCardProps) => {
+export const PersonalInfoCard = ({ profile, onUpdate, isUpdating = false }: PersonalInfoCardProps) => {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('es-ES', {
             year: 'numeric',
@@ -124,10 +125,11 @@ export const PersonalInfoCard = ({ profile, onUpdate }: PersonalInfoCardProps) =
                         currentEmail={profile.email}
                         currentNickname={profile.nickname}
                         onUpdate={onUpdate}
+                        isUpdating={isUpdating}
                     >
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" disabled={isUpdating}>
                             <Edit className="h-4 w-4 mr-2" />
-                            Editar
+                            {isUpdating ? 'Actualizando...' : 'Editar'}
                         </Button>
                     </PersonalInfoModal>
                 </div>

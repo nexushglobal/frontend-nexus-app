@@ -26,8 +26,6 @@ export class LeadsService {
     const response = await api.downloadFile('/api/leads/download', {
       params,
     });
-    console.log('Downloading leads...');
-    console.log('Response:', response);
     return response;
   }
 }

@@ -1,0 +1,43 @@
+{
+  "name": "NEXUS H GLOBAL - Tu Camino hacia la Libertad Financiera",
+  "short_name": "NEXUS H GLOBAL",
+  "description": "Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1f2937",
+  "theme_color": "#1f2937",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/imgs/isotipo_negro.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/imgs/isotipo_blanco.ico", 
+      "sizes": "32x32",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "finance", "real-estate"],
+  "lang": "es-PE",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "/imgs/screenshot-desktop.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Vista del escritorio de NEXUS H GLOBAL"
+    },
+    {
+      "src": "/imgs/screenshot-mobile.jpg", 
+      "sizes": "375x812",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Vista móvil de NEXUS H GLOBAL"
+    }
+  ]
+}

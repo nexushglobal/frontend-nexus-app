@@ -21,28 +21,28 @@ export function WithdrawalOverviewSection({ withdrawal }: WithdrawalOverviewSect
     switch (status) {
       case 'APPROVED':
         return (
-          <Badge className="gap-1 bg-success/10 text-success border-success/30 hover:bg-success/20">
+          <Badge className="gap-1 bg-success/10 text-success border border-success/30 font-medium hover:bg-success/20">
             <CheckCircle className="h-3 w-3" />
             Aprobado
           </Badge>
         );
       case 'REJECTED':
         return (
-          <Badge className="gap-1 bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/20">
+          <Badge className="gap-1 bg-destructive/10 text-destructive border border-destructive/30 font-medium hover:bg-destructive/20">
             <AlertCircle className="h-3 w-3" />
             Rechazado
           </Badge>
         );
       case 'PENDING':
         return (
-          <Badge className="gap-1 bg-warning/10 text-warning border-warning/30 hover:bg-warning/20">
+          <Badge className="gap-1 bg-warning/10 text-warning border border-warning/30 font-medium hover:bg-warning/20">
             <Clock className="h-3 w-3" />
             Pendiente
           </Badge>
         );
       default:
         return (
-          <Badge variant="secondary" className="gap-1">
+          <Badge className="gap-1 bg-muted text-muted-foreground border font-medium">
             <Clock className="h-3 w-3" />
             {status}
           </Badge>
@@ -91,55 +91,63 @@ export function WithdrawalOverviewSection({ withdrawal }: WithdrawalOverviewSect
         <CardContent className="space-y-6">
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="text-center p-4 bg-primary/5 border border-primary/20 rounded-lg">
-              <div className="flex items-center justify-center mb-2">
-                <Banknote className="h-6 w-6 text-primary" />
+            <div className="text-center p-5 bg-primary/10 border border-primary/30 rounded-lg shadow-sm">
+              <div className="flex items-center justify-center mb-3">
+                <div className="p-2 rounded-lg bg-primary/20 border border-primary/40">
+                  <Banknote className="h-6 w-6 text-primary" />
+                </div>
               </div>
               <p className="text-2xl font-bold text-primary">
                 {withdrawal.amount.toLocaleString()}
               </p>
-              <p className="text-sm text-muted-foreground">Puntos solicitados</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-sm font-medium text-primary/80">Puntos solicitados</p>
+              <p className="text-xs text-primary/70 mt-1 bg-primary/20 px-2 py-1 rounded">
                 ≈ {formatCurrency(withdrawal.amount)}
               </p>
             </div>
 
-            <div className="text-center p-4 bg-info/5 border border-info/20 rounded-lg">
-              <div className="flex items-center justify-center mb-2">
-                <TrendingUp className="h-6 w-6 text-info" />
+            <div className="text-center p-5 bg-info/10 border border-info/30 rounded-lg shadow-sm">
+              <div className="flex items-center justify-center mb-3">
+                <div className="p-2 rounded-lg bg-info/20 border border-info/40">
+                  <TrendingUp className="h-6 w-6 text-info" />
+                </div>
               </div>
               <p className="text-2xl font-bold text-info">
                 {totalPointsUsed.toLocaleString()}
               </p>
-              <p className="text-sm text-muted-foreground">Puntos utilizados</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-sm font-medium text-info/80">Puntos utilizados</p>
+              <p className="text-xs text-info/70 mt-1 bg-info/20 px-2 py-1 rounded">
                 {withdrawal.withdrawalPoints?.length || 0} transacciones
               </p>
             </div>
 
-            <div className="text-center p-4 bg-secondary/5 border border-secondary/20 rounded-lg">
-              <div className="flex items-center justify-center mb-2">
-                <Calendar className="h-6 w-6 text-secondary" />
+            <div className="text-center p-5 bg-secondary/10 border border-secondary/30 rounded-lg shadow-sm">
+              <div className="flex items-center justify-center mb-3">
+                <div className="p-2 rounded-lg bg-secondary/20 border border-secondary/40">
+                  <Calendar className="h-6 w-6 text-secondary" />
+                </div>
               </div>
               <p className="text-lg font-bold text-secondary">
                 {formatDate(withdrawal.createdAt).split(',')[0]}
               </p>
-              <p className="text-sm text-muted-foreground">Fecha de solicitud</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-sm font-medium text-secondary/80">Fecha de solicitud</p>
+              <p className="text-xs text-secondary/70 mt-1 bg-secondary/20 px-2 py-1 rounded">
                 {formatDate(withdrawal.createdAt).split(',')[1]?.trim()}
               </p>
             </div>
 
             {withdrawal.reviewedAt && (
-              <div className="text-center p-4 bg-accent/5 border border-accent/20 rounded-lg">
-                <div className="flex items-center justify-center mb-2">
-                  <CheckCircle className="h-6 w-6 text-accent" />
+              <div className="text-center p-5 bg-accent/10 border border-accent/30 rounded-lg shadow-sm">
+                <div className="flex items-center justify-center mb-3">
+                  <div className="p-2 rounded-lg bg-accent/20 border border-accent/40">
+                    <CheckCircle className="h-6 w-6 text-accent-foreground" />
+                  </div>
                 </div>
-                <p className="text-lg font-bold text-accent">
+                <p className="text-lg font-bold text-accent-foreground">
                   {formatDate(withdrawal.reviewedAt).split(',')[0]}
                 </p>
-                <p className="text-sm text-muted-foreground">Fecha de revisión</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-sm font-medium text-accent-foreground/80">Fecha de revisión</p>
+                <p className="text-xs text-accent-foreground/70 mt-1 bg-accent/20 px-2 py-1 rounded">
                   {formatDate(withdrawal.reviewedAt).split(',')[1]?.trim()}
                 </p>
               </div>

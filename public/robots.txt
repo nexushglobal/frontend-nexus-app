@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /.*
+
+# Allow important pages
+Allow: /
+Allow: /register/
+Allow: /privacy-terms
+
+# Sitemap
+Sitemap: https://nexus-h-global.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /

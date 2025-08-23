@@ -107,8 +107,6 @@ export const authOptions: NextAuthOptions = {
 
         // Si el token está por expirar (con 1 minuto de margen)
         if (tokenData.exp < currentTimestamp + 60) {
-          console.log('Token expired, refreshing...');
-          console.log('token.refreshToken:', token.refreshToken);
           try {
             const response = await fetch(
               `${process.env.API_BACKENDL_URL}/api/auth/refresh`,
@@ -122,7 +120,6 @@ export const authOptions: NextAuthOptions = {
 
             const refreshResponse: ApiResponse<RefreshData> =
               await response.json();
-            console.log('Refresh response:', refreshResponse);
             if (
               response.ok &&
               refreshResponse.success &&

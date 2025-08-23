@@ -8,9 +8,10 @@ import { InfoCard } from "@/features/shared/components/card/InfoCard";
 
 interface SecurityCardProps {
     onUpdate: () => void;
+    isUpdating?: boolean;
 }
 
-export function SecurityCard({ onUpdate }: SecurityCardProps) {
+export function SecurityCard({ onUpdate, isUpdating = false }: SecurityCardProps) {
     // Simulamos la última actualización de contraseña (esto vendría del backend)
     const lastPasswordUpdate = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000); // 60 días atrás
 
@@ -68,10 +69,10 @@ export function SecurityCard({ onUpdate }: SecurityCardProps) {
                 title="Seguridad de la Cuenta"
                 icon={Shield}
                 actionButton={
-                    <ChangePasswordModal onUpdate={onUpdate}>
-                        <Button size="sm" variant="outline">
+                    <ChangePasswordModal onUpdate={onUpdate} isUpdating={isUpdating}>
+                        <Button size="sm" variant="outline" disabled={isUpdating}>
                             <Edit className="h-4 w-4 mr-2" />
-                            Cambiar
+                            {isUpdating ? 'Actualizando...' : 'Cambiar'}
                         </Button>
                     </ChangePasswordModal>
                 }

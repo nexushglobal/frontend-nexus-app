@@ -10,9 +10,10 @@ import { InfoCard } from "@/features/shared/components/card/InfoCard";
 interface BillingInfoCardProps {
     billingInfo: BillingInfo | null;
     onUpdate: () => void;
+    isUpdating?: boolean;
 }
 
-export function BillingInfoCard({ billingInfo, onUpdate }: BillingInfoCardProps) {
+export function BillingInfoCard({ billingInfo, onUpdate, isUpdating = false }: BillingInfoCardProps) {
     const getCompletionPercentage = () => {
         if (!billingInfo) return 0;
 
@@ -36,10 +37,10 @@ export function BillingInfoCard({ billingInfo, onUpdate }: BillingInfoCardProps)
                 completionPercentage={completionPercentage}
                 showProgress={true}
                 actionButton={
-                    <BillingInfoModal billingInfo={billingInfo} onUpdate={onUpdate}>
-                        <Button size="sm" variant="outline">
+                    <BillingInfoModal billingInfo={billingInfo} onUpdate={onUpdate} isUpdating={isUpdating}>
+                        <Button size="sm" variant="outline" disabled={isUpdating}>
                             <Edit className="h-4 w-4 mr-2" />
-                            Editar
+                            {isUpdating ? 'Actualizando...' : 'Editar'}
                         </Button>
                     </BillingInfoModal>
                 }

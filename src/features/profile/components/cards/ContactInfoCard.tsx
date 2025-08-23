@@ -9,9 +9,10 @@ import { ContactInfoModal } from "../modals/ContactInfoModal";
 interface ContactInfoCardProps {
     contactInfo: ContactInfo | null;
     onUpdate: () => void;
+    isUpdating?: boolean;
 }
 
-export function ContactInfoCard({ contactInfo, onUpdate }: ContactInfoCardProps) {
+export function ContactInfoCard({ contactInfo, onUpdate, isUpdating = false }: ContactInfoCardProps) {
     const getCompletionPercentage = () => {
         if (!contactInfo) return 0;
 
@@ -36,10 +37,10 @@ export function ContactInfoCard({ contactInfo, onUpdate }: ContactInfoCardProps)
                 completionPercentage={completionPercentage}
                 showProgress={true}
                 actionButton={
-                    <ContactInfoModal contactInfo={contactInfo} onUpdate={onUpdate}>
-                        <Button size="sm" variant="outline">
+                    <ContactInfoModal contactInfo={contactInfo} onUpdate={onUpdate} isUpdating={isUpdating}>
+                        <Button size="sm" variant="outline" disabled={isUpdating}>
                             <Edit className="h-4 w-4 mr-2" />
-                            Editar
+                            {isUpdating ? 'Actualizando...' : 'Editar'}
                         </Button>
                     </ContactInfoModal>
                 }

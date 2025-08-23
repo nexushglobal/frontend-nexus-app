@@ -59,7 +59,9 @@ export function ActiveBannersCarousel({
   // Loading state
   if (isLoading) {
     return (
-      <Card className={`relative overflow-hidden bg-muted ${className}`}>
+      <Card
+        className={`relative overflow-hidden bg-muted   py-0 border-0 ${className}`}
+      >
         <div className="aspect-[1920/400] flex items-center justify-center">
           <div className="animate-pulse text-muted-foreground">
             Cargando banners...
@@ -72,7 +74,9 @@ export function ActiveBannersCarousel({
   // Error state
   if (isError) {
     return (
-      <Card className={`relative overflow-hidden bg-muted ${className}`}>
+      <Card
+        className={`relative overflow-hidden bg-muted  py-0 border-0 ${className}`}
+      >
         <div className="aspect-[1920/400] flex items-center justify-center">
           <div className="text-muted-foreground text-sm">
             Error al cargar los banners
@@ -85,7 +89,9 @@ export function ActiveBannersCarousel({
   // No banners state
   if (!banners || banners.length === 0) {
     return (
-      <Card className={`relative overflow-hidden bg-muted ${className}`}>
+      <Card
+        className={`relative overflow-hidden bg-muted  py-0 border-0 ${className}`}
+      >
         <div className="aspect-[1920/400] flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <h3 className="font-medium">No hay banners disponibles</h3>
@@ -104,7 +110,7 @@ export function ActiveBannersCarousel({
         <div className="flex">
           {banners.map((banner, index) => (
             <div key={banner.id} className="flex-[0_0_100%]">
-              <Card className="relative overflow-hidden">
+              <Card className="relative overflow-hidden py-0 border-0">
                 <div className="relative aspect-[1920/400] bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
                   {banner.link ? (
                     banner.linkType === 'EXTERNAL' ? (
@@ -194,39 +200,14 @@ export function ActiveBannersCarousel({
 // Separate component for banner image to optimize rendering
 function BannerImage({ banner, isActive }: { banner: any; isActive: boolean }) {
   return (
-    <>
-      <Image
-        src={banner.imageUrl}
-        alt={banner.title || 'Banner'}
-        fill
-        sizes="(max-width: 768px) 100vw, 1920px"
-        className="object-cover"
-        priority={isActive}
-        quality={90}
-      />
-
-      {/* Overlay for text readability */}
-      {(banner.title || banner.description) && (
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
-      )}
-
-      {/* Content overlay */}
-      {(banner.title || banner.description) && (
-        <div className="absolute inset-0 flex items-center">
-          <div className="p-8 md:p-12 text-white max-w-3xl">
-            {banner.title && (
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-2xl leading-tight">
-                {banner.title}
-              </h2>
-            )}
-            {banner.description && (
-              <p className="text-lg md:text-xl opacity-95 drop-shadow-lg leading-relaxed">
-                {banner.description}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-    </>
+    <Image
+      src={banner.imageUrl}
+      alt={banner.title || 'Banner'}
+      fill
+      sizes="(max-width: 768px) 100vw, 1920px"
+      className="object-cover"
+      priority={isActive}
+      quality={90}
+    />
   );
 }

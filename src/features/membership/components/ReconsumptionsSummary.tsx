@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Switch } from '@/components/ui/switch';
+import { ReconsumptionPaymentSheet } from '@/features/shared/components/payment/ReconsumptionPaymentSheet';
 import { formatDate } from '@/features/shared/utils/formatCurrency';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -19,7 +20,6 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { UpdateMembershipAction } from '../actions/update-membership';
 import { MembershipReconsumption } from '../types/reconsumption.type';
-import { ReconsumptionPaymentSheet } from '@/features/shared/components/payment/ReconsumptionPaymentSheet';
 
 interface Props {
   membership?: MembershipReconsumption;

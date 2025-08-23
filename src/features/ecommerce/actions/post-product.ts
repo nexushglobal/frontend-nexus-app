@@ -72,7 +72,6 @@ export async function createProductAction(formData: FormData) {
         skipJsonStringify: true,
       },
     );
-    console.log('Product created successfully:', response);
 
     revalidateAdminProducts();
 
@@ -99,7 +98,6 @@ export async function updateProductAction(
       `/api/products/${id}`,
       data,
     );
-    console.log('Product updated successfully:', response);
 
     revalidateAdminProducts();
 
@@ -163,7 +161,6 @@ export async function addProductImageAction(
         skipJsonStringify: true,
       },
     );
-    console.log('Product image added successfully:', response);
 
     revalidateAdminProducts();
 

@@ -2,32 +2,31 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { InfoCard } from '@/features/shared/components/card/InfoCard';
-import { SectionHeader } from '@/features/shared/components/card/SectionHeader';
+import { UserData } from '@/features/dashboard/types/dashboard-user-info.types';
 import { cn } from '@/lib/utils';
 import {
   ArrowLeft,
   ArrowRight,
   Copy,
   ExternalLink,
-  Link as LinkIcon,
   Share,
-  Share2,
+  Star,
+  User,
+  Users,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { ProfileInfoField } from '../field/ProfileInfoField';
 
-interface ReferralCodesCardProps {
-  referralCode: string;
-}
+type Props = {
+  userData: UserData;
+};
 
-export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
+const WelcomeHero = ({ userData }: Props) => {
   const [activeTab, setActiveTab] = useState<string>('izquierda');
   const [copying, setCopying] = useState(false);
 
   const getShareUrl = (side: string) => {
-    return `${window.location.origin}/register/${referralCode}?lado=${side}`;
+    return `${window.location.origin}/register/${userData.referralCode}?lado=${side}`;
   };
 
   const copyToClipboard = (side: string) => {
@@ -54,7 +53,7 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
   const shareReferral = (side: string) => {
     const url = getShareUrl(side);
     const title = `Únete a mi equipo (${side})`;
-    const text = `Únete a mi organización usando mi código de referido: ${referralCode} (lado ${side})`;
+    const text = `Únete a mi organización usando mi código de referido: ${userData.referralCode} (lado ${side})`;
 
     if (navigator.share) {
       navigator
@@ -79,19 +78,50 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
   };
 
   return (
-    <Card>
-      <SectionHeader title="Códigos de Referido" icon={Share2} />
+    <Card className="lg:col-span-8  shadow-lg hover:shadow-xl transition-all duration-300">
+      <CardContent>
+        <div className="flex items-start justify-between mb-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Star className="h-5 w-5 text-primary fill-current" />
+              <h2 className="text-2xl font-bold text-foreground">
+                ¡Hola, {userData.firstName}!
+              </h2>
+            </div>
+            <p className="text-muted-foreground">
+              Bienvenido de vuelta a tu dashboard
+            </p>
+          </div>
+          <div className="p-3 bg-white dark:bg-card rounded-full shadow-md">
+            <User className="h-6 w-6 text-primary" />
+          </div>
+        </div>
 
-      <CardContent className="space-y-4">
-        <ProfileInfoField
-          label="Tu Código de Referido"
-          value={referralCode}
-          icon={Share2}
-          isComplete={true}
-          className="font-mono"
-        />
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="bg-primary/10 rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Users className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">Red</span>
+            </div>
+            <p className="text-xl font-bold text-foreground">
+              {userData.referralsCount}
+            </p>
+            <p className="text-xs text-muted-foreground">Referidos directos</p>
+          </div>
+          <div className="bg-secondary-foreground/10 rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Share className="h-4 w-4 text-secondary-foreground" />
+              <span className="text-sm font-medium">Enlaces</span>
+            </div>
+            <p className="text-sm font-semibold text-foreground">
+              Izquierda / Derecha
+            </p>
+            <p className="text-xs text-muted-foreground">Para invitar</p>
+          </div>
+        </div>
 
-        <div className="w-full">
+        {/* Compact Referral Links Section */}
+        <div className=" space-y-3">
           <div className="inline-flex w-full rounded-md bg-muted p-1 text-muted-foreground dark:bg-gray-800/50">
             <button
               onClick={() => setActiveTab('izquierda')}
@@ -104,7 +134,6 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>Izquierda</span>
-
               {activeTab === 'izquierda' && (
                 <span className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1/4 h-0.5 bg-primary rounded-full dark:bg-primary dark:shadow-[0_0_5px_rgba(var(--primary),0.8)]" />
               )}
@@ -121,24 +150,15 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
             >
               <span>Derecha</span>
               <ArrowRight className="h-3.5 w-3.5" />
-
               {activeTab === 'derecha' && (
                 <span className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1/4 h-0.5 bg-primary rounded-full dark:bg-primary dark:shadow-[0_0_5px_rgba(var(--primary),0.8)]" />
               )}
             </button>
           </div>
 
-          <div className="mt-4">
+          <div className="bg-white/50 dark:bg-card/50 rounded-lg p-3">
             {activeTab === 'izquierda' && (
-              <div className="space-y-3 animate-in fade-in-50 duration-300">
-                <ProfileInfoField
-                  label="Enlace de Referido - Izquierda"
-                  value={getShareUrl('izquierda')}
-                  icon={LinkIcon}
-                  isComplete={true}
-                  className="text-xs font-mono"
-                />
-
+              <div className="animate-in fade-in-50 duration-300">
                 <div className="grid grid-cols-3 gap-2">
                   <Button
                     variant="outline"
@@ -175,15 +195,7 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
             )}
 
             {activeTab === 'derecha' && (
-              <div className="space-y-3 animate-in fade-in-50 duration-300">
-                <ProfileInfoField
-                  label="Enlace de Referido - Derecha"
-                  value={getShareUrl('derecha')}
-                  icon={LinkIcon}
-                  isComplete={true}
-                  className="text-xs font-mono"
-                />
-
+              <div className="animate-in fade-in-50 duration-300">
                 <div className="grid grid-cols-3 gap-2">
                   <Button
                     variant="outline"
@@ -220,16 +232,9 @@ export function ReferralCodesCard({ referralCode }: ReferralCodesCardProps) {
             )}
           </div>
         </div>
-
-        <InfoCard
-          title="Tip"
-          icon="💡"
-          variant="info"
-          items={[
-            'Utiliza diferentes lados para organizar tu red de referidos de manera equilibrada.',
-          ]}
-        />
       </CardContent>
     </Card>
   );
-}
+};
+
+export default WelcomeHero;

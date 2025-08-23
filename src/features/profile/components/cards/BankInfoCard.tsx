@@ -10,9 +10,10 @@ import { InfoCard } from "@/features/shared/components/card/InfoCard";
 interface Props {
     bankInfo: BankInfo | null;
     onUpdate: () => void;
+    isUpdating?: boolean;
 }
 
-export function BankInfoCard({ bankInfo, onUpdate }: Props) {
+export function BankInfoCard({ bankInfo, onUpdate, isUpdating = false }: Props) {
     const getCompletionPercentage = () => {
         if (!bankInfo) return 0;
 
@@ -36,10 +37,10 @@ export function BankInfoCard({ bankInfo, onUpdate }: Props) {
                 completionPercentage={completionPercentage}
                 showProgress={true}
                 actionButton={
-                    <BankInfoModal bankInfo={bankInfo} onUpdate={onUpdate}>
-                        <Button size="sm" variant="outline">
+                    <BankInfoModal bankInfo={bankInfo} onUpdate={onUpdate} isUpdating={isUpdating}>
+                        <Button size="sm" variant="outline" disabled={isUpdating}>
                             <Edit className="h-4 w-4 mr-2" />
-                            Editar
+                            {isUpdating ? 'Actualizando...' : 'Editar'}
                         </Button>
                     </BankInfoModal>
                 }

@@ -10,6 +10,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { PaymentGatewayComponent } from '@/features/membership/components/PaymentGatewayComponent';
+import { VoucherPaymentModal } from '@/features/membership/components/VoucherPaymentModal';
 import {
   Payment,
   PaymentMethod,
@@ -28,8 +30,6 @@ import {
   Zap,
 } from 'lucide-react';
 import { ReactNode, useState } from 'react';
-import { PaymentGatewayComponent } from '@/features/membership/components/PaymentGatewayComponent';
-import { VoucherPaymentModal } from '@/features/membership/components/VoucherPaymentModal';
 
 export interface PaymentResponse<T = any> {
   success: boolean;
@@ -134,7 +134,6 @@ export function BasePaymentSheet<T = any>({
       }
 
       const result = await onSubmit(formData);
-      console.log('Resultado del pago:', result);
 
       setPaymentResult(result);
       setShowResultModal(true);

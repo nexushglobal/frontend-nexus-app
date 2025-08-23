@@ -1,11 +1,11 @@
-import { ProfilePage } from '@/features/profile/components/ProfilePage'
-import type { Metadata } from 'next'
+import { ProfilePage } from '@/features/profile/components/ProfilePage';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Mi Perfil | Dashboard',
-    description: 'Gestiona tu información personal y configuración de cuenta'
-}
+  title: 'Mi Perfil | Dashboard',
+  description: 'Gestiona tu información personal y configuración de cuenta',
+};
 
 export default function Page() {
-    return <ProfilePage />
+  return <ProfilePage />;
 }
