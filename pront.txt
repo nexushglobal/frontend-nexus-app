@@ -1,101 +1,17 @@
-Quiero que integramos la siguiente api
-GET /api/dashboard/user/info
+Quiero que realices la siguiente vista
+/dashboard/(cliente)/cli-mi-equipo/referidos
 
-response ejemlo
- "userData": {
-            "firstName": "Luis miguel",
-            "lastName": "Aguilar Silva",
-            "birthdate": "2007-04-12T00:00:00.000Z",
-            "ruc": null,
-            "razonSocial": null,
-            "referralCode": "9F7B0627",
-            "referrerCode": "3864DE2A",
-            "referralsCount": 34
-        },
-        "membershipData": {
-            "hasMembership": true,
-            "membership": {
-                "id": "69",
-                "startDate": "2025-07-15",
-                "endDate": "2025-08-15",
-                "status": "ACTIVE",
-                "planName": "Premium",
-                "minimumReconsumptionAmount": 300
-            }
-        },
-        "pointData": {
-            "availablePoints": 225.6,
-            "availableLotPoints": 0,
-            "monthlyVolume": {
-                "leftVolume": 6050,
-                "rightVolume": 1100,
-                "monthStartDate": "2025-08-01",
-                "monthEndDate": "2025-08-31"
-            },
-            "rank": {
-                "name": "Impulsor"
-            },
-            "weeklyVolume": {
-                "leftVolume": 49198,
-                "rightVolume": 1100,
-                "weekStartDate": "2025-08-18",
-                "weekEndDate": "2025-08-24"
-            }
-        }
-    userData :{
-        firstName: string,
-        lastName: string,
-        birthdate: string,
-        ruc: string | null,
-        razonSocial: string | null,
-        referralCode: string,
-        referrerCode: string,
-        referralsCount: number
-    }
-    membershipData: {
-        hasMembership: boolean,
-        membership: {
-            id: string,
-            startDate: string,
-            endDate: string,
-            status: string,
-            planName: string,
-            minimumReconsumptionAmount: number
-        } | null
-    }
-    pointData: {
-        availablePoints: number,
-        availableLotPoints: number,
-        monthlyVolume: {
-            leftVolume: number,
-            rightVolume: number,
-            monthStartDate: string,
-            monthEndDate: string
-        } | null,
-        rank: {
-            name: string
-        } | null
-        weeklyVolume: {
-            leftVolume: number,
-            rightVolume: number,
-            weekStartDate: string,
-            weekEndDate: string
-        } | null
-    }
+ahi debe haber una lista de los referidos del cliente logueado con paginacion
+para desktok usar una tabla y para mobile cards ambos con su paginacion
+usar el servicio de getUsersDirects ubicado en src/features/team/services/teamtService.ts
 
-Quiero que lo hagas en feature/dashboard
+los filtros de params disponibles son los siguientes
+- page y limit para la paginacion
+- sortBy con las opciones "volume" o "lots" por default viene "volume"
+- sortOrder con las opciones "asc" o "desc" por default viene "desc"
 
-una vez terminado quiero que hagas la ui en la vista /dashboard debajo de los banners
-debe tener un diseno bonito y elegante con opciones a ver mas detalles
-userData -> detalle = /dashboard/cli-perfil
-membershipData -> detalle = /dashboard/cli-membresias/mi-plan en el caso que no tenga un plan, redirigir a /dashboard/cli-membresias/planes y en el caso
-de que tenga la membresia vencida redirigir a /dashboard/cli-membresias/mis-reconsumos
-pointData {
-    availablePoints -> /dashboard/cli-puntos/historial-puntos
-    availableLotPoints -> /dashboard/cli-puntos/historial-puntos-lote
-    monthlyVolume -> /dashboard/cli-rangos/volumen-mensual
-    rank -> /dashboard/cli-rangos/rango-actual
-    weeklyVolume -> /dashboard/cli-puntos/volumenes-semanales
-}
-en el caso de que sea su cumpleanos, felicitarlo con un mensaje especial en un modal al iniciar sesion,
-recuerda usar los colores de la paleta de la aplicacion style/globals.css
+tomar de referencia la vista de src/app/dashboard/(cliente)/cli-transacciones/mis-pagos/page.tsx
+usar componentes globales y mantener una estetica consistente
+usar estilos ya definidos en src/styles/globals.css
+
+recuerda que esta seccion pertenece al feature team
