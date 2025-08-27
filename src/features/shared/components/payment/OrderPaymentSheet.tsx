@@ -1,10 +1,10 @@
 'use client';
 
+import { CartItem } from '@/context/CartStore';
 import { createOrderAction } from '@/features/ecommerce/actions/create-order';
 import { OrderItem } from '@/features/ecommerce/types/order.type';
 import { BasePaymentSheet } from './BasePaymentSheet';
 import { OrderResultModal } from './OrderResultModal';
-import { CartItem } from '@/context/CartStore';
 
 interface OrderPaymentSheetProps {
   isOpen: boolean;
@@ -34,13 +34,17 @@ export function OrderPaymentSheet({
 
     formData.append('totalAmount', totalAmount.toString());
     formData.append('items', JSON.stringify(orderItems));
-    
+
     if (notes) {
       formData.append('notes', notes);
     }
-    
+
     if (paymentReference) {
       formData.append('paymentReference', paymentReference);
+    }
+    console.log('FormData entries:');
+    for (const [key, value] of formData.entries()) {
+      console.log(`  ${key}: ${value}`);
     }
 
     return await createOrderAction(formData);
@@ -63,7 +67,9 @@ export function OrderPaymentSheet({
               className="flex justify-between items-center text-xs p-2 bg-muted/30 rounded"
             >
               <span className="truncate flex-1">{item.name}</span>
-              <span className="ml-2 text-muted-foreground">x{item.quantity}</span>
+              <span className="ml-2 text-muted-foreground">
+                x{item.quantity}
+              </span>
             </div>
           ))}
         </div>

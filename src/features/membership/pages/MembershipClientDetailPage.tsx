@@ -120,8 +120,8 @@ export default function MembershipClientDetailPage() {
         showReconsumoLink={showReconsumoLink}
       />
 
-      <Card className="shadow-sm mb-6">
-        <CardContent className="p-4">
+      <Card className="shadow-sm mb-6 py-3">
+        <CardContent>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">

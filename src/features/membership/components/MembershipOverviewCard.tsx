@@ -1,6 +1,5 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -9,21 +8,19 @@ import {
   formatCurrency,
   formatDate,
 } from '@/features/shared/utils/formatCurrency';
-import { 
+import {
   AlertTriangle,
-  Calendar, 
-  CreditCard, 
-  ExternalLink, 
-  ListOrdered, 
-  RefreshCw, 
-  ScrollText, 
+  Calendar,
+  CreditCard,
+  ExternalLink,
+  RefreshCw,
+  ScrollText,
   Timer,
   TrendingUp,
-  Zap
+  Zap,
 } from 'lucide-react';
 import Link from 'next/link';
 import { MembershipDetailResponse } from '../types/membership.types';
-import { translateMembershipStatus } from '../utils/membershipTranslations';
 
 export function MembershipOverviewCard({
   detail,
@@ -36,7 +33,8 @@ export function MembershipOverviewCard({
 }) {
   const membership = detail?.membership;
   const planName = membership?.plan?.name || 'Sin plan';
-  const statusLabel = translateMembershipStatus(membership?.status as any);
+  // Nota: statusLabel no se usa directamente porque mostramos StatusBadge
+  // const statusLabel = translateMembershipStatus(membership?.status as any);
 
   const start = membership?.startDate ? new Date(membership.startDate) : null;
   const end = membership?.endDate ? new Date(membership.endDate) : null;
@@ -63,8 +61,8 @@ export function MembershipOverviewCard({
   return (
     <div className="space-y-6 mb-6">
       {/* Header Card */}
-      <Card className="shadow-md border-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
-        <CardHeader className="pb-4">
+      <Card className="shadow-md border-0 py-3 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
+        <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-primary/20 rounded-xl">
@@ -74,28 +72,42 @@ export function MembershipOverviewCard({
                 <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                   {planName}
                 </CardTitle>
-                <p className="text-muted-foreground">
-                  Detalles de tu membresía activa
-                </p>
+                {membership && (
+                  <div className="flex items-center gap-3 mt-1">
+                    <StatusBadge status={membership.status} />
+                    {typeof membership.plan?.price === 'number' && (
+                      <div className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+                        <CreditCard className="h-4 w-4 text-green-600" />
+                        <span className="font-medium text-green-600">
+                          {formatCurrency(membership.plan?.price || 0)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             {showReconsumoLink && (
               <div className="flex flex-col gap-2">
                 {needsAttention && (
                   <div className="text-right">
-                    <div className={`text-xs px-2 py-1 rounded-full inline-flex items-center gap-1 ${
-                      isExpired 
-                        ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
-                        : 'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
-                    }`}>
+                    <div
+                      className={`text-xs px-2 py-1 rounded-full inline-flex items-center gap-1 ${
+                        isExpired
+                          ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                          : 'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
+                      }`}
+                    >
                       <AlertTriangle className="h-3 w-3" />
-                      {isExpired ? '¡Membresía Vencida!' : `¡Vence en ${remainingDays} días!`}
+                      {isExpired
+                        ? '¡Membresía Vencida!'
+                        : `¡Vence en ${remainingDays} días!`}
                     </div>
                   </div>
                 )}
-                <Button 
-                  asChild 
-                  variant={needsAttention ? "destructive" : "outline"} 
+                <Button
+                  asChild
+                  variant={needsAttention ? 'destructive' : 'outline'}
                   className={`gap-2 ${needsAttention ? 'animate-pulse' : ''}`}
                 >
                   <Link href="/dashboard/cli-membresias/mis-reconsumos">
@@ -128,125 +140,140 @@ export function MembershipOverviewCard({
 
       {membership && (
         <>
-          {/* Status and Progress Card */}
+          {/* Resumen compacto para evitar duplicados */}
           <Card className="shadow-sm">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Status Section */}
-                <div className="space-y-4">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Resumen de Membresía
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Estado */}
+                <div className="rounded-lg border bg-card p-4">
+                  <div className="text-xs text-muted-foreground mb-2">
+                    Estado
+                  </div>
                   <div className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-primary" />
-                    <h3 className="font-semibold">Estado de Membresía</h3>
-                  </div>
-                  <div className="flex items-center gap-3">
                     <StatusBadge status={membership.status} />
-                    <span className="text-sm text-muted-foreground">
-                      Estado actual
+                  </div>
+                </div>
+
+                {/* Plan */}
+                <div className="rounded-lg border bg-card p-4">
+                  <div className="text-xs text-muted-foreground mb-2">Plan</div>
+                  <div
+                    className="font-semibold truncate"
+                    title={membership.plan?.name || planName}
+                  >
+                    {membership.plan?.name || planName}
+                  </div>
+                </div>
+
+                {/* Precio */}
+                <div className="rounded-lg border bg-card p-4">
+                  <div className="text-xs text-muted-foreground mb-2">
+                    Precio
+                  </div>
+                  <div className="inline-flex items-center gap-1">
+                    <CreditCard className="h-4 w-4 text-green-600" />
+                    <span className="font-semibold text-green-600">
+                      {formatCurrency(membership.plan?.price || 0)}
                     </span>
                   </div>
                 </div>
 
-                {/* Progress Section */}
-                {totalDays > 0 && (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <Timer className="h-5 w-5 text-primary" />
-                      <h3 className="font-semibold">Progreso del Período</h3>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Días restantes</span>
-                        <span className={`font-medium ${
-                          isExpired 
-                            ? 'text-red-600 dark:text-red-400' 
-                            : isExpiringSoon 
-                            ? 'text-amber-600 dark:text-amber-400' 
-                            : ''
-                        }`}>
-                          {isExpired ? '¡Vencido!' : `${remainingDays} de ${totalDays} días`}
-                        </span>
-                      </div>
-                      <Progress 
-                        value={percentRemaining} 
-                        className={`h-2 ${
-                          isExpired 
-                            ? '[&>div]:bg-red-500' 
-                            : isExpiringSoon 
-                            ? '[&>div]:bg-amber-500' 
-                            : '[&>div]:bg-primary'
-                        }`} 
-                      />
-                      <div className="text-center">
-                        <span className="text-xs text-muted-foreground">
-                          {percentRemaining}% del período restante
-                        </span>
-                      </div>
-                    </div>
+                {/* Vencimiento */}
+                <div className="rounded-lg border bg-card p-4">
+                  <div className="text-xs text-muted-foreground mb-2">
+                    Vencimiento
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Details Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Plan Information */}
-            <Card className="shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <ListOrdered className="h-5 w-5 text-primary" />
-                  Información del Plan
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Nombre del Plan</span>
-                    <span className="font-semibold">{membership.plan?.name || '-'}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Precio</span>
-                    <div className="flex items-center gap-1">
-                      <CreditCard className="h-4 w-4 text-green-600" />
-                      <span className="font-semibold text-green-600">
-                        {formatCurrency(membership.plan?.price || 0)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Date Information */}
-            <Card className="shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  Fechas del Período
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Fecha de Inicio</span>
-                    <span className="font-semibold">
-                      {formatDate(membership.startDate || '-')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Fecha de Vencimiento</span>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-primary" />
                     <span className="font-semibold">
                       {formatDate(membership.endDate || '-')}
                     </span>
                   </div>
+                  <div className="mt-2 text-xs">
+                    <span
+                      className={`px-2 py-0.5 rounded-full ${
+                        isExpired
+                          ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                          : isExpiringSoon
+                          ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
+                          : 'bg-primary/10 text-primary'
+                      }`}
+                    >
+                      {isExpired
+                        ? 'Vencido'
+                        : `${remainingDays} días restantes`}
+                    </span>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+
+              {/* Progreso del período */}
+              {totalDays > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Timer className="h-4 w-4 text-primary" />
+                      <span>Periodo</span>
+                    </div>
+                    <span
+                      className={`font-medium ${
+                        isExpired
+                          ? 'text-red-600 dark:text-red-400'
+                          : isExpiringSoon
+                          ? 'text-amber-600 dark:text-amber-400'
+                          : ''
+                      }`}
+                    >
+                      {isExpired
+                        ? '¡Vencido!'
+                        : `${remainingDays} de ${totalDays} días`}
+                    </span>
+                  </div>
+                  <Progress
+                    value={percentRemaining}
+                    className={`h-2 ${
+                      isExpired
+                        ? '[&>div]:bg-red-500'
+                        : isExpiringSoon
+                        ? '[&>div]:bg-amber-500'
+                        : '[&>div]:bg-primary'
+                    }`}
+                  />
+                  <div className="text-center">
+                    <span className="text-xs text-muted-foreground">
+                      {percentRemaining}% del período restante
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2 text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <span>Inicio: </span>
+                      <span className="font-medium text-foreground">
+                        {formatDate(membership.startDate || '-')}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <span>Fin: </span>
+                      <span className="font-medium text-foreground">
+                        {formatDate(membership.endDate || '-')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Reconsumo Information */}
           {(detail?.lastReconsumption || detail?.pendingReconsumption) && (
-            <Card className="shadow-sm">
+            <Card className="shadow-sm ">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <RefreshCw className="h-5 w-5 text-primary" />
@@ -259,7 +286,9 @@ export function MembershipOverviewCard({
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm font-medium">Último Reconsumo</span>
+                        <span className="text-sm font-medium">
+                          Último Reconsumo
+                        </span>
                       </div>
                       <p className="text-lg font-semibold">
                         {formatDate(detail.lastReconsumption.createdAt)}
@@ -273,7 +302,9 @@ export function MembershipOverviewCard({
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <div className="h-2 w-2 bg-amber-500 rounded-full"></div>
-                        <span className="text-sm font-medium">Próximo Reconsumo</span>
+                        <span className="text-sm font-medium">
+                          Próximo Reconsumo
+                        </span>
                       </div>
                       <p className="text-lg font-semibold">
                         {formatDate(detail.pendingReconsumption.periodDate)}

@@ -5,9 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 const socialLinks = [
-    { icon: Facebook, href: "#", name: "Facebook" },
-    { icon: Instagram, href: "#", name: "Instagram" },
-    { icon: Youtube, href: "#", name: "YouTube" }
+    { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61567779184876", name: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/nexushglobal/", name: "Instagram" }
 ];
 
 
@@ -75,6 +74,8 @@ export function FooterSection() {
                                 <Link
                                     key={index}
                                     href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="w-12 h-12 bg-primary/10 hover:bg-primary/20 rounded-full flex items-center justify-center text-primary transition-all duration-200 hover:scale-110"
                                     aria-label={social.name}
                                 >
@@ -103,6 +104,14 @@ export function FooterSection() {
                                 className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
                             >
                                 Política de Privacidad y Términos
+                            </Link>
+                            <Link
+                                href="/libro_de_reclamaciones"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+                            >
+                                Libro de Reclamaciones
                             </Link>
                         </div>
                     </div>

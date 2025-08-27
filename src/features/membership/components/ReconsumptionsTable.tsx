@@ -160,8 +160,8 @@ export function ReconsumptionsTable({
       </Card>
 
       {pagination && (
-        <Card className="shadow-sm">
-          <CardContent className="p-4">
+        <Card className="shadow-sm py-0">
+          <CardContent>
             <TablePagination
               pagination={pagination}
               onPageChange={onPageChange}

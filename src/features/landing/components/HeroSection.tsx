@@ -1,148 +1,142 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { ArrowRight, TrendingUp } from "lucide-react";
+'use client';
+import { Button } from '@/components/ui/button';
+import { LoginModal } from '@/features/auth/components/LoginModal';
+import { motion } from 'framer-motion';
+import { ArrowRight, LogIn } from 'lucide-react';
+import Image from 'next/image';
 
 export default function HeroSection() {
-    const scrollToForm = () => {
-        const formElement = document.getElementById('contact-form');
-        if (formElement) {
-            formElement.scrollIntoView({ behavior: 'smooth' });
-        }
-    };
-    
-    return (
-        <div className="relative min-h-[calc(100vh-115px)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/10">
-            {/* Background decorative elements */}
-            <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary/5 to-emerald-500/5 rounded-full blur-3xl"></div>
+  const scrollToForm = () => {
+    const formElement = document.getElementById('contact-form');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <section className="relative min-h-[80vh] flex items-center justify-center bg-background">
+      <div className="absolute inset-0 bg-gradient-to-b from-background to-muted/20"></div>
+      <div className="container mx-auto px-2 sm:px-4 py-10 sm:py-16 relative z-10">
+        <div className="text-center max-w-full sm:max-w-3xl mx-auto space-y-10 sm:space-y-14">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-4 py-1 shadow-sm"
+          >
+            <span className="text-xs font-medium text-primary">
+              +10 años liderando el mercado
+            </span>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: 'easeOut' }}
+            className="flex justify-center"
+          >
+            <div className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36">
+              <Image
+                src="/imgs/isotipo_negro.png"
+                alt="Nexus H Global"
+                width={80}
+                height={80}
+                priority
+                className="absolute inset-0 dark:opacity-0 transition-all duration-300 sm:w-28 sm:h-28 md:w-36 md:h-36"
+              />
+              <Image
+                src="/imgs/isotipo_blanco.png"
+                alt="Nexus H Global"
+                width={80}
+                height={80}
+                className="absolute inset-0 opacity-0 dark:opacity-100 transition-all duration-300 sm:w-28 sm:h-28 md:w-36 md:h-36"
+              />
             </div>
-
-            {/* Floating elements */}
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
+          >
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-foreground leading-tight tracking-tight mb-3 sm:mb-4">
+              NEXUS H GLOBAL
+            </h1>
+            <p className="text-base sm:text-2xl md:text-3xl text-muted-foreground font-medium">
+              Tu portal hacia la{' '}
+              <span className="text-primary font-semibold">
+                libertad financiera
+              </span>{' '}
+              en el sector inmobiliario más exclusivo y rentable
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4, ease: 'easeOut' }}
+            className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-10 text-sm sm:text-base md:text-lg text-muted-foreground border-t border-border pt-4 sm:pt-6"
+          >
+            <span className="flex items-center gap-2">
+              <strong className="text-primary font-bold text-lg sm:text-xl md:text-2xl">
+                +4,000
+              </strong>
+              Lotes Vendidos
+            </span>
+            <span className="hidden sm:inline text-border text-xl">|</span>
+            <span className="flex items-center gap-2">
+              <strong className="text-primary font-bold text-lg sm:text-xl md:text-2xl">
+                +10,000
+              </strong>
+              Lotes en Cartera
+            </span>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.6, ease: 'easeOut' }}
+            className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center pt-4 sm:pt-6"
+          >
             <motion.div
-                animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
-                transition={{ duration: 6, repeat: Infinity }}
-                className="absolute top-20 left-10 w-16 h-16 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl opacity-20"
-            ></motion.div>
-            <motion.div
-                animate={{ y: [0, 10, 0], rotate: [0, -5, 0] }}
-                transition={{ duration: 8, repeat: Infinity, delay: 1 }}
-                className="absolute bottom-20 right-10 w-12 h-12 bg-gradient-to-r from-emerald-500 to-primary rounded-full opacity-20"
-            ></motion.div>
-            <motion.div
-                animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
-                transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-                className="absolute top-1/3 right-1/4 w-8 h-8 bg-primary rounded-lg opacity-15"
-            ></motion.div>
-
-            <div className="container mx-auto px-4 py-20 relative z-10">
-                <div className="text-center max-w-5xl mx-auto">
-                    {/* Badge */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6 }}
-                        className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-6 py-2 mb-8"
-                    >
-                        <TrendingUp className="w-4 h-4 text-primary" />
-                        <span className="text-primary font-medium">+10 años en el sector inmobiliario</span>
-                        <TrendingUp className="w-4 h-4 text-primary" />
-                    </motion.div>
-
-                    <motion.h1
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-emerald-600 bg-clip-text text-transparent leading-tight"
-                    >
-                        NEXUS H GLOBAL
-                    </motion.h1>
-
-                    {/* Slogan */}
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4 }}
-                        className="text-xl md:text-2xl lg:text-3xl text-muted-foreground mb-4 font-medium"
-                    >
-                        Tu camino hacia la{" "}
-                        <span className="text-primary font-semibold bg-gradient-to-r from-primary to-emerald-600 bg-clip-text text-transparent">
-                            libertad financiera
-                        </span>
-                    </motion.p>
-
-                    {/* Quick stats */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.5 }}
-                        className="flex flex-wrap justify-center gap-6 mb-8 text-sm text-muted-foreground"
-                    >
-                        <div className="flex items-center gap-1">
-                            <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                            +4,000 Lotes Vendidos
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <span className="w-2 h-2 bg-primary rounded-full"></span>
-                            +10,000 Lotes en Propiedad
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                            S/ 300M+ en Activos
-                        </div>
-                    </motion.div>
-
-                    {/* Descripción */}
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.6 }}
-                        className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed"
-                    >
-                        Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario. 
-                        Más de 10 años de experiencia respaldando tu camino hacia la libertad financiera.
-                    </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.8 }}
-                        className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8"
-                    >
-                        <Button 
-                            onClick={scrollToForm}
-                            size="lg" 
-                            className="text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 group"
-                        >
-                            Comenzar Ahora
-                            <motion.div
-                                className="ml-2"
-                                animate={{ x: [0, 5, 0] }}
-                                transition={{ duration: 1.5, repeat: Infinity }}
-                            >
-                                <ArrowRight className="h-5 w-5" />
-                            </motion.div>
-                        </Button>
-
-                    </motion.div>
-
-                    {/* Trust indicators */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 1 }}
-                        className="flex flex-wrap justify-center items-center gap-8 text-sm text-muted-foreground"
-                    >
-                        <span>✓ Desarrolladora Inmobiliaria</span>
-                        <div className="w-px h-4 bg-border"></div>
-                        <span>✓ Financiera Propia</span>
-                        <div className="w-px h-4 bg-border"></div>
-                        <span>✓ Nexus Academy</span>
-                    </motion.div>
-                </div>
-            </div>
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full sm:w-auto"
+            >
+              <Button
+                onClick={scrollToForm}
+                size="lg"
+                className="w-full sm:w-auto text-base sm:text-lg font-bold px-8 sm:px-14 py-4 sm:py-6 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground shadow-xl hover:shadow-primary/25 transition-all duration-200"
+              >
+                COMENZAR
+                <ArrowRight className="h-6 w-6 sm:h-7 sm:w-7 ml-2 sm:ml-3" />
+              </Button>
+            </motion.div>
+            <LoginModal>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                className="w-full sm:w-auto"
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto text-base sm:text-lg font-bold px-8 sm:px-14 py-4 sm:py-6 rounded-2xl border-2 border-primary hover:border-primary-hover hover:bg-primary/10 hover:shadow-lg transition-all duration-200"
+                >
+                  <LogIn className="h-6 w-6 sm:h-7 sm:w-7 mr-2 sm:mr-3" />
+                  INGRESAR
+                </Button>
+              </motion.div>
+            </LoginModal>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.9, ease: 'easeOut' }}
+            className="pt-4 sm:pt-6"
+          >
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
+              Desarrolladora Inmobiliaria · Financiera Propia · Nexus Academy
+            </p>
+          </motion.div>
         </div>
-    );
+      </div>
+    </section>
+  );
 }

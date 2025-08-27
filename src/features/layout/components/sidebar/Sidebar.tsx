@@ -5,21 +5,28 @@ import {
     SheetContent,
     SheetHeader,
     SheetTitle,
-    SheetTrigger,
 } from "@/components/ui/sheet";
 import { getUserMenuAction } from "@features/layout/actions/get-menu";
 import { MenuItem } from "@features/layout/types/menu.types";
-import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, Menu } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { AlertCircle } from "lucide-react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { SidebarContent } from "./SidebarContent";
 
-const Sidebar = () => {
+export interface SidebarRef {
+    toggleMobile: () => void;
+}
+
+const Sidebar = forwardRef<SidebarRef>((props, ref) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    useImperativeHandle(ref, () => ({
+        toggleMobile: () => setIsMobileOpen(!isMobileOpen)
+    }));
 
     useEffect(() => {
 
@@ -80,15 +87,6 @@ const Sidebar = () => {
         <>
             <AnimatePresence>
                 <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
-                    <SheetTrigger asChild>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg shadow-md"
-                        >
-                            <Menu size={20} />
-                        </motion.button>
-                    </SheetTrigger>
                     <SheetContent side="left" className="p-0 w-64 border-r-0">
                         <SheetHeader className="sr-only">
                             <SheetTitle>Menú de navegación</SheetTitle>
@@ -114,6 +112,8 @@ const Sidebar = () => {
             </div>
         </>
     );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

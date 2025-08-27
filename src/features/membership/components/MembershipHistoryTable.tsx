@@ -35,7 +35,10 @@ export function MembershipHistoryTable({
   onPageChange: (p: number) => void;
   onLimitChange: (l: number) => void;
   errorMessage?: string | null;
-  onOpenChanges: (changes: Record<string, any>, metadata?: Record<string, any>) => void;
+  onOpenChanges: (
+    changes: Record<string, any>,
+    metadata?: Record<string, any>,
+  ) => void;
   onOpenMetadata: (data: Record<string, any>) => void;
 }) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -51,7 +54,7 @@ export function MembershipHistoryTable({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ">
       <Card className="shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -84,8 +87,8 @@ export function MembershipHistoryTable({
       </Card>
 
       {pagination && (
-        <Card className="shadow-sm">
-          <CardContent className="p-4">
+        <Card className="shadow-sm py-0">
+          <CardContent>
             <TablePagination
               pagination={pagination}
               onPageChange={onPageChange}

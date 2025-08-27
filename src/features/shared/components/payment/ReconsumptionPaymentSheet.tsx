@@ -1,7 +1,7 @@
 'use client';
 
-import { MembershipReconsumption } from '@/features/membership/types/reconsumption.type';
 import { reconsumtionAction } from '@/features/membership/actions/reconsumption';
+import { MembershipReconsumption } from '@/features/membership/types/reconsumption.type';
 import { BasePaymentSheet } from './BasePaymentSheet';
 import { ReconsumptionResultModal } from './ReconsumptionResultModal';
 
@@ -20,6 +20,11 @@ export function ReconsumptionPaymentSheet({
 }: ReconsumptionPaymentSheetProps) {
   const handleSubmit = async (formData: FormData) => {
     formData.append('membershipId', membership.membershipId.toString());
+    formData.append('amount', membership.reconsumptionAmount.toString());
+    console.log(
+      'Submitting reconsumption with data:',
+      Object.fromEntries(formData.entries()),
+    );
     return await reconsumtionAction(formData);
   };
 

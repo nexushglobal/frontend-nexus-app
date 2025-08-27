@@ -5,14 +5,10 @@ import { OrderResult } from '../types/order.type';
 
 export async function createOrderAction(formData: FormData) {
   try {
-    const response = await api.post<OrderResult>(
-      '/api/ecommerce/order',
-      formData,
-      {
-        isFormData: true,
-        skipJsonStringify: true,
-      },
-    );
+    const response = await api.post<OrderResult>('/api/orders', formData, {
+      isFormData: true,
+      skipJsonStringify: true,
+    });
     return {
       success: true,
       message: 'Pedido procesado exitosamente',

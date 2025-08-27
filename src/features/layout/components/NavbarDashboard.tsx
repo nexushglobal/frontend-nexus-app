@@ -1,13 +1,18 @@
 'use client';
 
 import { Separator } from '@/components/ui/separator';
+import { PointsMenu } from '@/features/point/components/PointsMenu';
 import NavbarCartIcon from '@/features/shared/components/cart/NavbarCartIcon';
 import ThemeSwitch from '@/features/shared/components/ThemeSwich';
 import { UserMenu } from '@/features/user/components/UserMenu';
 import { motion } from 'framer-motion';
-import { Calendar } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
-const Navbar = () => {
+interface NavbarProps {
+  onMenuToggle?: () => void;
+}
+
+const Navbar = ({ onMenuToggle }: NavbarProps) => {
   const formatDate = () => {
     return new Intl.DateTimeFormat('es-ES', {
       weekday: 'long',
@@ -25,23 +30,23 @@ const Navbar = () => {
     >
       <div className="flex items-center justify-between h-16 px-6">
         <div className="flex items-center space-x-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-xs font-medium capitalize text-muted-foreground flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg"
+          <motion.button
+            onClick={onMenuToggle}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="lg:hidden p-2 rounded-lg hover:bg-primary/10 transition-colors"
+            aria-label="Abrir menú"
           >
-            <Calendar size={15} className="text-muted-foreground" />
-            {formatDate()}
-          </motion.div>
+            <Menu size={20} />
+          </motion.button>
         </div>
 
         <div className="flex items-center gap-4">
-          <UserMenu />
-          <NavbarCartIcon />
-
-          <Separator orientation="vertical" className="h-6 bg-border" />
           <ThemeSwitch />
+          <NavbarCartIcon />
+          <PointsMenu />
+          <UserMenu />
+          <Separator orientation="vertical" className="h-6 bg-border" />
         </div>
       </div>
     </motion.nav>

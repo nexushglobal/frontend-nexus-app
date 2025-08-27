@@ -7,10 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { formatCurrency } from '@/features/shared/utils/formatCurrency';
-import { CheckCircle, XCircle, RefreshCw, Edit, Package } from 'lucide-react';
-import { PaymentResponse } from './BasePaymentSheet';
 import { OrderResult } from '@/features/ecommerce/types/order.type';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { CheckCircle, Edit, Package, RefreshCw, XCircle } from 'lucide-react';
+import { PaymentResponse } from './BasePaymentSheet';
 
 interface OrderResultModalProps {
   isOpen: boolean;

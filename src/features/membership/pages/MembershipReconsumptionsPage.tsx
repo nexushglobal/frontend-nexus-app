@@ -40,7 +40,6 @@ export default function MembershipReconsumptionsPage() {
           subtitle="Gestiona los reconsumos de tu membresía"
           className="mb-6"
           variant="gradient"
-          backUrl="/dashboard/cli-membresias/mi-plan"
         />
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
@@ -59,7 +58,6 @@ export default function MembershipReconsumptionsPage() {
         subtitle="Gestiona los reconsumos de tu membresía"
         className="mb-6"
         variant="gradient"
-        backUrl="/dashboard/cli-membresias/mi-plan"
       />
 
       <ReconsumptionsSummary membership={data?.membership} />

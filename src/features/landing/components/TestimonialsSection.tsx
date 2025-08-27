@@ -7,42 +7,36 @@ const testimonials = [
     {
         name: "María del Carmen Ruiz",
         role: "Ejecutiva Presidenta",
-        location: "Lima, Perú",
         image: "/imgs/avatars/avatar-1.jpg",
         text: "Gracias a Nexus Global pude adquirir mi primer lote en El Olivar con cero inicial. Las certificaciones de Nexus Academy me dieron las herramientas para vender otros 15 lotes en mi primer año."
     },
     {
         name: "Carlos Alberto Mendoza",
         role: "Ejecutivo Fundador",
-        location: "Arequipa, Perú",
         image: "/imgs/avatars/avatar-2.jpg",
         text: "La Travesía del Héroe Inmobiliario cambió mi perspectiva de los negocios. Llegué a Fundador en 8 meses y ya recibí mi Bono Auto. El respaldo de Huertas Inmobiliaria es increíble."
     },
     {
         name: "Ana Lucía Fernández",
         role: "Ejecutiva Vicepresidenta",
-        location: "Cusco, Perú",
         image: "/imgs/avatars/avatar-3.jpg",
         text: "Como madre de familia, necesitaba ingresos extra. Con Nexus Academy aprendí marketing digital para inmobiliarias y ahora genero comisiones recurrentes vendiendo lotes desde casa."
     },
     {
         name: "Luis Miguel Castro",
         role: "Ejecutivo Leyenda",
-        location: "Trujillo, Perú",
         image: "/imgs/avatars/avatar-4.jpg",
         text: "Llegué a Leyenda en 14 meses. Los bonos por consolidación de equipos y el Bono Lote me permitieron construir un patrimonio inmobiliario sólido. Ya califiqué para Qatar."
     },
     {
         name: "Carmen Rosa López",
         role: "Ejecutiva Presidenta",
-        location: "Piura, Perú",
         image: "/imgs/avatars/avatar-5.jpg",
         text: "La certificación en IA para inmobiliarias me ayudó a automatizar mi proceso de ventas. Ahora manejo mi cartera de clientes eficientemente y mi equipo crece constantemente."
     },
     {
         name: "Roberto Silva Vargas",
         role: "Ejecutivo Fundador",
-        location: "Iquitos, Perú",
         image: "/imgs/avatars/avatar-6.jpg",
         text: "Después de 15 años como empleado, Nexus me dio la oportunidad de ser mi propio jefe. Los proyectos Oasis y Flamant se vendieron súper bien en mi región."
     }
@@ -91,7 +85,6 @@ export function TestimonialsSection() {
                                 <div>
                                     <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
                                     <p className="text-sm text-primary font-medium">{testimonial.role}</p>
-                                    <p className="text-xs text-muted-foreground">{testimonial.location}</p>
                                 </div>
                             </div>
 

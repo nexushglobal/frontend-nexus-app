@@ -17,6 +17,7 @@ import {
   PaymentMethod,
 } from '@/features/membership/types/membership-detail.type';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { getUserPointsAction } from '@/features/point/action/get-points.action';
 import {
   AlertCircle,
   CheckCircle,
@@ -29,7 +30,7 @@ import {
   Trash2,
   Zap,
 } from 'lucide-react';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 
 export interface PaymentResponse<T = any> {
   success: boolean;
@@ -79,12 +80,38 @@ export function BasePaymentSheet<T = any>({
     null,
   );
   const [selectedCardId, setSelectedCardId] = useState<string>('');
+  const [userPoints, setUserPoints] = useState<number | null>(null);
+  const [isLoadingPoints, setIsLoadingPoints] = useState(false);
+  const [pointsError, setPointsError] = useState<string | null>(null);
 
   const paymentsTotal = payments.reduce(
     (sum, payment) => sum + payment.amount,
     0,
   );
   const remainingAmount = totalAmount - paymentsTotal;
+
+  // Load user points when POINTS method is selected
+  useEffect(() => {
+    if (selectedMethod === PaymentMethod.POINTS && userPoints === null) {
+      setIsLoadingPoints(true);
+      setPointsError(null);
+      
+      getUserPointsAction()
+        .then((response) => {
+          if (response.success && response.data) {
+            setUserPoints(response.data.availablePoints);
+          } else {
+            setPointsError(response.message || 'Error al cargar puntos');
+          }
+        })
+        .catch((error) => {
+          setPointsError('Error inesperado al cargar puntos');
+        })
+        .finally(() => {
+          setIsLoadingPoints(false);
+        });
+    }
+  }, [selectedMethod, userPoints]);
 
   const handleAddPayment = (payment: Payment, file: File) => {
     setPayments((prev) => [...prev, { ...payment, fileIndex: files.length }]);
@@ -133,6 +160,14 @@ export function BasePaymentSheet<T = any>({
         formData.append('source_id', selectedCardId);
       }
 
+      // Validar puntos si el método es POINTS
+      if (selectedMethod === PaymentMethod.POINTS) {
+        if (userPoints === null || userPoints < totalAmount) {
+          alert('No tienes suficientes puntos disponibles');
+          return;
+        }
+      }
+
       const result = await onSubmit(formData);
 
       setPaymentResult(result);
@@ -159,6 +194,9 @@ export function BasePaymentSheet<T = any>({
     setSelectedMethod(PaymentMethod.VOUCHER);
     setSelectedCardId('');
     setPaymentResult(null);
+    setUserPoints(null);
+    setIsLoadingPoints(false);
+    setPointsError(null);
   };
 
   const handleClose = () => {
@@ -173,6 +211,8 @@ export function BasePaymentSheet<T = any>({
       ? remainingAmount <= 0
       : selectedMethod === PaymentMethod.PAYMENT_GATEWAY
       ? !!selectedCardId
+      : selectedMethod === PaymentMethod.POINTS
+      ? userPoints !== null && userPoints >= totalAmount
       : false;
 
   return (
@@ -303,27 +343,71 @@ export function BasePaymentSheet<T = any>({
                       </div>
                     </div>
 
-                    {/* Points Option - Disabled */}
-                    <div className="border rounded-lg p-4 opacity-50 bg-muted/30">
+                    {/* Points Option - Now enabled */}
+                    <div className="border rounded-lg p-4">
                       <div className="flex items-center space-x-3">
                         <RadioGroupItem
                           value={PaymentMethod.POINTS}
                           id="points"
-                          disabled
                         />
                         <Label
                           htmlFor="points"
-                          className="flex items-center gap-2 cursor-not-allowed flex-1"
+                          className="flex items-center gap-2 cursor-pointer flex-1"
                         >
                           <Zap className="h-4 w-4" />
                           <div>
                             <div className="font-medium">Puntos</div>
                             <div className="text-xs text-muted-foreground">
-                              Próximamente
+                              Pagar con tus puntos disponibles
                             </div>
                           </div>
                         </Label>
                       </div>
+                      
+                      {selectedMethod === PaymentMethod.POINTS && (
+                        <div className="mt-3 pt-3 border-t">
+                          {isLoadingPoints ? (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                              Cargando puntos...
+                            </div>
+                          ) : pointsError ? (
+                            <div className="text-sm text-destructive">
+                              Error: {pointsError}
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">Puntos disponibles:</span>
+                                <span className={`font-medium ${
+                                  userPoints !== null && userPoints >= totalAmount
+                                    ? 'text-success'
+                                    : 'text-destructive'
+                                }`}>
+                                  {userPoints !== null ? userPoints.toLocaleString() : '0'} pts
+                                </span>
+                              </div>
+                              <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">Puntos requeridos:</span>
+                                <span className="font-medium">
+                                  {totalAmount.toLocaleString()} pts
+                                </span>
+                              </div>
+                              {userPoints !== null && userPoints >= totalAmount ? (
+                                <div className="flex items-center gap-2 text-xs text-success">
+                                  <CheckCircle className="h-3 w-3" />
+                                  Tienes suficientes puntos
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 text-xs text-destructive">
+                                  <AlertCircle className="h-3 w-3" />
+                                  Puntos insuficientes
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     {/* Gateway Option - Now enabled */}
@@ -448,6 +532,8 @@ export function BasePaymentSheet<T = any>({
                     <CheckCircle className="mr-2 h-4 w-4" />
                     {selectedMethod === PaymentMethod.VOUCHER
                       ? 'Enviar Pagos'
+                      : selectedMethod === PaymentMethod.POINTS
+                      ? 'Pagar con Puntos'
                       : 'Procesar Pago'}
                   </>
                 )}
@@ -472,6 +558,19 @@ export function BasePaymentSheet<T = any>({
                   <AlertCircle className="h-4 w-4 text-warning" />
                   <span className="text-sm text-warning">
                     Debes seleccionar una tarjeta para proceder con el pago
+                  </span>
+                </div>
+              )}
+
+            {selectedMethod === PaymentMethod.POINTS &&
+              (userPoints === null || userPoints < totalAmount) && (
+                <div className="flex items-center gap-2 p-3 bg-warning/10 border border-warning/20 rounded-lg">
+                  <AlertCircle className="h-4 w-4 text-warning" />
+                  <span className="text-sm text-warning">
+                    {userPoints === null 
+                      ? 'Cargando información de puntos...'
+                      : `Necesitas ${totalAmount.toLocaleString()} puntos, pero solo tienes ${userPoints.toLocaleString()} puntos disponibles`
+                    }
                   </span>
                 </div>
               )}
