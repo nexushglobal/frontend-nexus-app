@@ -2,14 +2,12 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { VOLUME_SITE, VOLUME_STATUS } from '@/features/point/constants';
+import { VOLUME_SITE } from '@/features/point/constants';
+import { VolumeStatus } from '@/features/point/types/enums-volume';
 import { WeeklyVolume } from '@/features/point/types/weekly.types';
+import { MetadataModal } from '@/features/shared/components/modal/MetadataModal';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import { formatTableAmount } from '@/features/shared/utils/table.utils';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   CalendarDays,
@@ -21,34 +19,12 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 
-interface MetadataModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  metadata: Record<string, any> | undefined;
-}
-
-function MetadataModal({ isOpen, onClose, metadata }: MetadataModalProps) {
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Metadata del Volumen Semanal</DialogTitle>
-        </DialogHeader>
-        <div className="max-h-96 overflow-auto">
-          <pre className="bg-muted p-4 rounded-lg text-sm">
-            {JSON.stringify(metadata, null, 2)}
-          </pre>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 interface ActionsColumnProps {
   volume: WeeklyVolume;
 }
 
-function ActionsColumn({ volume }: ActionsMenuProps) {
+function ActionsColumn({ volume }: ActionsColumnProps) {
   const [showMetadata, setShowMetadata] = useState(false);
   const hasMetadata =
     volume.metadata && Object.keys(volume.metadata).length > 0;
@@ -84,6 +60,7 @@ function ActionsColumn({ volume }: ActionsMenuProps) {
         isOpen={showMetadata}
         onClose={() => setShowMetadata(false)}
         metadata={volume.metadata}
+        title="Metadata del Volumen Semanal"
       />
     </div>
   );
@@ -171,9 +148,10 @@ export const weeklyVolumeColumns: ColumnDef<WeeklyVolume>[] = [
       const commission = row.original.commissionEarned;
       if (!commission) return <span className="text-muted-foreground">-</span>;
 
+      const { formatted } = formatTableAmount(commission);
       return (
         <span className="font-medium text-green-600">
-          {commission.toLocaleString('es-ES')} pts
+          {formatted}
         </span>
       );
     },
@@ -182,25 +160,15 @@ export const weeklyVolumeColumns: ColumnDef<WeeklyVolume>[] = [
     accessorKey: 'status',
     header: 'Estado',
     cell: ({ row }) => {
-      const status = row.original.status;
-      const statusVariants = {
-        PENDING: 'outline' as const,
-        PROCESSED: 'secondary' as const,
-        CANCELLED: 'destructive' as const,
-      };
-
-      const statusColors = {
-        PENDING: 'text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-600',
-        PROCESSED: 'text-green-800 dark:text-green-300 bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600',
-        CANCELLED: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600',
-      };
+      const status = row.original.status as VolumeStatus;
+      const statusConfig = getStatusConfig(status);
 
       return (
-        <Badge 
-          variant={statusVariants[status]} 
-          className={statusColors[status]}
+        <Badge
+          variant={statusConfig.variant}
+          className={statusConfig.className}
         >
-          {VOLUME_STATUS[status]}
+          {statusConfig.label}
         </Badge>
       );
     },

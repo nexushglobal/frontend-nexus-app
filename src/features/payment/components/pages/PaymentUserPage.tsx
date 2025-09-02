@@ -70,7 +70,6 @@ export function PaymentUserPage() {
       <EnhancedPaymentHeader />
 
       <div className="space-y-6">
-        {/* Filters Section */}
         <Card className="shadow-sm py-0">
           <CardContent className="py-4">
             <PaymentUserFilters
@@ -80,24 +79,20 @@ export function PaymentUserPage() {
           </CardContent>
         </Card>
 
-        {/* Content Section */}
         {isLoading && !data && <LoadingState />}
 
         {data && (
           <>
-            {/* Desktop Table */}
             <div className="hidden md:block">
               <PaymentUserTable data={data.items} isLoading={isLoading} />
             </div>
 
-            {/* Mobile Cards */}
             <div className="md:hidden">
               <PaymentUserCards data={data.items} />
             </div>
 
-            {/* Pagination */}
             <Card className="shadow-sm py-0">
-              <CardContent className="py-3">
+              <CardContent>
                 <TablePagination
                   pagination={data.pagination}
                   onPageChange={handlePageChange}
@@ -109,14 +104,12 @@ export function PaymentUserPage() {
           </>
         )}
 
-        {/* Empty State */}
         {data && data.items.length === 0 && <EmptyPaymentsState />}
       </div>
     </div>
   );
 }
 
-// Enhanced Header Component
 function EnhancedPaymentHeader() {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

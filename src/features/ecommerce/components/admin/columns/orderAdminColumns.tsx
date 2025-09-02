@@ -2,8 +2,11 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import { formatTableAmount, formatTableDate, formatSimpleId } from '@/features/shared/utils/table.utils';
+import { OrderStatus } from '@/features/ecommerce/types/enums-orders';
 import { ColumnDef, VisibilityState } from '@tanstack/react-table';
-import { Eye, ShoppingCart } from 'lucide-react';
+import { Eye, ShoppingCart, Calendar, User } from 'lucide-react';
 import type { OrderAdminItem } from '../../../types/order.type';
 
 export interface OrderAdminColumnsProps {
@@ -11,43 +14,6 @@ export interface OrderAdminColumnsProps {
   onPreview: (order: OrderAdminItem) => void;
 }
 
-const getStatusBadgeVariant = (status: string) => {
-  switch (status) {
-    case 'PENDING':
-      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    case 'APPROVED':
-      return 'bg-green-100 text-green-800 border-green-200';
-    case 'SENT':
-      return 'bg-blue-100 text-blue-800 border-blue-200';
-    case 'DELIVERED':
-      return 'bg-purple-100 text-purple-800 border-purple-200';
-    case 'REJECTED':
-      return 'bg-red-100 text-red-800 border-red-200';
-    case 'CANCELED':
-      return 'bg-gray-100 text-gray-800 border-gray-200';
-    default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
-  }
-};
-
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case 'PENDING':
-      return 'Pendiente';
-    case 'APPROVED':
-      return 'Aprobado';
-    case 'SENT':
-      return 'Enviado';
-    case 'DELIVERED':
-      return 'Entregado';
-    case 'REJECTED':
-      return 'Rechazado';
-    case 'CANCELED':
-      return 'Cancelado';
-    default:
-      return status;
-  }
-};
 
 export function createOrderAdminColumns({
   onViewDetail,
@@ -58,7 +24,7 @@ export function createOrderAdminColumns({
       accessorKey: 'id',
       header: 'ID',
       cell: ({ row }) => (
-        <div className="font-medium">#{row.getValue('id')}</div>
+        <div className="font-medium text-primary">{formatSimpleId(row.getValue('id'))}</div>
       ),
       size: 80,
     },
@@ -66,10 +32,13 @@ export function createOrderAdminColumns({
       accessorKey: 'userName',
       header: 'Cliente',
       cell: ({ row }) => (
-        <div>
-          <div className="font-medium">{row.getValue('userName')}</div>
-          <div className="text-sm text-muted-foreground">
-            {row.original.userEmail}
+        <div className="flex items-center gap-2">
+          <User className="h-4 w-4 text-primary" />
+          <div>
+            <div className="font-medium">{row.getValue('userName')}</div>
+            <div className="text-sm text-muted-foreground">
+              {row.original.userEmail}
+            </div>
           </div>
         </div>
       ),
@@ -79,10 +48,11 @@ export function createOrderAdminColumns({
       accessorKey: 'status',
       header: 'Estado',
       cell: ({ row }) => {
-        const status = row.getValue('status') as string;
+        const status = row.getValue('status') as OrderStatus;
+        const config = getStatusConfig(status);
         return (
-          <Badge variant="outline" className={getStatusBadgeVariant(status)}>
-            {getStatusLabel(status)}
+          <Badge variant={config.variant} className={config.className}>
+            {config.label}
           </Badge>
         );
       },
@@ -103,7 +73,8 @@ export function createOrderAdminColumns({
       header: 'Total',
       cell: ({ row }) => {
         const amount = row.getValue('totalAmount') as number;
-        return <div className="font-medium">${amount.toLocaleString()}</div>;
+        const { formatted } = formatTableAmount(amount);
+        return <div className="font-medium">{formatted}</div>;
       },
       size: 120,
     },
@@ -111,17 +82,14 @@ export function createOrderAdminColumns({
       accessorKey: 'createdAt',
       header: 'Fecha',
       cell: ({ row }) => {
-        const date = new Date(row.getValue('createdAt'));
+        const dateString = row.getValue('createdAt') as string;
+        const { date, time } = formatTableDate(dateString);
         return (
-          <div>
-            <div className="font-medium">
-              {date.toLocaleDateString('es-ES')}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {date.toLocaleTimeString('es-ES', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">{date}</span>
+              <span className="text-xs text-muted-foreground">{time}</span>
             </div>
           </div>
         );

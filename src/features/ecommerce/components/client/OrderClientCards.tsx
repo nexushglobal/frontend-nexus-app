@@ -4,54 +4,19 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import { formatTableAmount, formatDate, formatSimpleId } from '@/features/shared/utils/table.utils';
 import { CalendarDays, Eye, Package2, ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { OrderClientItem } from '../../types/order.type';
+import { OrderStatus } from '../../types/enums-orders';
 import { OrderPreviewModal } from '../admin/OrderPreviewModal';
 
 interface OrderClientCardsProps {
   data: OrderClientItem[];
 }
 
-const getStatusBadgeVariant = (status: string) => {
-  switch (status) {
-    case 'PENDING':
-      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    case 'APPROVED':
-      return 'bg-green-100 text-green-800 border-green-200';
-    case 'SENT':
-      return 'bg-blue-100 text-blue-800 border-blue-200';
-    case 'DELIVERED':
-      return 'bg-purple-100 text-purple-800 border-purple-200';
-    case 'REJECTED':
-      return 'bg-red-100 text-red-800 border-red-200';
-    case 'CANCELED':
-      return 'bg-gray-100 text-gray-800 border-gray-200';
-    default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
-  }
-};
-
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case 'PENDING':
-      return 'Pendiente';
-    case 'APPROVED':
-      return 'Aprobado';
-    case 'SENT':
-      return 'Enviado';
-    case 'DELIVERED':
-      return 'Entregado';
-    case 'REJECTED':
-      return 'Rechazado';
-    case 'CANCELED':
-      return 'Cancelado';
-    default:
-      return status;
-  }
-};
 
 export function OrderClientCards({ data }: OrderClientCardsProps) {
   const router = useRouter();
@@ -102,14 +67,19 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Package2 className="h-5 w-5 text-primary" />
-                  Pedido #{order.id}
+                  Pedido {formatSimpleId(order.id)}
                 </CardTitle>
-                <Badge
-                  variant="outline"
-                  className={getStatusBadgeVariant(order.status)}
-                >
-                  {getStatusLabel(order.status)}
-                </Badge>
+                {(() => {
+                  const statusConfig = getStatusConfig(order.status as OrderStatus);
+                  return (
+                    <Badge
+                      variant={statusConfig.variant}
+                      className={statusConfig.className}
+                    >
+                      {statusConfig.label}
+                    </Badge>
+                  );
+                })()}
               </div>
             </CardHeader>
 
@@ -125,7 +95,7 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
                   </div>
                   <div className="text-center p-3 bg-muted/50 rounded-lg">
                     <p className="text-lg font-bold">
-                      {formatCurrency(order.totalAmount, 'PEN')}
+                      {formatTableAmount(order.totalAmount).formatted}
                     </p>
                     <p className="text-xs text-muted-foreground">Total</p>
                   </div>
@@ -134,10 +104,7 @@ export function OrderClientCards({ data }: OrderClientCardsProps) {
                       <CalendarDays className="h-3 w-3" />
                     </div>
                     <p className="text-xs font-medium">
-                      {new Date(order.createdAt).toLocaleDateString('es-ES', {
-                        day: '2-digit',
-                        month: 'short',
-                      })}
+                      {formatDate(order.createdAt.toString())}
                     </p>
                   </div>
                 </div>

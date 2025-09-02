@@ -11,6 +11,7 @@ import {
 import {
   PAYMENT_STATUS_LABELS,
   PAYMENT_STATUS_VARIANTS,
+  PAYMENT_METHOD_LABELS,
   CURRENCY_FORMAT_OPTIONS,
   DATE_FORMAT,
   TIME_FORMAT,
@@ -36,6 +37,7 @@ export function formatAmount(amount: number): string {
   return new Intl.NumberFormat("es-PE", CURRENCY_FORMAT_OPTIONS).format(amount);
 }
 
+// Deprecated: Use getStatusConfig from @/features/shared/utils/status.utils instead
 export function getStatusConfig(status: PaymentStatus) {
   const config = PAYMENT_STATUS_VARIANTS[status];
   return {
@@ -66,7 +68,7 @@ export function generateTimelineEvents(payment: PaymentUserDetailResponse) {
       id: 1,
       type: "created",
       title: "Pago Creado",
-      description: `Pago iniciado con método ${payment.paymentMethod}`,
+      description: `Pago iniciado con método ${translatePaymentMethod(payment.paymentMethod)}`,
       timestamp: payment.createdAt,
       icon: "Plus",
       status: "completed",
@@ -121,4 +123,9 @@ export function generateTimelineEvents(payment: PaymentUserDetailResponse) {
 
 export function validatePaymentId(id: string): boolean {
   return !!(id && id.trim() && !isNaN(Number(id)) && Number(id) > 0);
+}
+
+// Deprecated: Use translatePaymentMethod from @/features/shared/utils/status.utils instead
+export function translatePaymentMethod(method: string): string {
+  return PAYMENT_METHOD_LABELS[method as keyof typeof PAYMENT_METHOD_LABELS] || method;
 }

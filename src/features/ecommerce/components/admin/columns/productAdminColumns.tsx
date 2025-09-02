@@ -2,10 +2,12 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
 import {
   formatCurrency,
   formatDate,
 } from '@/features/shared/utils/formatCurrency';
+import { ProductStatus } from '../../types/enums-products';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   Calendar,
@@ -123,44 +125,13 @@ export function createProductAdminColumns({
       accessorKey: 'status',
       header: 'Estado Producto',
       cell: ({ row }) => {
-        const status = row.getValue('status') as string;
-        const getStatusConfig = (status: string) => {
-          switch (status.toLowerCase()) {
-            case 'available':
-              return {
-                label: 'Disponible',
-                variant: 'default' as const,
-                icon: CheckCircle,
-              };
-            case 'out_of_stock':
-              return {
-                label: 'Sin Stock',
-                variant: 'destructive' as const,
-                icon: XCircle,
-              };
-            case 'low_stock':
-              return {
-                label: 'Stock Bajo',
-                variant: 'secondary' as const,
-                icon: Package,
-              };
-            default:
-              return {
-                label: status,
-                variant: 'outline' as const,
-                icon: Package,
-              };
-          }
-        };
-
+        const status = row.getValue('status') as ProductStatus;
         const config = getStatusConfig(status);
-        const IconComponent = config.icon;
 
         return (
-          <div className="flex items-center gap-2">
-            <IconComponent className="h-4 w-4" />
-            <Badge variant={config.variant}>{config.label}</Badge>
-          </div>
+          <Badge variant={config.variant} className={config.className}>
+            {config.label}
+          </Badge>
         );
       },
     },

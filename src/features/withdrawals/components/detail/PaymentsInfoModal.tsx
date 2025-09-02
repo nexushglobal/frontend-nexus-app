@@ -24,6 +24,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { PaymentInfo } from '../../types/withdrawals.types';
+import Link from 'next/link';
 
 interface PaymentsInfoModalProps {
   open: boolean;
@@ -116,141 +117,91 @@ export function PaymentsInfoModal({
             </div>
           ) : (
             <>
-              {/* Summary Card */}
+              {/* Compact Summary with Payment Methods */}
               <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
                     <h3 className="text-lg font-semibold text-foreground">
-                      Total de Pagos
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Suma de todos los pagos asociados
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-primary">
                       {formatAmount(totalAmount)}
-                    </p>
+                    </h3>
                     <p className="text-sm text-muted-foreground">
                       {payments.length} transacciones
                     </p>
                   </div>
+                  <div className="flex flex-wrap gap-2">
+                    {['VOUCHER', 'POINTS', 'CARD', 'BANK_TRANSFER'].map((method) => {
+                      const methodPayments = payments.filter(
+                        (p) => p.paymentMethod.toUpperCase() === method
+                      );
+                      if (methodPayments.length === 0) return null;
+
+                      const methodTotal = methodPayments.reduce(
+                        (sum, p) => sum + p.amount,
+                        0
+                      );
+
+                      return (
+                        <div
+                          key={method}
+                          className="px-3 py-1 bg-muted/50 rounded-md text-xs"
+                        >
+                          <div className="flex items-center gap-1">
+                            {getPaymentMethodBadge(method)}
+                            <span className="font-mono text-muted-foreground">
+                              {formatAmount(methodTotal)}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* Payments Table */}
-              <div className="border rounded-lg overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <Hash className="h-4 w-4" />
-                          ID Pago
-                        </div>
-                      </TableHead>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <Tag className="h-4 w-4" />
-                          Método
-                        </div>
-                      </TableHead>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <DollarSign className="h-4 w-4" />
-                          Monto
-                        </div>
-                      </TableHead>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          Código Op.
-                        </div>
-                      </TableHead>
-                      <TableHead>
-                        <div className="flex items-center gap-2">
-                          <Receipt className="h-4 w-4" />
-                          N° Ticket
-                        </div>
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {payments.map((payment, index) => (
-                      <TableRow key={`${payment.paymentId}-${index}`}>
-                        <TableCell className="font-medium">
-                          <span className="font-mono text-sm">
+              {/* Compact Payments List */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-muted-foreground mb-3">
+                  Detalle de Transacciones
+                </h4>
+                {payments.map((payment, index) => (
+                  <Link 
+                    key={`${payment.paymentId}-${index}`}
+                    href={`/dashboard/fac-pagos/detalle/${payment.paymentId}`}
+                  >
+                    <div className="p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono text-sm font-medium">
                             #{payment.paymentId}
                           </span>
-                        </TableCell>
-                        <TableCell>
                           {getPaymentMethodBadge(payment.paymentMethod)}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-lg">
-                              {formatAmount(payment.amount)}
-                            </span>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-semibold text-green-600">
+                            {formatAmount(payment.amount)}
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          {payment.operationCode ? (
-                            <span className="font-mono text-sm bg-muted/50 px-2 py-1 rounded">
-                              {payment.operationCode}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground text-sm">
-                              No disponible
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {payment.ticketNumber ? (
-                            <span className="font-mono text-sm bg-muted/50 px-2 py-1 rounded">
-                              {payment.ticketNumber}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground text-sm">
-                              No disponible
-                            </span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {/* Payment Methods Summary */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {['VOUCHER', 'POINTS', 'CARD', 'BANK_TRANSFER'].map((method) => {
-                  const methodPayments = payments.filter(
-                    (p) => p.paymentMethod.toUpperCase() === method
-                  );
-                  if (methodPayments.length === 0) return null;
-
-                  const methodTotal = methodPayments.reduce(
-                    (sum, p) => sum + p.amount,
-                    0
-                  );
-
-                  return (
-                    <div
-                      key={method}
-                      className="p-4 border border-muted/30 rounded-lg bg-muted/5"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        {getPaymentMethodBadge(method)}
-                        <span className="text-sm font-medium text-muted-foreground">
-                          {methodPayments.length}
-                        </span>
+                        </div>
                       </div>
-                      <p className="text-xl font-bold text-foreground">
-                        {formatAmount(methodTotal)}
-                      </p>
+                      
+                      {(payment.operationCode || payment.ticketNumber) && (
+                        <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                          {payment.operationCode && (
+                            <div>
+                              <span>Cód. Op: </span>
+                              <span className="font-mono">{payment.operationCode}</span>
+                            </div>
+                          )}
+                          {payment.ticketNumber && (
+                            <div>
+                              <span>Ticket: </span>
+                              <span className="font-mono">{payment.ticketNumber}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
+                  </Link>
+                ))}
               </div>
             </>
           )}

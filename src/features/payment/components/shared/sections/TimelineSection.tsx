@@ -92,95 +92,72 @@ export function TimelineSection({
     };
 
     return (
-        <Card>
-            <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                        <History className="h-5 w-5 text-primary" />
-                    </div>
-                    Cronología del Pago
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-6">
-                    {timelineEvents.map((event, index) => {
-                        const Icon = event.icon;
-                        const isLast = index === timelineEvents.length - 1;
-                        const statusConfig = getStatusConfig(event.status);
+        <Card className="p-4">
+            {/* Compact Timeline */}
+            <div className="space-y-3">
+                {timelineEvents.map((event, index) => {
+                    const Icon = event.icon;
+                    const isLast = index === timelineEvents.length - 1;
+                    const statusConfig = getStatusConfig(event.status);
 
-                        return (
-                            <div key={event.id} className="relative flex gap-4">
-                                {/* Timeline Line */}
-                                {!isLast && (
-                                    <div className="absolute left-6 top-12 w-0.5 h-full bg-border/50"></div>
-                                )}
+                    return (
+                        <div key={event.id} className="relative flex gap-3">
+                            {/* Compact Timeline Line */}
+                            {!isLast && (
+                                <div className="absolute left-4 top-8 w-0.5 h-full bg-border/30"></div>
+                            )}
 
-                                {/* Icon */}
-                                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center border-2 ${statusConfig.bgColor} ${statusConfig.borderColor}`}>
-                                    <Icon className={`h-5 w-5 ${statusConfig.iconColor}`} />
-                                </div>
+                            {/* Compact Icon */}
+                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${statusConfig.bgColor}`}>
+                                <Icon className={`h-4 w-4 ${statusConfig.iconColor}`} />
+                            </div>
 
-                                {/* Content */}
-                                <div className="flex-1 pb-6">
-                                    <div className="flex items-start justify-between gap-4 mb-2">
-                                        <div>
-                                            <h4 className="font-semibold text-foreground">{event.title}</h4>
-                                            <p className="text-sm text-muted-foreground">{event.description}</p>
-                                        </div>
-                                        <Badge variant="outline" className="text-xs whitespace-nowrap">
-                                            {formatDateTime(event.timestamp)}
-                                        </Badge>
+                            {/* Compact Content */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-2">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="text-sm font-medium text-foreground">{event.title}</div>
+                                        <div className="text-xs text-muted-foreground">{event.description}</div>
+                                        {event.type === "reviewed" && rejectionReason && (
+                                            <div className="text-xs p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded mt-1">
+                                                <strong>Motivo:</strong> {rejectionReason}
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {/* Additional context for review events */}
-                                    {event.type === "reviewed" && rejectionReason && (
-                                        <div className="mt-3 p-3 bg-destructive/5 border border-destructive/10 rounded-lg">
-                                            <p className="text-sm text-destructive font-medium mb-1">Motivo del rechazo:</p>
-                                            <p className="text-sm text-destructive/80">{rejectionReason}</p>
-                                        </div>
-                                    )}
+                                    <div className="text-xs text-muted-foreground whitespace-nowrap">
+                                        {formatDateTime(event.timestamp).split(' ')[0]}
+                                    </div>
                                 </div>
                             </div>
-                        );
-                    })}
-                </div>
+                        </div>
+                    );
+                })}
+            </div>
 
-                {/* Current Status Summary */}
-                <div className="mt-6 pt-4 border-t">
-                    <div className="flex items-center gap-3 p-4 bg-card rounded-lg border">
-                        <div className={`p-2 rounded-lg ${getStatusConfig(
-                            status === "APPROVED" ? "success" :
-                                status === "REJECTED" ? "error" : "info"
-                        ).bgColor}`}>
-                            {status === "APPROVED" ? (
-                                <CheckCircle className="h-5 w-5 text-success" />
-                            ) : status === "REJECTED" ? (
-                                <XCircle className="h-5 w-5 text-destructive" />
-                            ) : (
-                                <Clock className="h-5 w-5 text-warning" />
-                            )}
-                        </div>
-                        <div className="flex-1">
-                            <p className="font-medium text-foreground">Estado Actual</p>
-                            <p className="text-sm text-muted-foreground">
-                                {status === "APPROVED" ? "El pago ha sido aprobado exitosamente" :
-                                    status === "REJECTED" ? "El pago fue rechazado y requiere atención" :
-                                        "El pago está pendiente de revisión"}
-                            </p>
-                        </div>
-                        <Badge className={`${getStatusConfig(
-                            status === "APPROVED" ? "success" :
-                                status === "REJECTED" ? "error" : "info"
-                        ).bgColor} ${getStatusConfig(
-                            status === "APPROVED" ? "success" :
-                                status === "REJECTED" ? "error" : "info"
-                        ).iconColor} border-0`}>
+            {/* Compact Current Status */}
+            <div className="mt-4 pt-3 border-t">
+                <div className="flex items-center gap-3 p-3 bg-muted/30 rounded">
+                    <div className={`p-1.5 rounded ${getStatusConfig(
+                        status === "APPROVED" ? "success" :
+                            status === "REJECTED" ? "error" : "info"
+                    ).bgColor}`}>
+                        {status === "APPROVED" ? (
+                            <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : status === "REJECTED" ? (
+                            <XCircle className="h-4 w-4 text-red-600" />
+                        ) : (
+                            <Clock className="h-4 w-4 text-orange-600" />
+                        )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium">Estado Actual</div>
+                        <div className="text-xs text-muted-foreground">
                             {status === "APPROVED" ? "Aprobado" :
                                 status === "REJECTED" ? "Rechazado" : "Pendiente"}
-                        </Badge>
+                        </div>
                     </div>
                 </div>
-            </CardContent>
+            </div>
         </Card>
     );
 }

@@ -38,223 +38,86 @@ export function OverviewSection(
     const StatusIcon = statusConfig.icon
 
     return (
-        <div className="space-y-6">
-            {/* Status and Amount Header */}
-            <Card>
-                <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <CardTitle className="text-2xl font-bold">
-                                {formatAmount(amount)}
-                            </CardTitle>
-                            <p className="text-gray-600 dark:text-gray-400">
-                                {paymentConfig.name}
-                            </p>
-                        </div>
-                        <Badge variant={statusConfig.variant} className={`${statusConfig.className} text-sm px-3 py-1`}>
-                            <StatusIcon className="h-4 w-4 mr-2" />
-                            {statusConfig.label}
-                        </Badge>
+        <div className="space-y-3">
+            {/* Compact Status and Amount */}
+            <Card className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                    <div>
+                        <div className="text-xl font-bold">{formatAmount(amount)}</div>
+                        <div className="text-xs text-muted-foreground">{paymentConfig.name}</div>
                     </div>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="text-center">
-                            <div className="text-sm text-gray-500 mb-1">ID del Pago</div>
-                            <div className="font-semibold">#{id}</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-sm text-gray-500 mb-1">Método</div>
-                            <div className="font-semibold">{paymentMethod}</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-sm text-gray-500 mb-1">Creado</div>
-                            <div className="font-semibold text-sm">
-                                {formatDateTime(createdAt)}
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-sm text-gray-500 mb-1">Actualizado</div>
-                            <div className="font-semibold text-sm">
-                                {formatDateTime(updatedAt)}
-                            </div>
-                        </div>
+                    <Badge variant={statusConfig.variant} className={`${statusConfig.className} text-xs`}>
+                        <StatusIcon className="h-3 w-3 mr-1" />
+                        {statusConfig.label}
+                    </Badge>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <span className="text-muted-foreground">ID:</span>
+                        <span className="ml-1 font-medium">#{id}</span>
                     </div>
-                </CardContent>
+                    <div>
+                        <span className="text-muted-foreground">Método:</span>
+                        <span className="ml-1 font-medium">{paymentMethod}</span>
+                    </div>
+                </div>
             </Card>
 
-            {/* Payment Information */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Package className="h-5 w-5 text-blue-600" />
-                        Información del Pago
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="info-field">
-                            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
-                                <CreditCard className="h-5 w-5 text-blue-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Método de Pago</p>
-                                <p className="font-semibold">{paymentMethod}</p>
-                            </div>
+            {/* Compact Payment Details */}
+            <Card className="p-4">
+                <div className="space-y-2">
+                    {bankName && (
+                        <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Banco:</span>
+                            <span className="font-medium">{bankName}</span>
                         </div>
-
-                        <div className="info-field">
-                            <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/20">
-                                <DollarSign className="h-5 w-5 text-green-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Monto Total</p>
-                                <p className="font-semibold text-green-700">
-                                    {formatAmount(amount)}
-                                </p>
-                            </div>
+                    )}
+                    {operationCode && (
+                        <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Código:</span>
+                            <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                                {operationCode}
+                            </span>
                         </div>
-
-                        {bankName && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/20">
-                                    <Banknote className="h-5 w-5 text-purple-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Banco</p>
-                                    <p className="font-semibold">{bankName}</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {operationCode && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/20">
-                                    <Package className="h-5 w-5 text-orange-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Código de Operación</p>
-                                    <p className="font-mono text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-                                        {operationCode}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
+                    )}
+                    <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Creado:</span>
+                        <span>{formatDateTime(createdAt).split(' ')[0]}</span>
                     </div>
-                </CardContent>
+                </div>
             </Card>
 
-            {/* User Information  */}
+            {/* Compact User Info */}
             {user && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <User className="h-5 w-5 text-blue-600" />
-                            Información del Usuario
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className=" grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="info-field">
-                            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
-                                <User className="h-5 w-5 text-blue-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Nombre Completo</p>
-                                <p className="font-semibold">{user.fullName}</p>
-                            </div>
-                        </div>
-
-                        {user.documentNumber && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800/20">
-                                    <IdCard className="h-5 w-5 text-green-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Número de Documento</p>
-                                    <p className="font-semibold"> {user.documentNumber}</p>
-                                </div>
-
-                            </div>
-                        )}
-                        {user.email && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
-                                    <Mail className="h-5 w-5 text-blue-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Email</p>
-                                    <p className="font-semibold">{user.email}</p>
-                                </div>
-                            </div>
-                        )}
-                        {user.phone && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800/20">
-                                    <Phone className="h-5 w-5 text-green-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Teléfono</p>
-                                    <p className="font-semibold">{user.phone}</p>
-                                </div>
-                            </div>
-                        )}
-
-                    </CardContent>
+                <Card className="p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                        <User className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Cliente</span>
+                    </div>
+                    <div className="space-y-1 text-sm">
+                        <div>{user.fullName}</div>
+                        {user.email && <div className="text-xs text-muted-foreground">{user.email}</div>}
+                        {user.documentNumber && <div className="text-xs text-muted-foreground">Doc: {user.documentNumber}</div>}
+                    </div>
                 </Card>
             )}
 
-
-
-
-            {/* Review Information */}
-            {(reviewedByEmail || reviewedAt) && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <User className="h-5 w-5 text-gray-600" />
-                            Información de Revisión
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {reviewedByEmail && (
-                                <div className="info-field">
-                                    <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                                        <User className="h-5 w-5 text-gray-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500">Revisado por</p>
-                                        <p className="font-semibold">{reviewedByEmail}</p>
-                                    </div>
-                                </div>
-                            )}
-
-                            {reviewedAt && (
-                                <div className="info-field">
-                                    <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                                        <Calendar className="h-5 w-5 text-gray-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500">Fecha de Revisión</p>
-                                        <p className="font-semibold">
-                                            {formatDateTime(reviewedAt)}
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
+            {/* Compact Review Info */}
+            {(reviewedByEmail || reviewedAt || rejectionReason) && (
+                <Card className="p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Revisión</span>
+                    </div>
+                    <div className="space-y-1 text-sm">
+                        {reviewedByEmail && <div className="text-xs">{reviewedByEmail}</div>}
+                        {reviewedAt && <div className="text-xs text-muted-foreground">{formatDateTime(reviewedAt).split(' ')[0]}</div>}
                         {rejectionReason && (
-                            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">
-                                    Motivo de Rechazo
-                                </h4>
-                                <p className="text-red-700 dark:text-red-300">
-                                    {rejectionReason}
-                                </p>
+                            <div className="text-xs p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded mt-2">
+                                <strong>Rechazado:</strong> {rejectionReason}
                             </div>
                         )}
-                    </CardContent>
+                    </div>
                 </Card>
             )}
         </div>

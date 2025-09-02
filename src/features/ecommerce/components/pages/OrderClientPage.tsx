@@ -90,7 +90,7 @@ export default function OrderClientPage() {
 
             {/* Pagination */}
             <Card className="shadow-sm py-0">
-              <CardContent className="py-3">
+              <CardContent>
                 <TablePagination
                   pagination={data.pagination}
                   onPageChange={handlePageChange}

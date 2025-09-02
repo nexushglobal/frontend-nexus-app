@@ -155,7 +155,7 @@ export function BaseTransactionPage<
         {/* Filters */}
         {showFilters && (
           <Card className="shadow-sm">
-            <CardContent className="p-4">
+            <CardContent>
               <FiltersComponent isLoading={isDataLoading} />
             </CardContent>
           </Card>

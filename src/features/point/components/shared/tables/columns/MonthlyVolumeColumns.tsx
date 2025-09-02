@@ -2,49 +2,17 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import { MetadataModal } from '@/features/shared/components/modal/MetadataModal';
 import { MonthlyVolume } from '@/features/point/types/monthly.types';
+import { VolumeStatus } from '@/features/point/types/enums-volume';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Eye, FileText } from 'lucide-react';
 import { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
-const VOLUME_STATUS = {
-  PENDING: 'Pendiente',
-  PROCESSED: 'Procesado',
-  CANCELLED: 'Cancelado',
-} as const;
 
-function MetadataModal({ 
-  metadata, 
-  isOpen, 
-  onClose 
-}: { 
-  metadata: Record<string, any>; 
-  isOpen: boolean; 
-  onClose: () => void; 
-}) {
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Metadata del Volumen Mensual</DialogTitle>
-        </DialogHeader>
-        <div className="max-h-96 overflow-auto">
-          <pre className="bg-muted p-4 rounded-lg text-sm">
-            {JSON.stringify(metadata, null, 2)}
-          </pre>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 export const monthlyVolumeColumns: ColumnDef<MonthlyVolume>[] = [
   {
@@ -141,20 +109,15 @@ export const monthlyVolumeColumns: ColumnDef<MonthlyVolume>[] = [
     accessorKey: 'status',
     header: 'Estado',
     cell: ({ getValue }) => {
-      const status = getValue() as keyof typeof VOLUME_STATUS;
-      
-      const statusColors = {
-        PENDING: 'text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-600',
-        PROCESSED: 'text-green-800 dark:text-green-300 bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600',
-        CANCELLED: 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600',
-      };
+      const status = getValue() as VolumeStatus;
+      const statusConfig = getStatusConfig(status);
       
       return (
-        <Badge 
-          variant="outline" 
-          className={statusColors[status]}
+        <Badge
+          variant={statusConfig.variant}
+          className={statusConfig.className}
         >
-          {VOLUME_STATUS[status]}
+          {statusConfig.label}
         </Badge>
       );
     },
@@ -185,6 +148,7 @@ export const monthlyVolumeColumns: ColumnDef<MonthlyVolume>[] = [
               metadata={volume.metadata}
               isOpen={showMetadata}
               onClose={() => setShowMetadata(false)}
+              title="Metadata del Volumen Mensual"
             />
           )}
         </div>

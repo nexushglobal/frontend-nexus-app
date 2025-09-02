@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { getStatusConfig, translatePaymentMethod } from '@/features/shared/utils/status.utils';
 import {
   CalendarDays,
   CreditCard,
@@ -16,7 +17,6 @@ import { PaymentUser } from '../../types/response-payment';
 import {
   formatAmount,
   formatDate,
-  getStatusConfig,
 } from '../../utils/payement.utils';
 
 interface PaymentUserCardsProps {
@@ -92,7 +92,7 @@ export function PaymentUserCards({ data }: PaymentUserCardsProps) {
                   <div className="text-center p-3 bg-muted/50 rounded-lg">
                     <CreditCard className="h-4 w-4 mx-auto mb-1" />
                     <p className="text-xs font-medium truncate">
-                      {payment.paymentMethod || 'N/A'}
+                      {payment.paymentMethod ? translatePaymentMethod(payment.paymentMethod) : 'N/A'}
                     </p>
                     <p className="text-xs text-muted-foreground">Método</p>
                   </div>

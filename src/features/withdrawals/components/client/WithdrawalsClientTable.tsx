@@ -1,10 +1,11 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { StatusBadge } from '@/components/ui/StatusBadge';
 import { DataTable } from '@/features/shared/components/table/DataTable';
-import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import { formatTableAmount, formatTableDate, formatWithdrawalId } from '@/features/shared/utils/table.utils';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   Banknote,
@@ -38,27 +39,37 @@ export function WithdrawalsClientTable({
         </div>
       ),
       cell: ({ row }) => (
-        <div className="font-medium text-primary">#{row.original.id}</div>
+        <div className="font-medium text-primary">{formatWithdrawalId(row.original.id)}</div>
       ),
       size: 100,
     },
     {
       accessorKey: 'status',
       header: 'Estado',
-      cell: ({ row }) => <StatusBadge status={row.original.status} />,
+      cell: ({ row }) => {
+        const statusConfig = getStatusConfig(row.original.status);
+        return (
+          <Badge
+            variant={statusConfig.variant}
+            className={statusConfig.className}
+          >
+            {statusConfig.label}
+          </Badge>
+        );
+      },
       size: 130,
     },
     {
       accessorKey: 'amount',
       header: 'Monto',
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <DollarSign className="h-4 w-4 text-green-600" />
+      cell: ({ row }) => {
+        const { formatted } = formatTableAmount(row.original.amount);
+        return (
           <span className="font-bold text-lg">
-            {formatCurrency(row.original.amount, 'PEN')}
+            {formatted}
           </span>
-        </div>
-      ),
+        );
+      },
       size: 130,
     },
     {
@@ -87,23 +98,15 @@ export function WithdrawalsClientTable({
           <span>Fecha</span>
         </div>
       ),
-      cell: ({ row }) => (
-        <div className="space-y-1">
-          <div className="font-medium">
-            {new Date(row.original.createdAt).toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            })}
+      cell: ({ row }) => {
+        const { date, time } = formatTableDate(row.original.createdAt);
+        return (
+          <div className="space-y-1">
+            <div className="font-medium">{date}</div>
+            <div className="text-xs text-muted-foreground">{time}</div>
           </div>
-          <div className="text-xs text-muted-foreground">
-            {new Date(row.original.createdAt).toLocaleTimeString('es-ES', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </div>
-        </div>
-      ),
+        );
+      },
       size: 140,
     },
     {

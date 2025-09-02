@@ -13,6 +13,7 @@ import {
   ShoppingCart,
   Store,
   TrendingUp,
+  User,
   Wallet,
   Zap,
 } from 'lucide-react';
@@ -159,9 +160,6 @@ export default function ClientWithdrawalsPage() {
               </Card>
             </div>
           )}
-
-          {/* Empty State */}
-          {data && data.items.length === 0 && <EmptyWithdrawalsState />}
         </div>
       </div>
 
@@ -259,7 +257,7 @@ function EnhancedWithdrawalHeader({
         </Card>
       ) : validationData ? (
         <Card
-          className={`border shadow-sm transition-colors duration-200 ${
+          className={`border shadow-sm transition-colors duration-200  ${
             validationData.canWithdraw
               ? 'border-success/30 bg-success/5'
               : 'border-warning/30 bg-warning/5'
@@ -329,19 +327,29 @@ function EnhancedWithdrawalHeader({
                   </div>
 
                   {validationData.req && validationData.req.length > 0 && (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <Info className="h-5 w-5 text-info" />
-                        <span className="text-base font-semibold text-info">
-                          Requerimientos pendientes:
-                        </span>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Info className="h-5 w-5 text-info" />
+                          <span className="text-base font-semibold text-info">
+                            Requerimientos pendientes:
+                          </span>
+                        </div>
+                        <Link
+                          href="/dashboard/cli-perfil"
+                          className="text-sm text-destructive font-medium hover:underline flex items-center gap-1 border border-destructive/20 px-3 py-1 rounded-full hover:bg-destructive/5 transition-colors duration-200"
+                        >
+                          <User className="h-4 w-4" />
+                          Completar perfil
+                        </Link>
                       </div>
-                      <div className="ml-8 space-y-3">
+
+                      <div className="flex flex-col ">
                         {validationData.req.map(
                           (requirement: string, index: number) => (
                             <div
+                              className="flex items-center gap-3"
                               key={index}
-                              className="flex items-center gap-3 p-3 rounded-lg bg-warning/10 border border-warning/20"
                             >
                               <div className="h-2 w-2 bg-warning rounded-full flex-shrink-0"></div>
                               <span className="text-sm font-medium text-warning">
@@ -397,62 +405,6 @@ function LoadingState() {
               <div className="h-8 w-20 bg-muted/60 rounded-md"></div>
             </div>
           ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Empty State Component
-function EmptyWithdrawalsState() {
-  return (
-    <Card className="border shadow-sm ">
-      <CardContent className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="mb-8">
-          <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-muted/50 border-2 border-muted/80">
-            <Wallet className="h-12 w-12 text-muted-foreground" />
-          </div>
-        </div>
-
-        <div className="space-y-4 max-w-lg">
-          <h3 className="text-2xl font-bold text-foreground">
-            Aún no tienes retiros
-          </h3>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Cuando solicites retiros de tus comisiones, aparecerán aquí para
-            hacer seguimiento de su estado.
-          </p>
-        </div>
-
-        <div className="mt-8 space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/dashboard/cli-tienda/productos">
-              <Button
-                size="lg"
-                className="gap-3 px-8 py-3 text-base transition-colors duration-200"
-              >
-                <Store className="h-5 w-5" />
-                Explorar productos
-              </Button>
-            </Link>
-            <Link href="/dashboard/cli-tienda/carrito">
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-3 px-8 py-3 text-base transition-colors duration-200 border-primary/30 hover:border-primary hover:bg-primary/5"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                Ver mi carrito
-              </Button>
-            </Link>
-          </div>
-
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-6">
-            <Info className="h-4 w-4" />
-            <span>
-              Acumula puntos comprando productos para poder realizar retiros
-            </span>
-          </div>
         </div>
       </CardContent>
     </Card>

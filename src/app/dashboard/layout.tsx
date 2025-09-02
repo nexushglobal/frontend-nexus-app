@@ -1,6 +1,8 @@
 'use client';
 import Navbar from '@/features/layout/components/NavbarDashboard';
-import Sidebar, { SidebarRef } from '@/features/layout/components/sidebar/Sidebar';
+import Sidebar, {
+  SidebarRef,
+} from '@/features/layout/components/sidebar/Sidebar';
 import React, { useRef } from 'react';
 
 export default function LayoutDashboard({

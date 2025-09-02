@@ -143,20 +143,27 @@ export function PaymentAdminActions({ payment, onPaymentUpdate }: PaymentAdminAc
 
     return (
         <>
+            {/* Admin Actions Card */}
             <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Shield className="h-5 w-5 text-primary" />
-                        Acciones de Administrador
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Estado actual:</span>
-                        {getStatusBadge()}
+                <CardContent className="p-4">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-primary/10">
+                                <Shield className="h-4 w-4 text-primary" />
+                            </div>
+                            <div>
+                                <div className="text-sm font-medium">Acciones de Admin</div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-muted-foreground">Estado:</span>
+                                    {getStatusBadge()}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="flex-shrink-0">
+                            {renderActionButtons()}
+                        </div>
                     </div>
-
-                    {renderActionButtons()}
                 </CardContent>
             </Card>
 

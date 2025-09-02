@@ -1,9 +1,10 @@
 import { PaginationMeta } from '@/features/shared/types/api.types';
+import { WithdrawalStatus } from './enums-withdrawals';
 
 export interface WithdrawalBase {
   id: number;
   amount: number;
-  status: 'APPROVED' | 'REJECTED' | 'PENDING';
+  status: WithdrawalStatus;
   createdAt: string;
   reviewedAt?: string;
   bankName: string;
@@ -88,7 +89,7 @@ export interface WithdrawalDetailReviewedBy {
 export interface WithdrawalDetail {
   id: number;
   amount: number;
-  status: 'APPROVED' | 'REJECTED' | 'PENDING';
+  status: WithdrawalStatus;
   createdAt: string;
   reviewedAt: string | null;
   rejectionReason: string | null;

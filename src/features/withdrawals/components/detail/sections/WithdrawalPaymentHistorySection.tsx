@@ -9,6 +9,7 @@ import {
   Tag,
 } from 'lucide-react';
 import { WithdrawalDetail, PaymentInfo } from '../../../types/withdrawals.types';
+import Link from 'next/link';
 
 interface WithdrawalPaymentHistorySectionProps {
   withdrawal: WithdrawalDetail;
@@ -109,186 +110,90 @@ export function WithdrawalPaymentHistorySection({ withdrawal }: WithdrawalPaymen
   }
 
   return (
-    <div className="space-y-6">
-      {/* Summary Card */}
-      <Card className="border shadow-md bg-card">
-        <CardHeader className="bg-muted border-b">
-          <CardTitle className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 border border-primary/30">
-              <DollarSign className="h-4 w-4 text-primary" />
-            </div>
-            <span className="text-foreground">Resumen de Pagos</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4 bg-success/10 border border-success/30 rounded-lg">
-              <div className="flex items-center justify-center mb-2">
-                <div className="p-2 rounded-lg bg-success/20 border border-success/40">
-                  <DollarSign className="h-6 w-6 text-success" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-success">
-                {formatAmount(totalAmount)}
-              </p>
-              <p className="text-sm font-medium text-success/80">Total pagado</p>
-            </div>
-            <div className="text-center p-4 bg-info/10 border border-info/30 rounded-lg">
-              <div className="flex items-center justify-center mb-2">
-                <div className="p-2 rounded-lg bg-info/20 border border-info/40">
-                  <Receipt className="h-6 w-6 text-info" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-info">
-                {allPayments.length}
-              </p>
-              <p className="text-sm font-medium text-info/80">
-                {allPayments.length === 1 ? 'Transacción' : 'Transacciones'}
-              </p>
-            </div>
-            <div className="text-center p-4 bg-secondary/10 border border-secondary/30 rounded-lg">
-              <div className="flex items-center justify-center mb-2">
-                <div className="p-2 rounded-lg bg-secondary/20 border border-secondary/40">
-                  <Tag className="h-6 w-6 text-secondary" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-secondary">
-                {Object.keys(paymentsByMethod).length}
-              </p>
-              <p className="text-sm font-medium text-secondary/80">
-                {Object.keys(paymentsByMethod).length === 1 ? 'Método' : 'Métodos'}
-              </p>
-            </div>
+    <div className="space-y-4">
+      {/* Unified Compact Summary */}
+      <Card className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">
+              {formatAmount(totalAmount)}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {allPayments.length} transacciones - {Object.keys(paymentsByMethod).length} métodos
+            </p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Payment Methods Summary */}
-      <Card className="border shadow-md">
-        <CardHeader className="bg-muted border-b">
-          <CardTitle className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10 border border-accent/30">
-              <Tag className="h-4 w-4 text-accent-foreground" />
-            </div>
-            <span className="text-foreground">Resumen por Método de Pago</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-2">
             {Object.entries(paymentsByMethod).map(([method, payments]) => {
               const methodTotal = payments.reduce((sum, p) => sum + p.amount, 0);
               return (
-                <Card
+                <div
                   key={method}
-                  className="border shadow-sm hover:shadow-md transition-shadow bg-card hover:bg-card-hover"
+                  className="px-3 py-1 bg-muted/50 rounded-md text-xs"
                 >
-                  <CardContent className="p-5">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        {getPaymentMethodBadge(method)}
-                        <span className="text-sm font-medium text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                          {payments.length} {payments.length === 1 ? 'pago' : 'pagos'}
-                        </span>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-2xl font-bold text-foreground">
-                          {formatAmount(methodTotal)}
-                        </p>
-                        <p className="text-sm text-muted-foreground">Total método</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                  <div className="flex items-center gap-1">
+                    {getPaymentMethodBadge(method)}
+                    <span className="font-mono text-muted-foreground">
+                      {formatAmount(methodTotal)}
+                    </span>
+                  </div>
+                </div>
               );
             })}
           </div>
-        </CardContent>
+        </div>
       </Card>
 
-      {/* Detailed Payments Grid */}
-      <Card className="border shadow-md">
-        <CardHeader className="bg-muted border-b">
-          <CardTitle className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-3/10 border border-chart-3/30">
-              <CreditCard className="h-4 w-4 text-chart-3" />
-            </div>
-            <span className="text-foreground">Detalle de Todos los Pagos</span>
-            <span className="text-sm font-normal text-muted-foreground bg-muted px-2 py-1 rounded-full">
-              {allPayments.length} {allPayments.length === 1 ? 'pago' : 'pagos'}
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {allPayments.map((payment, index) => (
-              <Card 
-                key={`${payment.paymentId}-${index}`} 
-                className="border shadow-sm hover:shadow-md transition-shadow bg-card hover:bg-card-hover"
-              >
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {/* Header with ID and Method */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1.5 rounded-md bg-primary/10 border border-primary/30">
-                          <Hash className="h-4 w-4 text-primary" />
-                        </div>
-                        <span className="font-mono text-sm font-bold text-foreground">#{payment.paymentId}</span>
-                      </div>
-                      {getPaymentMethodBadge(payment.paymentMethod)}
-                    </div>
-
-                    {/* Amount - Main highlight */}
-                    <div className="text-center p-4 bg-success/10 border border-success/30 rounded-lg">
-                      <div className="flex items-center justify-center mb-2">
-                        <DollarSign className="h-6 w-6 text-success" />
-                      </div>
-                      <p className="text-2xl font-bold text-success">
-                        {formatAmount(payment.amount)}
-                      </p>
-                      <p className="text-xs font-medium text-success/80">Monto del pago</p>
-                    </div>
-
-                    {/* Operation Code */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs font-medium text-muted-foreground">Código de Operación</span>
-                      </div>
-                      {payment.operationCode ? (
-                        <p className="font-mono text-xs bg-warning/10 border border-warning/30 p-2 rounded text-warning">
-                          {payment.operationCode}
-                        </p>
-                      ) : (
-                        <p className="text-xs text-muted-foreground bg-muted p-2 rounded border italic">
-                          No disponible
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Ticket Number */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Receipt className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs font-medium text-muted-foreground">N° de Ticket</span>
-                      </div>
-                      {payment.ticketNumber ? (
-                        <p className="font-mono text-xs bg-info/10 border border-info/30 p-2 rounded text-info">
-                          {payment.ticketNumber}
-                        </p>
-                      ) : (
-                        <p className="text-xs text-muted-foreground bg-muted p-2 rounded border italic">
-                          No disponible
-                        </p>
-                      )}
+      {/* Compact Payments Grid */}
+      <div className="space-y-3">
+        <h4 className="text-sm font-medium text-muted-foreground">
+          Detalle de Transacciones
+        </h4>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {allPayments.map((payment, index) => (
+            <Link 
+              key={`${payment.paymentId}-${index}`}
+              href={`/dashboard/fac-pagos/detalle/${payment.paymentId}`}
+            >
+              <Card className="p-4 bg-card hover:bg-muted/30 transition-colors cursor-pointer border-2 hover:border-primary/20">
+                <div className="space-y-3">
+                  {/* Header with ID and Method */}
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm font-medium">
+                      #{payment.paymentId}
+                    </span>
+                    {getPaymentMethodBadge(payment.paymentMethod)}
+                  </div>
+                  
+                  {/* Amount - Prominent display */}
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-green-600">
+                      {formatAmount(payment.amount)}
                     </div>
                   </div>
-                </CardContent>
+                  
+                  {/* Details - Only if available */}
+                  {(payment.operationCode || payment.ticketNumber) && (
+                    <div className="space-y-1 text-xs text-muted-foreground border-t pt-2">
+                      {payment.operationCode && (
+                        <div className="flex justify-between">
+                          <span>Cód. Op:</span>
+                          <span className="font-mono">{payment.operationCode}</span>
+                        </div>
+                      )}
+                      {payment.ticketNumber && (
+                        <div className="flex justify-between">
+                          <span>Ticket:</span>
+                          <span className="font-mono">{payment.ticketNumber}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

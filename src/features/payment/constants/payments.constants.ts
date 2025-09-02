@@ -1,4 +1,4 @@
-import { PaymentStatus } from "../types/enums-payments";
+import { PaymentStatus, PaymentMethod } from "../types/enums-payments";
 
 export const PAYMENT_CACHE_TAGS = {
   USER_PAYMENTS: "user-payments",
@@ -12,6 +12,12 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
   [PaymentStatus.APPROVED]: "Aprobado",
   [PaymentStatus.REJECTED]: "Rechazado",
   [PaymentStatus.COMPLETED]: "Completado",
+} as const;
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  [PaymentMethod.POINTS]: "Puntos",
+  [PaymentMethod.VOUCHER]: "Voucher",
+  [PaymentMethod.PAYMENT_GATEWAY]: "Pasarela de Pago",
 } as const;
 
 export const PAYMENT_STATUS_VARIANTS = {

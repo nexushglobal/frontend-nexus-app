@@ -1,14 +1,12 @@
 'use client';
 
-import { StatusBadge } from '@/components/ui/StatusBadge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import {
-  formatCurrency,
-  formatDate,
-} from '@/features/shared/utils/formatCurrency';
-import { Banknote, Building2, CalendarDays, DollarSign, Eye, Info } from 'lucide-react';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import { formatTableAmount, formatDate, formatWithdrawalId } from '@/features/shared/utils/table.utils';
+import { Banknote, Building2, CalendarDays, Eye, Info } from 'lucide-react';
 import Link from 'next/link';
 import { WithdrawalClient } from '../../types/withdrawals.types';
 
@@ -43,9 +41,19 @@ export function WithdrawalsClientCards({
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Banknote className="h-5 w-5 text-primary" />
-                Retiro #{w.id}
+                Retiro {formatWithdrawalId(w.id)}
               </CardTitle>
-              <StatusBadge status={w.status} />
+              {(() => {
+                const statusConfig = getStatusConfig(w.status);
+                return (
+                  <Badge
+                    variant={statusConfig.variant}
+                    className={statusConfig.className}
+                  >
+                    {statusConfig.label}
+                  </Badge>
+                );
+              })()}
             </div>
           </CardHeader>
           
@@ -65,8 +73,7 @@ export function WithdrawalsClientCards({
               {/* Quick Stats */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="text-center p-3 bg-muted/50 rounded-lg">
-                  <DollarSign className="h-4 w-4 mx-auto mb-1 text-green-600" />
-                  <p className="text-lg font-bold">{formatCurrency(w.amount, 'PEN')}</p>
+                  <p className="text-lg font-bold">{formatTableAmount(w.amount).formatted}</p>
                   <p className="text-xs text-muted-foreground">Monto</p>
                 </div>
                 

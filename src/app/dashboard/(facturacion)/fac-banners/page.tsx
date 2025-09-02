@@ -3,8 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Gestión de Banners | Dashboard',
-  description:
-    'Administra los banners promocionales de la plataforma',
+  description: 'Administra los banners promocionales de la plataforma',
 };
 
 export default function Page() {

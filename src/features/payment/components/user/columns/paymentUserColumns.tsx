@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PaymentStatus } from '@/features/payment/types/enums-payments';
+import { getStatusConfig, translatePaymentMethod } from '@/features/shared/utils/status.utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { Calendar, CreditCard, Eye, Package } from 'lucide-react';
 import Link from 'next/link';
@@ -11,10 +12,7 @@ import {
   formatAmount,
   formatDate,
   formatTime,
-  getStatusConfig,
 } from '../../../utils/payement.utils';
-
-interface CreateUserColumnsProps {}
 
 export function createPaymentUserColumns(): ColumnDef<PaymentUser>[] {
   return [
@@ -49,7 +47,7 @@ export function createPaymentUserColumns(): ColumnDef<PaymentUser>[] {
               <div className="flex items-center gap-2">
                 <CreditCard className="h-4 w-4 text-gray-500" />
                 <span className="text-xs text-muted-foreground">
-                  {payment.paymentMethod}
+                  {translatePaymentMethod(payment.paymentMethod)}
                 </span>
               </div>
             )}
@@ -131,7 +129,7 @@ export function createPaymentUserColumns(): ColumnDef<PaymentUser>[] {
         return (
           <div className="flex items-center gap-2">
             <CreditCard className="h-4 w-4 text-gray-500" />
-            <span className="text-sm">{method || 'No especificado'}</span>
+            <span className="text-sm">{method ? translatePaymentMethod(method) : 'No especificado'}</span>
           </div>
         );
       },
@@ -142,12 +140,10 @@ export function createPaymentUserColumns(): ColumnDef<PaymentUser>[] {
       cell: ({ row }) => {
         const payment = row.original;
         return (
-          <Link href={`/dashboard/cli-transacciones/mis-pagos/detalle/${payment.id}`}>
-            <Button
-              variant="default"
-              size="sm"
-              className="h-8 px-3 text-xs"
-            >
+          <Link
+            href={`/dashboard/cli-transacciones/mis-pagos/detalle/${payment.id}`}
+          >
+            <Button variant="default" size="sm" className="h-8 px-3 text-xs">
               <Eye className="h-3 w-3 mr-1" />
               Detalle
             </Button>
@@ -166,12 +162,10 @@ export const defaultColumnVisibility = {
 };
 
 // Función helper para obtener columnas con configuración personalizada
-export function getPaymentUserColumns(
-  options?: {
-    hideColumns?: string[];
-    customColumnVisibility?: Record<string, boolean>;
-  },
-) {
+export function getPaymentUserColumns(options?: {
+  hideColumns?: string[];
+  customColumnVisibility?: Record<string, boolean>;
+}) {
   const columns = createPaymentUserColumns();
 
   // Si se especificaron columnas a ocultar, filtrarlas

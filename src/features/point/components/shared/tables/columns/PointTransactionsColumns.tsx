@@ -3,16 +3,12 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import {
-  TRANSACTION_STATUS,
   TRANSACTION_TYPES,
 } from '@/features/point/constants';
 import { PointTransactionBase } from '@/features/point/types/points.types';
+import { TransactionStatus } from '@/features/point/types/enums-transaction';
+import { MetadataModal } from '@/features/shared/components/modal/MetadataModal';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
@@ -21,28 +17,6 @@ import { Eye, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-interface MetadataModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  metadata: Record<string, unknown> | undefined;
-}
-
-function MetadataModal({ isOpen, onClose, metadata }: MetadataModalProps) {
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Metadata de la Transacción</DialogTitle>
-        </DialogHeader>
-        <div className="max-h-96 overflow-auto">
-          <pre className="bg-muted p-4 rounded-lg text-sm">
-            {JSON.stringify(metadata, null, 2)}
-          </pre>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 interface ActionsColumnProps {
   transaction: PointTransactionBase;
@@ -84,27 +58,12 @@ function ActionsColumn({ transaction }: ActionsColumnProps) {
         isOpen={showMetadata}
         onClose={() => setShowMetadata(false)}
         metadata={transaction.metadata}
+        title="Metadata de la Transacción"
       />
     </div>
   );
 }
 
-const statusVariants = {
-  PENDING: 'outline' as const,
-  COMPLETED: 'secondary' as const,
-  CANCELLED: 'outline' as const,
-  FAILED: 'destructive' as const,
-};
-
-const statusColors = {
-  PENDING:
-    'text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-600',
-  COMPLETED:
-    'text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/20 border-green-300 dark:border-green-600',
-  CANCELLED:
-    'text-gray-700 dark:text-gray-400 border-gray-300 dark:border-gray-600',
-  FAILED: 'text-red-700 dark:text-red-400',
-};
 
 const typeVariants = {
   BINARY_COMMISSION: 'secondary' as const,
@@ -200,13 +159,14 @@ export const pointTransactionColumns: ColumnDef<PointTransactionBase>[] = [
     accessorKey: 'status',
     header: 'Estado',
     cell: ({ row }) => {
-      const status = row.getValue('status') as keyof typeof TRANSACTION_STATUS;
+      const status = row.getValue('status') as TransactionStatus;
+      const statusConfig = getStatusConfig(status);
       return (
         <Badge
-          variant={statusVariants[status]}
-          className={statusColors[status]}
+          variant={statusConfig.variant}
+          className={statusConfig.className}
         >
-          {TRANSACTION_STATUS[status]}
+          {statusConfig.label}
         </Badge>
       );
     },

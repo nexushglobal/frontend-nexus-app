@@ -2,53 +2,21 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import {
+  formatSimpleId,
+  formatTableAmount,
+  formatTableDate,
+} from '@/features/shared/utils/table.utils';
 import { ColumnDef, VisibilityState } from '@tanstack/react-table';
 import { CalendarDays, Eye, Package2, ShoppingCart } from 'lucide-react';
+import { OrderStatus } from '../../../types/enums-orders';
 import type { OrderClientItem } from '../../../types/order.type';
 
 export interface OrderClientColumnsProps {
   onViewDetail: (orderId: number) => void;
   onPreview: (order: OrderClientItem) => void;
 }
-
-const getStatusBadgeVariant = (status: string) => {
-  switch (status) {
-    case 'PENDING':
-      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    case 'APPROVED':
-      return 'bg-green-100 text-green-800 border-green-200';
-    case 'SENT':
-      return 'bg-blue-100 text-blue-800 border-blue-200';
-    case 'DELIVERED':
-      return 'bg-purple-100 text-purple-800 border-purple-200';
-    case 'REJECTED':
-      return 'bg-red-100 text-red-800 border-red-200';
-    case 'CANCELED':
-      return 'bg-gray-100 text-gray-800 border-gray-200';
-    default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
-  }
-};
-
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case 'PENDING':
-      return 'Pendiente';
-    case 'APPROVED':
-      return 'Aprobado';
-    case 'SENT':
-      return 'Enviado';
-    case 'DELIVERED':
-      return 'Entregado';
-    case 'REJECTED':
-      return 'Rechazado';
-    case 'CANCELED':
-      return 'Cancelado';
-    default:
-      return status;
-  }
-};
 
 export function createOrderClientColumns({
   onViewDetail,
@@ -64,7 +32,9 @@ export function createOrderClientColumns({
         </div>
       ),
       cell: ({ row }) => (
-        <div className="font-medium text-primary">#{row.getValue('id')}</div>
+        <div className="font-medium text-primary">
+          {formatSimpleId(row.getValue('id') as number)}
+        </div>
       ),
       size: 100,
     },
@@ -72,10 +42,14 @@ export function createOrderClientColumns({
       accessorKey: 'status',
       header: 'Estado',
       cell: ({ row }) => {
-        const status = row.getValue('status') as string;
+        const status = row.getValue('status') as OrderStatus;
+        const statusConfig = getStatusConfig(status);
         return (
-          <Badge variant="outline" className={`${getStatusBadgeVariant(status)} font-medium`}>
-            {getStatusLabel(status)}
+          <Badge
+            variant={statusConfig.variant}
+            className={statusConfig.className}
+          >
+            {statusConfig.label}
           </Badge>
         );
       },
@@ -98,9 +72,8 @@ export function createOrderClientColumns({
       header: 'Total',
       cell: ({ row }) => {
         const amount = row.getValue('totalAmount') as number;
-        return (
-          <div className="font-bold text-lg">{formatCurrency(amount, 'PEN')}</div>
-        );
+        const { formatted } = formatTableAmount(amount);
+        return <div className="font-bold text-lg">{formatted}</div>;
       },
       size: 130,
     },
@@ -113,22 +86,12 @@ export function createOrderClientColumns({
         </div>
       ),
       cell: ({ row }) => {
-        const date = new Date(row.getValue('createdAt'));
+        const dateString = row.getValue('createdAt') as string;
+        const { date, time } = formatTableDate(dateString);
         return (
           <div className="space-y-1">
-            <div className="font-medium">
-              {date.toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-              })}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {date.toLocaleTimeString('es-ES', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </div>
+            <div className="font-medium">{date}</div>
+            <div className="text-xs text-muted-foreground">{time}</div>
           </div>
         );
       },
@@ -172,7 +135,7 @@ export function createOrderClientColumns({
 export const defaultClientColumnVisibility: VisibilityState = {
   id: true,
   status: true,
-  totalItems: true,
+  totalItems: false,
   totalAmount: true,
   createdAt: true,
   actions: true,

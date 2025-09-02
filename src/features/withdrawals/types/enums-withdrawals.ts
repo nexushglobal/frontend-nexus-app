@@ -1,0 +1,6 @@
+export enum WithdrawalStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  PENDING_SIGNATURE = 'PENDING_SIGNATURE',
+}

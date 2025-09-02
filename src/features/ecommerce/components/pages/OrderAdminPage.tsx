@@ -97,7 +97,7 @@ export default function OrderAdminPage() {
               <OrderAdminCards data={data.items} />
             </div>
 
-            <Card className="shadow-sm p-1">
+            <Card className="shadow-sm p-0">
               <CardContent>
                 <TablePagination
                   pagination={data.pagination}

@@ -41,194 +41,120 @@ export function DetailsSection({
     rejectionReason
 }: DetailsSectionProps) {
     return (
-        <div className="space-y-6">
-            {/* Operation Details */}
-            <Card>
-                <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-3 text-card-foreground">
-                        <div className="p-2 rounded-lg bg-primary/10">
-                            <Clock className="h-5 w-5 text-primary" />
+        <div className="space-y-3">
+            {/* Compact Operation Details */}
+            <Card className="p-4">
+                <div className="space-y-3">
+                    {operationCode && (
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground flex items-center gap-1">
+                                <Hash className="h-3 w-3" />
+                                Código:
+                            </span>
+                            <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                                {operationCode}
+                            </span>
                         </div>
-                        Detalles de la Operación
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {operationCode && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-accent/10">
-                                    <Hash className="field-icon text-accent" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="section-title">Código de Operación</p>
-                                    <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {operationCode}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {bankName && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-secondary/10">
-                                    <Building2 className="field-icon text-secondary" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="section-title">Banco</p>
-                                    <p className="text-sm font-medium text-foreground">{bankName}</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {operationDate && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-info/10">
-                                    <Calendar className="field-icon text-info" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="section-title">Fecha de Operación</p>
-                                    <p className="text-sm font-medium text-foreground">{formatDateTime(operationDate)}</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {ticketNumber && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-warning/10">
-                                    <FileText className="field-icon text-warning" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="section-title">Número de Ticket</p>
-                                    <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {ticketNumber}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {externalReference && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-primary/10">
-                                    <CreditCard className="field-icon text-primary" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="section-title">Referencia Externa</p>
-                                    <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {externalReference}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {gatewayTransactionId && (
-                            <div className="info-field">
-                                <div className="p-2 rounded-lg bg-accent/10">
-                                    <Hash className="field-icon text-accent" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="section-title">ID de Transacción del Gateway</p>
-                                    <p className="font-mono text-sm font-medium bg-muted/50 px-3 py-1.5 rounded-md border">
-                                        {gatewayTransactionId}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </CardContent>
+                    )}
+                    {bankName && (
+                        <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground flex items-center gap-1">
+                                <Building2 className="h-3 w-3" />
+                                Banco:
+                            </span>
+                            <span className="font-medium">{bankName}</span>
+                        </div>
+                    )}
+                    {operationDate && (
+                        <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                Fecha Op:
+                            </span>
+                            <span className="text-xs">{formatDateTime(operationDate).split(' ')[0]}</span>
+                        </div>
+                    )}
+                    {ticketNumber && (
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground flex items-center gap-1">
+                                <FileText className="h-3 w-3" />
+                                Ticket:
+                            </span>
+                            <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                                {ticketNumber}
+                            </span>
+                        </div>
+                    )}
+                    {externalReference && (
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground flex items-center gap-1">
+                                <CreditCard className="h-3 w-3" />
+                                Ref. Externa:
+                            </span>
+                            <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                                {externalReference}
+                            </span>
+                        </div>
+                    )}
+                    {gatewayTransactionId && (
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground flex items-center gap-1">
+                                <Hash className="h-3 w-3" />
+                                Gateway ID:
+                            </span>
+                            <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                                {gatewayTransactionId}
+                            </span>
+                        </div>
+                    )}
+                </div>
             </Card>
 
-            {/* Review Information */}
+            {/* Compact Review Info */}
             {(reviewedByEmail || reviewedAt || rejectionReason) && (
-                <Card>
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-lg flex items-center gap-3 text-card-foreground">
-                            <div className={`p-2 rounded-lg ${rejectionReason ? 'bg-destructive/10' : 'bg-success/10'}`}>
-                                {rejectionReason ? (
-                                    <XCircle className="h-5 w-5 text-destructive" />
-                                ) : (
-                                    <CheckCircle2 className="h-5 w-5 text-success" />
-                                )}
-                            </div>
-                            Información de Revisión
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {rejectionReason && (
-                            <div className="p-4 rounded-lg border border-destructive/20 bg-destructive/5">
-                                <div className="flex items-start gap-3">
-                                    <AlertTriangle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
-                                    <div className="flex-1 min-w-0">
-                                        <h4 className="font-semibold text-destructive mb-2">Motivo de Rechazo</h4>
-                                        <p className="text-sm text-destructive/80 leading-relaxed">
-                                            {rejectionReason}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                <Card className="p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                        {rejectionReason ? (
+                            <XCircle className="h-4 w-4 text-destructive" />
+                        ) : (
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
                         )}
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {reviewedByEmail && (
-                                <div className="info-field">
-                                    <div className="p-2 rounded-lg bg-primary/10">
-                                        <User className="field-icon text-primary" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="section-title">Revisado por</p>
-                                        <p className="text-sm font-medium text-foreground">{reviewedByEmail}</p>
-                                    </div>
-                                </div>
-                            )}
-
-                            {reviewedAt && (
-                                <div className="info-field">
-                                    <div className="p-2 rounded-lg bg-info/10">
-                                        <Clock className="field-icon text-info" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="section-title">Fecha de Revisión</p>
-                                        <p className="text-sm font-medium text-foreground">{formatDateTime(reviewedAt)}</p>
-                                    </div>
-                                </div>
-                            )}
+                        <span className="text-sm font-medium">
+                            {rejectionReason ? 'Rechazado' : 'Revisado'}
+                        </span>
+                    </div>
+                    
+                    {rejectionReason && (
+                        <div className="text-xs p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded mb-2">
+                            <strong>Motivo:</strong> {rejectionReason}
                         </div>
-                    </CardContent>
+                    )}
+                    
+                    <div className="space-y-1 text-xs">
+                        {reviewedByEmail && <div>Por: {reviewedByEmail}</div>}
+                        {reviewedAt && <div className="text-muted-foreground">{formatDateTime(reviewedAt).split(' ')[0]}</div>}
+                    </div>
                 </Card>
             )}
 
-            {/* Timestamps */}
-            <Card>
-                <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-3 text-card-foreground">
-                        <div className="p-2 rounded-lg bg-accent/10">
-                            <Calendar className="h-5 w-5 text-accent" />
-                        </div>
-                        Fechas Importantes
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div className="info-field">
-                            <div className="p-2 rounded-lg bg-success/10">
-                                <Clock className="field-icon text-success" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="section-title">Fecha de Creación</p>
-                                <p className="text-sm font-medium text-foreground">{formatDateTime(createdAt)}</p>
-                            </div>
-                        </div>
-
-                        <div className="info-field">
-                            <div className="p-2 rounded-lg bg-warning/10">
-                                <Clock className="field-icon text-warning" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="section-title">Última Actualización</p>
-                                <p className="text-sm font-medium text-foreground">{formatDateTime(updatedAt)}</p>
-                            </div>
-                        </div>
+            {/* Compact Timestamps */}
+            <Card className="p-4">
+                <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            Creado:
+                        </span>
+                        <span>{formatDateTime(createdAt).split(' ')[0]}</span>
                     </div>
-                </CardContent>
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            Actualizado:
+                        </span>
+                        <span>{formatDateTime(updatedAt).split(' ')[0]}</span>
+                    </div>
+                </div>
             </Card>
         </div>
     );
