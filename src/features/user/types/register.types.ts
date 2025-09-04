@@ -1,16 +1,14 @@
 export interface DocumentValidationResponse {
   dni: string;
-  name: string;
+  firstname: string;
   mothers_lastname: string;
   fathers_lastname: string;
   fullname: string;
-  verification_code: string;
-  updated_at: string;
 }
 
 export interface DocumentValidationRequest {
   numberDocument: string;
-  documentType: "dni" | "ruc";
+  documentType: 'dni' | 'ruc';
 }
 
 export interface RegisterUserRequest {
@@ -20,12 +18,12 @@ export interface RegisterUserRequest {
   lastName: string;
   phone: string;
   birthDate: string;
-  gender: "MASCULINO" | "FEMENINO" | "OTRO";
+  gender: 'MASCULINO' | 'FEMENINO' | 'OTRO';
   country: string;
   referrerCode?: string;
-  position?: "LEFT" | "RIGHT";
+  position?: 'LEFT' | 'RIGHT';
   roleCode: string;
-  documentType: "DNI" | "CE" | "PAS";
+  documentType: 'DNI' | 'CE' | 'PAS';
   documentNumber: string;
 }
 
@@ -43,7 +41,7 @@ export interface FormState {
   isCompleted: boolean;
   data: {
     document?: {
-      documentType: "DNI" | "CE" | "PAS";
+      documentType: 'DNI' | 'CE' | 'PAS';
       documentNumber: string;
     };
     personalInfo?: {
@@ -51,7 +49,7 @@ export interface FormState {
       lastName: string;
       phone: string;
       birthDate: string;
-      gender: "MASCULINO" | "FEMENINO" | "OTRO";
+      gender: 'MASCULINO' | 'FEMENINO' | 'OTRO';
       country: string;
     };
     credentials?: {

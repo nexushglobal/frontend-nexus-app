@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,14 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { 
-  CheckCircle, 
-  AlertTriangle, 
+import {
+  AlertTriangle,
   Calendar,
+  CheckCircle,
+  FileText,
   User,
-  CreditCard,
-  FileText
 } from 'lucide-react';
 
 interface WithdrawalActionResultModalProps {
@@ -80,9 +79,7 @@ export function WithdrawalActionResultModal({
             <IconComponent className={`h-5 w-5 ${actionInfo.iconColor}`} />
             {actionInfo.title}
           </DialogTitle>
-          <DialogDescription>
-            {actionInfo.description}
-          </DialogDescription>
+          <DialogDescription>{actionInfo.description}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -95,7 +92,9 @@ export function WithdrawalActionResultModal({
                   </span>
                   <Badge className={actionInfo.badgeColor}>
                     <IconComponent className="h-3 w-3 mr-1" />
-                    {withdrawal.status === 'APPROVED' ? 'Aprobado' : 'Rechazado'}
+                    {withdrawal.status === 'APPROVED'
+                      ? 'Aprobado'
+                      : 'Rechazado'}
                   </Badge>
                 </div>
 
@@ -133,7 +132,8 @@ export function WithdrawalActionResultModal({
                     <div className="flex-1">
                       <p className="text-sm font-medium">Usuario</p>
                       <p className="text-xs text-muted-foreground">
-                        {withdrawal.user.personalInfo?.firstName} {withdrawal.user.personalInfo?.lastName}
+                        {withdrawal.user.personalInfo?.firstName}{' '}
+                        {withdrawal.user.personalInfo?.lastName}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {withdrawal.user.email}
@@ -167,18 +167,20 @@ export function WithdrawalActionResultModal({
 
           {action === 'approve' && (
             <div className="p-3 bg-info/10 border border-info/20 rounded-lg">
-              <p className="text-sm text-info-foreground">
-                <strong>Siguiente paso:</strong> El usuario será notificado sobre la 
-                aprobación y el retiro será procesado según los procedimientos establecidos.
+              <p className="text-sm text-info">
+                <strong>Siguiente paso:</strong> El usuario será notificado
+                sobre la aprobación y el retiro será procesado según los
+                procedimientos establecidos.
               </p>
             </div>
           )}
 
           {action === 'reject' && (
             <div className="p-3 bg-warning/10 border border-warning/20 rounded-lg">
-              <p className="text-sm text-warning-foreground">
-                <strong>Notificación:</strong> El usuario será informado sobre el rechazo 
-                y podrá ver el motivo proporcionado en su panel de retiros.
+              <p className="text-sm text-warning">
+                <strong>Notificación:</strong> El usuario será informado sobre
+                el rechazo y podrá ver el motivo proporcionado en su panel de
+                retiros.
               </p>
             </div>
           )}

@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,12 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { CheckCircle, Loader2, User, CreditCard, Banknote } from 'lucide-react';
-import { useState } from 'react';
-import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CheckCircle, CreditCard, Loader2, User } from 'lucide-react';
+import { toast } from 'sonner';
 import { WithdrawalService } from '../../../services/withdrawalService';
 import { WithdrawalDetail } from '../../../types/withdrawals.types';
 
@@ -36,16 +35,19 @@ export function WithdrawalApprovalModal({
   const queryClient = useQueryClient();
 
   const approveMutation = useMutation({
-    mutationFn: () => WithdrawalService.approveWithdrawal(parseInt(withdrawalId)),
+    mutationFn: () =>
+      WithdrawalService.approveWithdrawal(parseInt(withdrawalId)),
     onSuccess: (data) => {
       toast.success('Retiro aprobado exitosamente');
-      queryClient.invalidateQueries({ queryKey: ['withdrawal-detail', parseInt(withdrawalId)] });
+      queryClient.invalidateQueries({
+        queryKey: ['withdrawal-detail', parseInt(withdrawalId)],
+      });
       onSuccess(data);
       onClose();
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || 'Error al aprobar el retiro'
+        error?.response?.data?.message || 'Error al aprobar el retiro',
       );
     },
   });
@@ -71,7 +73,8 @@ export function WithdrawalApprovalModal({
             Aprobar Retiro
           </DialogTitle>
           <DialogDescription>
-            ¿Estás seguro de que deseas aprobar este retiro? Esta acción no se puede deshacer.
+            ¿Estás seguro de que deseas aprobar este retiro? Esta acción no se
+            puede deshacer.
           </DialogDescription>
         </DialogHeader>
 
@@ -80,12 +83,16 @@ export function WithdrawalApprovalModal({
           <div className="p-4 bg-success/5 border border-success/20 rounded-lg">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Retiro #</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Retiro #
+                </span>
                 <Badge variant="outline">{withdrawal.id}</Badge>
               </div>
-              
+
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Monto</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Monto
+                </span>
                 <div className="text-right">
                   <p className="font-bold text-success text-lg">
                     {withdrawal.amount.toLocaleString()} puntos
@@ -102,9 +109,12 @@ export function WithdrawalApprovalModal({
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div className="flex-1">
                   <p className="text-sm font-medium">
-                    {withdrawal.user.personalInfo.firstName} {withdrawal.user.personalInfo.lastName}
+                    {withdrawal.user.personalInfo.firstName}{' '}
+                    {withdrawal.user.personalInfo.lastName}
                   </p>
-                  <p className="text-xs text-muted-foreground">{withdrawal.user.email}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {withdrawal.user.email}
+                  </p>
                 </div>
               </div>
 
@@ -122,22 +132,22 @@ export function WithdrawalApprovalModal({
 
           {/* Warning */}
           <div className="p-3 bg-warning/10 border border-warning/20 rounded-lg">
-            <p className="text-sm text-warning-foreground">
-              <strong>Importante:</strong> Al aprobar este retiro, se procesará el pago 
-              al usuario según la información bancaria proporcionada.
+            <p className="text-sm text-warning">
+              <strong>Importante:</strong> Al aprobar este retiro, se procesará
+              el pago al usuario según la información bancaria proporcionada.
             </p>
           </div>
         </div>
 
         <DialogFooter>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={onClose}
             disabled={approveMutation.isPending}
           >
             Cancelar
           </Button>
-          <Button 
+          <Button
             onClick={handleApprove}
             disabled={approveMutation.isPending}
             className="bg-success hover:bg-success/90"

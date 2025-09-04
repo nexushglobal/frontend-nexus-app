@@ -3,7 +3,17 @@
     "allow": [
       "Bash(rm:*)",
       "Bash(bun run:*)",
-      "Bash(bun add:*)"
+      "Bash(bun add:*)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\app\\dashboard\\(cliente)\\cli-unilevel\\comprar-mi-lote/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\pages/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\pages/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\components/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\components/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\actions/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\steps\\step1/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\types/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\hooks/**)",
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\validations/**)"
     ],
     "defaultMode": "acceptEdits"
   },

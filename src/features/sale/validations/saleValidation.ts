@@ -136,6 +136,7 @@ export const createSaleSchema = z.object({
   // Paso 1
   lotId: z.string().min(1, "Debe seleccionar un lote"),
   saleType: z.enum(["DIRECT_PAYMENT", "FINANCED"]),
+  projectName: z.string().optional(),
 
   // Paso 2
   totalAmount: numberTransform.refine(

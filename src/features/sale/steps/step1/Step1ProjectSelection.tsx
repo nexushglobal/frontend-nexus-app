@@ -84,6 +84,12 @@ export default function Step1ProjectSelection({
     selectProject(projectId);
     form.setValue("lotId", "");
     loadStages(projectId);
+    
+    // Find and add project name to form data
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+      updateFormData({ projectName: project.name });
+    }
   };
 
   const handleStageChange = (stageId: string) => {

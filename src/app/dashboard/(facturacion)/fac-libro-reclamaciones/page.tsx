@@ -1,4 +1,4 @@
-import { ComplaintAdminPage } from '@/features/complaints/components/pages/ComplaintAdminPage'
+import { ComplaintsAdminPage } from '@/features/complaints/components/pages/ComplaintsAdminPage'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-    return <ComplaintAdminPage />
+    return <ComplaintsAdminPage />
 }

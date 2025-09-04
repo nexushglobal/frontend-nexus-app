@@ -114,6 +114,9 @@ export default function SaleLoteWizard() {
         guarantorId: formData.guarantorId!,
         totalAmount: formData.totalAmount!,
         totalAmountUrbanDevelopment: formData.totalAmountUrbanDevelopment!,
+        ...(formData.projectName && {
+          projectName: formData.projectName,
+        }),
         ...(formData.firstPaymentDateHu && {
           firstPaymentDateHu: formData.firstPaymentDateHu,
         }),

@@ -1,17 +1,41 @@
 Quiero que realices la siguiente vista
-/dashboard/(cliente)/cli-mi-equipo/referidos
+/dashboard/(facturacion)/fac-libro-reclamaciones
+en esta vista inicialmente consumiremos la api de
+/api/app/complaints
+el cual retorna
+ {
+                "id": 1,
+                "fullName": "Anthoni Portocarrero",
+                "address": "Mz L Lt 10 santa margarita",
+                "documentType": "DNI", `DNI | CE`
+                "documentNumber": "10375089",
+                "phone": "958920823",
+                "email": "softwaretoni21@gmail.com",
+                "parentGuardian": "",
+                "itemType": "PRODUCT", `SERVICE | PRODUCT`
+                "claimAmount": "200.00",
+                "description": "asdasdasda asdas dasd asd asd asd",
+                "detail": " asdasd adasd a dsada dsadas dasd",
+                "complaintType": "COMPLAINT", `COMPLAINT | CLAIM`
+                "order": "123",
+                "attended": false,
+                "createdAt": "2025-09-02T09:03:09.443Z",
+                "updatedAt": "2025-09-02T09:03:09.443Z"
+            }[]
+esta tiene paginacion, y los parametros disponibles son
+-startDate:string
+-endDate:string
+-attended:boolean
+-page y limit para la paginacion
 
-ahi debe haber una lista de los referidos del cliente logueado con paginacion
-para desktok usar una tabla y para mobile cards ambos con su paginacion
-usar el servicio de getUsersDirects ubicado en src/features/team/services/teamtService.ts
+se tiene que implementar un vista de una tabla que muestre los resultados de la api
+guiarte de src/app/dashboard/(facturacion)/fac-pagos/page.tsx
+para mobile debe ser cards y para desktop debe ser una tabla
 
-los filtros de params disponibles son los siguientes
-- page y limit para la paginacion
-- sortBy con las opciones "volume" o "lots" por default viene "volume"
-- sortOrder con las opciones "asc" o "desc" por default viene "desc"
+una de las columnas debe ser para marcar como atendido, para ello usar la siguiente api
+/api/app/complaints/:id/attend
+body : {attended:boolean}
 
-tomar de referencia la vista de src/app/dashboard/(cliente)/cli-transacciones/mis-pagos/page.tsx
-usar componentes globales y mantener una estetica consistente
-usar estilos ya definidos en src/styles/globals.css
-
-recuerda que esta seccion pertenece al feature team
+recuerda usar los componentes de feature/shared para la estructura de la creacion de la integracion de la api y las tablas
+tomar de referencia la integracion y vista de src/app/dashboard/(facturacion)/fac-pagos/page.tsx
+usar los styles de globals.css

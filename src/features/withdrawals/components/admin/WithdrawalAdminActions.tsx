@@ -3,18 +3,12 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Shield,
-} from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock, Shield } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { WithdrawalDetail } from '../../types/withdrawals.types';
+import { WithdrawalActionResultModal } from './modals/WithdrawalActionResultModal';
 import { WithdrawalApprovalModal } from './modals/WithdrawalApprovalModal';
 import { WithdrawalRejectionModal } from './modals/WithdrawalRejectionModal';
-import { WithdrawalActionResultModal } from './modals/WithdrawalActionResultModal';
 
 interface WithdrawalAdminActionsProps {
   withdrawal: WithdrawalDetail;
@@ -29,13 +23,18 @@ export function WithdrawalAdminActions({
   const [showRejectionModal, setShowRejectionModal] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
   const [resultData, setResultData] = useState<any>(null);
-  const [currentAction, setCurrentAction] = useState<'approve' | 'reject'>('approve');
+  const [currentAction, setCurrentAction] = useState<'approve' | 'reject'>(
+    'approve',
+  );
 
   const handleActionSuccess = (data: any, action: 'approve' | 'reject') => {
-    setResultData({ 
-      success: true, 
-      message: action === 'approve' ? 'Retiro aprobado exitosamente' : 'Retiro rechazado exitosamente', 
-      data 
+    setResultData({
+      success: true,
+      message:
+        action === 'approve'
+          ? 'Retiro aprobado exitosamente'
+          : 'Retiro rechazado exitosamente',
+      data,
     });
     setCurrentAction(action);
     setShowResultModal(true);
@@ -46,37 +45,53 @@ export function WithdrawalAdminActions({
     switch (withdrawal.status) {
       case 'PENDING':
         return (
-          <Badge variant="secondary" className="bg-warning/10 text-warning border-warning/20">
+          <Badge
+            variant="secondary"
+            className="bg-warning/10 text-warning border-warning/20"
+          >
             <Clock className="h-3 w-3 mr-1" />
             Pendiente
           </Badge>
         );
       case 'APPROVED':
         return (
-          <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
+          <Badge
+            variant="secondary"
+            className="bg-success/10 text-success border-success/20"
+          >
             <CheckCircle className="h-3 w-3 mr-1" />
             Aprobado
           </Badge>
         );
       case 'REJECTED':
         return (
-          <Badge variant="secondary" className="bg-destructive/10 text-destructive border-destructive/20">
+          <Badge
+            variant="secondary"
+            className="bg-destructive/10 text-destructive border-destructive/20"
+          >
             <AlertTriangle className="h-3 w-3 mr-1" />
             Rechazado
           </Badge>
         );
-      default:
+      case 'PENDING_SIGNATURE':
         return (
-          <Badge variant="secondary">
-            {withdrawal.status}
+          <Badge
+            variant="secondary"
+            className="bg-info/10 text-info border-info/20"
+          >
+            <Clock className="h-3 w-3 mr-1" />
+            Pendiente de Firma
           </Badge>
         );
+      default:
+        return <Badge variant="secondary">{withdrawal.status}</Badge>;
     }
   };
 
   const renderActionButtons = () => {
     switch (withdrawal.status) {
       case 'PENDING':
+      case 'PENDING_SIGNATURE':
         return (
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
@@ -109,9 +124,10 @@ export function WithdrawalAdminActions({
               Este retiro ha sido aprobado
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              {withdrawal.reviewedAt && (
-                `Aprobado el ${new Date(withdrawal.reviewedAt).toLocaleDateString('es-PE')}`
-              )}
+              {withdrawal.reviewedAt &&
+                `Aprobado el ${new Date(
+                  withdrawal.reviewedAt,
+                ).toLocaleDateString('es-PE')}`}
             </p>
           </div>
         );
@@ -129,9 +145,10 @@ export function WithdrawalAdminActions({
               </p>
             )}
             <p className="text-xs text-muted-foreground mt-1">
-              {withdrawal.reviewedAt && (
-                `Rechazado el ${new Date(withdrawal.reviewedAt).toLocaleDateString('es-PE')}`
-              )}
+              {withdrawal.reviewedAt &&
+                `Rechazado el ${new Date(
+                  withdrawal.reviewedAt,
+                ).toLocaleDateString('es-PE')}`}
             </p>
           </div>
         );
@@ -152,7 +169,9 @@ export function WithdrawalAdminActions({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Estado actual:</span>
+            <span className="text-sm text-muted-foreground">
+              Estado actual:
+            </span>
             {getStatusBadge()}
           </div>
 
@@ -162,7 +181,9 @@ export function WithdrawalAdminActions({
           <div className="pt-3 border-t space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Monto:</span>
-              <span className="font-medium">{withdrawal.amount.toLocaleString()} puntos</span>
+              <span className="font-medium">
+                {withdrawal.amount.toLocaleString()} puntos
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Solicitado:</span>
@@ -173,7 +194,8 @@ export function WithdrawalAdminActions({
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Usuario:</span>
               <span className="font-medium">
-                {withdrawal.user.personalInfo.firstName} {withdrawal.user.personalInfo.lastName}
+                {withdrawal.user.personalInfo.firstName}{' '}
+                {withdrawal.user.personalInfo.lastName}
               </span>
             </div>
           </div>

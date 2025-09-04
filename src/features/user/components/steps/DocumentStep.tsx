@@ -60,7 +60,7 @@ export function DocumentStep({ onNext, defaultValues }: DocumentStepProps) {
             });
 
             onNext(data, {
-              firstName: result.data.name,
+              firstName: result.data.firstname,
               lastName:
                 `${result.data.fathers_lastname} ${result.data.mothers_lastname}`.trim(),
             });

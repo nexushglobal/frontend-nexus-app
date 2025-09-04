@@ -38,6 +38,6 @@ export const complaintService = {
     id: number,
     data: AttendComplaintDto,
   ): Promise<Complaint> {
-    return api.patch<Complaint>(`api/app/complaints/${id}/attend`, data);
+    return api.post<Complaint>(`api/app/complaints/${id}/attend`, data);
   },
 };

@@ -18,6 +18,7 @@ export interface CreateSalePayload {
   lotId: string;
   saleType: "DIRECT_PAYMENT" | "FINANCED";
   clientId: number;
+  projectName?: string;
   isReservation?: boolean;
   reservationAmount?: number;
   maximumHoldPeriod?: number;
