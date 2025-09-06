@@ -69,14 +69,16 @@ export function SalesPage() {
             <Button
               variant="outline"
               className="hidden sm:inline-flex"
-              onClick={() => router.push('/dashboard/crear-venta')}
+              onClick={() => router.push('/dashboard/cli-unilevel/vender-lote')}
             >
               Crear venta
             </Button>
             <Button
               variant="outline"
               className="hidden sm:inline-flex"
-              onClick={() => router.push('/dashboard/comprar-lote')}
+              onClick={() =>
+                router.push('/dashboard/cli-unilevel/comprar-mi-lote')
+              }
             >
               Comprar Lote
             </Button>

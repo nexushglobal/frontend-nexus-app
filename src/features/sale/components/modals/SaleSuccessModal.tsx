@@ -1,19 +1,20 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatCurrency } from "@/features/shared/utils/formatCurrency";
-import { CheckCircle, DollarSign, FileText, User } from "lucide-react";
-import { CreateSaleResponse } from "../../types/sale-response.types";
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { CheckCircle, DollarSign, FileText, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { CreateSaleResponse } from '../../types/sale-response.types';
 
 interface SaleSuccessModalProps {
   isOpen: boolean;
@@ -22,8 +23,8 @@ interface SaleSuccessModalProps {
 }
 
 const safeNumber = (value: string | number | undefined | null): number => {
-  if (value === undefined || value === null || value === "") return 0;
-  const num = typeof value === "string" ? parseFloat(value) : Number(value);
+  if (value === undefined || value === null || value === '') return 0;
+  const num = typeof value === 'string' ? parseFloat(value) : Number(value);
   return isNaN(num) ? 0 : num;
 };
 
@@ -32,8 +33,9 @@ export default function SaleSuccessModal({
   onClose,
   saleData,
 }: SaleSuccessModalProps) {
+  const router = useRouter();
   const handleViewDetails = () => {
-    console.log("Viewing sale details:", saleData.id);
+    router.push(`/dashboard/cli-unilevel/ventas/${saleData.id}`);
   };
 
   const totalAmount = safeNumber(saleData.amount);
@@ -100,11 +102,11 @@ export default function SaleSuccessModal({
                       <span className="font-medium text-lg">
                         {formatCurrency(
                           Number(saleData.amount),
-                          saleData.currency
+                          saleData.currency,
                         )}
                       </span>
                     </div>
-                    {saleData.type === "FINANCED" && (
+                    {saleData.type === 'FINANCED' && (
                       <>
                         {saleData.amountInitial !== undefined && (
                           <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
@@ -133,9 +135,9 @@ export default function SaleSuccessModal({
                         Moneda:
                       </span>
                       <span className="font-medium">
-                        {saleData.currency === "PEN"
-                          ? "Soles (PEN)"
-                          : "Dólares (USD)"}
+                        {saleData.currency === 'PEN'
+                          ? 'Soles (PEN)'
+                          : 'Dólares (USD)'}
                       </span>
                     </div>
                   </div>
@@ -187,7 +189,7 @@ export default function SaleSuccessModal({
             </Card>
 
             {/* Información de Financiamiento (solo si es financiada) */}
-            {saleData.type === "FINANCED" && (
+            {saleData.type === 'FINANCED' && (
               <Card className="bg-white dark:bg-gray-900">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">
@@ -229,7 +231,7 @@ export default function SaleSuccessModal({
                             <span className="text-right font-medium">
                               {formatCurrency(
                                 totalAmount - initialAmount,
-                                saleData.currency
+                                saleData.currency,
                               )}
                             </span>
                           </div>
@@ -249,15 +251,15 @@ export default function SaleSuccessModal({
                     Venta registrada exitosamente
                   </h4>
                   <p className="mt-1 text-sm text-green-800 dark:text-green-200">
-                    {saleData.type === "FINANCED"
+                    {saleData.type === 'FINANCED'
                       ? `Se ha creado el cronograma de ${numberCoutes} cuotas de financiamiento.`
-                      : "El pago directo ha sido registrado correctamente."}
+                      : 'El pago directo ha sido registrado correctamente.'}
                   </p>
                   <p className="mt-1 text-sm text-green-800 dark:text-green-200">
-                    La venta con referencia{" "}
+                    La venta con referencia{' '}
                     <span className="font-mono">
                       {saleData.saleIdReference}
-                    </span>{" "}
+                    </span>{' '}
                     está lista para gestionar pagos y generar documentos.
                   </p>
                 </div>

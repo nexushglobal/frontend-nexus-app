@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { DataTable } from "@/features/shared/components/table/DataTable";
-import { VisibilityState } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import type { Sale } from "../types/sale.types";
+import { DataTable } from '@/features/shared/components/table/DataTable';
+import { VisibilityState } from '@tanstack/react-table';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import type { Sale } from '../types/sale.types';
 import {
   createSalesColumns,
   defaultColumnVisibility,
-} from "./columns/SalesColumns";
+} from './columns/SalesColumns';
 
 interface SalesTableProps {
   data: Sale[];
@@ -18,16 +18,16 @@ interface SalesTableProps {
 export function SalesTable({ data, isLoading = false }: SalesTableProps) {
   const router = useRouter();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    defaultColumnVisibility
+    defaultColumnVisibility,
   );
 
   const columns = useMemo(
     () =>
       createSalesColumns({
         onViewDetail: (referenceId) =>
-          router.push(`/dashboard/ventas/${referenceId}`),
+          router.push(`/dashboard/cli-unilevel/ventas/${referenceId}`),
       }),
-    [router]
+    [router],
   );
 
   return (

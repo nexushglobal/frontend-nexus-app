@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
 import {
   Table,
   TableBody,
@@ -15,39 +15,39 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
+  AlertCircle,
+  CheckCircle,
   Edit,
+  Plus,
   Trash2,
+  User,
   UserCheck,
   UserPlus,
-  User,
-  CheckCircle,
-  AlertCircle,
-  Plus,
-} from "lucide-react";
+} from 'lucide-react';
 
-import LeadInfoCard from "./LeadInfoCard";
-import ClientConfiguration from "./ClientConfiguration";
-import GuarantorSection from "./GuarantorSection";
-import SecondaryClientSection from "./SecondaryClientSection";
-import AddSecondaryClientModal from "../../components/modals/AddSecondaryClientModal";
-import AddGuarantorModal from "../../components/modals/AddGuarantorModal";
-import { CreateLeadModal } from "../../components/modals/CreateLeadModal";
+import AddGuarantorModal from '../../components/modals/AddGuarantorModal';
+import AddSecondaryClientModal from '../../components/modals/AddSecondaryClientModal';
+import { CreateLeadModal } from '../../components/modals/CreateLeadModal';
+import ClientConfiguration from './ClientConfiguration';
+import GuarantorSection from './GuarantorSection';
+import LeadInfoCard from './LeadInfoCard';
+import SecondaryClientSection from './SecondaryClientSection';
 
-import { useClientGuarantor } from "../../hooks/useClientGuarantor";
+import { useClientGuarantor } from '../../hooks/useClientGuarantor';
 import {
   CreateSaleFormData,
   GuarantorFormData,
   SecondaryClientFormData,
   Step3FormData,
   step3Schema,
-} from "../../validations/saleValidation";
+} from '../../validations/saleValidation';
 
 interface Props {
   formData: Partial<CreateSaleFormData>;
   updateFormData: (data: Partial<CreateSaleFormData>) => void;
-  updateStepValidation: (step: "step3", isValid: boolean) => void;
+  updateStepValidation: (step: 'step3', isValid: boolean) => void;
 }
 
 export default function Step3ClientGuarantor({
@@ -105,16 +105,16 @@ export default function Step3ClientGuarantor({
       clientId: formData.clientId || 0,
       guarantorId: formData.guarantorId || 0,
       secondaryClientIds: formData.secondaryClientIds,
-      leadId: "",
-      clientAddress: "",
+      leadId: '',
+      clientAddress: '',
     },
   });
 
   useEffect(() => {
-    form.setValue("clientId", getClientId());
-    form.setValue("guarantorId", getGuarantorId());
-    form.setValue("secondaryClientIds", getSecondaryClientsId());
-    form.setValue("clientAddress", clientAddress);
+    form.setValue('clientId', getClientId());
+    form.setValue('guarantorId', getGuarantorId());
+    form.setValue('secondaryClientIds', getSecondaryClientsId());
+    form.setValue('clientAddress', clientAddress);
   }, [form, getClientId, getGuarantorId, getSecondaryClientsId, clientAddress]);
 
   useEffect(() => {
@@ -139,7 +139,7 @@ export default function Step3ClientGuarantor({
 
     const isValid = basicValidation && !switchesBlocking;
 
-    updateStepValidation("step3", isValid);
+    updateStepValidation('step3', isValid);
 
     updateFormData({
       clientId,
@@ -160,7 +160,7 @@ export default function Step3ClientGuarantor({
   const handleAddSecondaryClient = (data: SecondaryClientFormData) => {
     if (editingIndex !== null) {
       setSecondaryClientsFormData((prev) =>
-        prev.map((client, index) => (index === editingIndex ? data : client))
+        prev.map((client, index) => (index === editingIndex ? data : client)),
       );
       setEditingIndex(null);
     } else setSecondaryClientsFormData((prev) => [...prev, data]);
@@ -209,9 +209,13 @@ export default function Step3ClientGuarantor({
     if (guarantorFormData || secondaryClientsFormData.length > 0) {
       await handleGuarantorClientSuccess(
         secondaryClientsFormData,
-        guarantorFormData
+        guarantorFormData,
       );
     }
+    await handleGuarantorClientSuccess(
+      secondaryClientsFormData,
+      guarantorFormData,
+    );
   };
 
   const validationStatus = {
@@ -433,7 +437,7 @@ export default function Step3ClientGuarantor({
                       <div className="flex items-center justify-between p-3 border rounded-lg bg-muted/50">
                         <div className="space-y-1">
                           <p className="font-medium">
-                            {guarantorFormData.firstName}{" "}
+                            {guarantorFormData.firstName}{' '}
                             {guarantorFormData.lastName}
                           </p>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -443,7 +447,7 @@ export default function Step3ClientGuarantor({
                             <span>{guarantorFormData.document}</span>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {guarantorFormData.phone} •{" "}
+                            {guarantorFormData.phone} •{' '}
                             {guarantorFormData.email}
                           </p>
                         </div>
@@ -479,8 +483,8 @@ export default function Step3ClientGuarantor({
                         <div
                           className={`p-4 border-2 border-dashed rounded-lg transition-colors ${
                             switchEnable.compradorEnable
-                              ? "border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20"
-                              : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/20"
+                              ? 'border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20'
+                              : 'border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/20'
                           }`}
                         >
                           <div className="text-center space-y-2">
@@ -491,8 +495,8 @@ export default function Step3ClientGuarantor({
                               }
                               variant={
                                 switchEnable.compradorEnable
-                                  ? "default"
-                                  : "ghost"
+                                  ? 'default'
+                                  : 'ghost'
                               }
                               size="sm"
                               disabled={
@@ -503,13 +507,13 @@ export default function Step3ClientGuarantor({
                             >
                               <UserPlus className="h-4 w-4" />
                               {secondaryClientsFormData.length > 0
-                                ? "Agregar Otro"
-                                : "Agregar Comprador"}
+                                ? 'Agregar Otro'
+                                : 'Agregar Comprador'}
                             </Button>
                             <p className="text-xs text-muted-foreground">
                               {switchEnable.compradorEnable
                                 ? `${secondaryClientsFormData.length} comprador(es) agregado(s)`
-                                : "Activa el switch para habilitar"}
+                                : 'Activa el switch para habilitar'}
                             </p>
                           </div>
                         </div>
@@ -518,8 +522,8 @@ export default function Step3ClientGuarantor({
                         <div
                           className={`p-4 border-2 border-dashed rounded-lg transition-colors ${
                             switchEnable.guarantorEnable
-                              ? "border-purple-300 bg-purple-50 dark:border-purple-700 dark:bg-purple-900/20"
-                              : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/20"
+                              ? 'border-purple-300 bg-purple-50 dark:border-purple-700 dark:bg-purple-900/20'
+                              : 'border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/20'
                           }`}
                         >
                           <div className="text-center space-y-2">
@@ -530,8 +534,8 @@ export default function Step3ClientGuarantor({
                               }
                               variant={
                                 switchEnable.guarantorEnable
-                                  ? "default"
-                                  : "ghost"
+                                  ? 'default'
+                                  : 'ghost'
                               }
                               size="sm"
                               disabled={
@@ -542,15 +546,15 @@ export default function Step3ClientGuarantor({
                             >
                               <UserCheck className="h-4 w-4" />
                               {guarantorFormData
-                                ? "Editar Garante"
-                                : "Agregar Garante"}
+                                ? 'Editar Garante'
+                                : 'Agregar Garante'}
                             </Button>
                             <p className="text-xs text-muted-foreground">
                               {switchEnable.guarantorEnable
                                 ? guarantorFormData
-                                  ? "Garante configurado"
-                                  : "Sin garante"
-                                : "Activa el switch para habilitar"}
+                                  ? 'Garante configurado'
+                                  : 'Sin garante'
+                                : 'Activa el switch para habilitar'}
                             </p>
                           </div>
                         </div>
@@ -565,16 +569,16 @@ export default function Step3ClientGuarantor({
                     onClick={handleAction}
                     disabled={
                       !clientAddress.trim() ||
-                      (!guarantorFormData &&
-                        secondaryClientsFormData.length === 0) ||
+                      // (!guarantorFormData &&
+                      //   secondaryClientsFormData.length === 0) ||
                       loading.creating
                     }
                     variant="default"
                     className="w-full"
                   >
                     {loading.creating
-                      ? "Procesando..."
-                      : "Guardar Configuración"}
+                      ? 'Procesando...'
+                      : 'Guardar Configuración'}
                   </Button>
                 </div>
               </>

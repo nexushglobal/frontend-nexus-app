@@ -150,7 +150,7 @@ export default function SaleLoteWizard() {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-    router.push('/dashboard/ventas');
+    router.push('/dashboard/cli-unilevel/ventas');
   };
 
   const renderCurrentStep = () => {

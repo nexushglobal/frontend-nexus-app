@@ -33,7 +33,7 @@ export function SaleDetailPage({ referenceId }: SaleDetailPageProps) {
         title="Detalle de Venta"
         subtitle="Información completa y detallada de la venta"
         variant="gradient"
-        backUrl="/dashboard/ventas"
+        backUrl="/dashboard/cli-unilevel/ventas"
         className="mb-6"
       />
       <Suspense fallback={<SaleDetailSkeleton />}>

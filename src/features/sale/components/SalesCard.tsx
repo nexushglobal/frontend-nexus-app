@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import {
-  User,
-  Phone,
-  DollarSign,
-  Hash,
-  Eye,
   CreditCard,
+  DollarSign,
+  Eye,
+  Hash,
   Package,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import type { Sale } from "../types/sale.types";
+  Phone,
+  User,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import {
   SALE_STATUS_LABELS,
-  SALE_TYPE_LABELS,
   SALE_STATUS_VARIANTS,
+  SALE_TYPE_LABELS,
   SALE_TYPE_VARIANTS,
-} from "../constants/sale.constants";
-import { formatCurrency } from "@/features/shared/utils/formatCurrency";
+} from '../constants/sale.constants';
+import type { Sale } from '../types/sale.types';
 
 interface SaleCardProps {
   data: Sale[];
@@ -30,7 +30,7 @@ export function SaleCard({ data }: SaleCardProps) {
   const router = useRouter();
 
   const handleViewDetail = (saleId: string) => {
-    router.push(`/dashboard/ventas/${saleId}`);
+    router.push(`/dashboard/cli-unilevel/ventas/${saleId}`);
   };
 
   if (!data || data.length === 0) {
@@ -121,7 +121,7 @@ export function SaleCard({ data }: SaleCardProps) {
                     Cuotas
                   </span>
                   <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                    {sale.numberCoutes || "--"}
+                    {sale.numberCoutes || '--'}
                   </p>
                 </div>
               </div>
