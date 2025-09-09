@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { ICON_MAPPING } from '@features/layout/constants/menu.constants';
 import { MenuItem } from '@features/layout/types/menu.types';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Home } from 'lucide-react';
+import { ChevronDown, Circle, Home } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -35,66 +35,69 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
   );
 
   const getActiveStyles = () => {
-    if (isActive || isChildActive) {
+    if (isActive) {
       return {
-        position: 'relative' as const,
         backgroundColor: 'var(--nav-item-selected)',
         color: 'var(--nav-item-selected-foreground)',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          height: '100%',
-          width: '4px',
-          backgroundColor: 'var(--nav-item-active)',
-          borderRadius: '0 4px 4px 0',
-        },
+        borderLeft: '3px solid var(--nav-item-active)',
+      };
+    }
+    if (isChildActive && !isNested) {
+      return {
+        backgroundColor: 'var(--nav-item-hover)',
+        color: 'var(--nav-item-active)',
       };
     }
     return {};
   };
 
   const LinkContent = () => (
-    <motion.div
+    <div
       className={cn(
         'flex items-center gap-3',
         isCollapsed && 'justify-center w-full',
       )}
-      initial={false}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.2 }}
     >
-      <Icon
-        size={20}
-        className="transition-colors duration-200"
-        style={{
-          color:
-            isActive || isChildActive
+      {isNested ? (
+        <Circle
+          size={6}
+          className="transition-colors duration-200 fill-current"
+          style={{
+            color: isActive
               ? 'var(--nav-item-selected-foreground)'
               : 'var(--nav-item-foreground)',
-        }}
-      />
-      <AnimatePresence>
-        {!isCollapsed && (
-          <motion.span
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: 'auto' }}
-            exit={{ opacity: 0, width: 0 }}
-            transition={{ duration: 0.2 }}
-            className="font-medium whitespace-nowrap overflow-hidden transition-colors duration-200"
-            style={{
-              color:
-                isActive || isChildActive
-                  ? 'var(--nav-item-selected-foreground)'
-                  : 'var(--nav-item-foreground)',
-            }}
-          >
-            {item.name}
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </motion.div>
+          }}
+        />
+      ) : (
+        <Icon
+          size={20}
+          className="transition-colors duration-200"
+          style={{
+            color:
+              isActive || isChildActive
+                ? 'var(--nav-item-selected-foreground)'
+                : 'var(--nav-item-foreground)',
+          }}
+        />
+      )}
+      {!isCollapsed && (
+        <span
+          className={cn(
+            'font-medium whitespace-nowrap transition-colors duration-200',
+            isNested ? 'text-sm' : 'text-base',
+          )}
+          style={{
+            color: isActive
+              ? 'var(--nav-item-selected-foreground)'
+              : isChildActive && !isNested
+              ? 'var(--nav-item-active)'
+              : 'var(--nav-item-foreground)',
+          }}
+        >
+          {item.name}
+        </span>
+      )}
+    </div>
   );
 
   if (item.children?.length > 0) {
@@ -109,12 +112,13 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
         <LinkContent />
         {!isCollapsed && (
           <motion.div
-            animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
+            animate={{ rotate: isOpen || isChildActive ? 180 : 0 }}
+            transition={{ duration: 0.3, type: 'spring', damping: 20 }}
+            className="flex-shrink-0 ml-2"
             style={{
               color:
                 isActive || isChildActive || isOpen
-                  ? 'var(--nav-item-selected-foreground)'
+                  ? 'var(--nav-item-active)'
                   : 'var(--nav-item-foreground)',
             }}
           >
@@ -136,13 +140,14 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
               <div className="w-full">
                 <CollapsibleTrigger asChild>
                   <motion.div
-                    className="w-full p-2 rounded-r-md relative transition-all"
+                    className="w-full p-3 relative transition-all cursor-pointer"
                     style={{
                       ...getActiveStyles(),
                     }}
                     whileHover={{
                       backgroundColor: 'var(--nav-item-hover)',
                     }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     <TooltipTrigger asChild>
                       <div className="w-full">
@@ -153,17 +158,20 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
                 </CollapsibleTrigger>
                 <TooltipContent
                   side="right"
-                  className="bg-layout-sidebar border-sidebar-border"
+                  className="bg-layout-sidebar border-sidebar-border shadow-lg"
                 >
-                  <p className="font-medium text-layout-sidebar-foreground">
-                    {item.name}
-                  </p>
-                  <div
-                    className="h-px w-full my-1"
-                    style={{ backgroundColor: 'var(--sidebar-border)' }}
-                  />
-                  <div className="text-xs text-layout-sidebar-foreground opacity-70">
-                    Submenú disponible
+                  <div className="space-y-2">
+                    <p className="font-medium text-layout-sidebar-foreground">
+                      {item.name}
+                    </p>
+                    <div
+                      className="h-px w-full"
+                      style={{ backgroundColor: 'var(--sidebar-border)' }}
+                    />
+                    <div className="text-xs text-layout-sidebar-foreground opacity-70">
+                      {item.children?.length} elemento
+                      {item.children?.length !== 1 ? 's' : ''}
+                    </div>
                   </div>
                 </TooltipContent>
               </div>
@@ -172,11 +180,12 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
         ) : (
           <CollapsibleTrigger asChild>
             <motion.button
-              className="flex w-full p-2 rounded-r-md relative transition-all"
+              className="flex w-full p-3 relative transition-all group"
               style={getActiveStyles()}
               whileHover={{
                 backgroundColor: 'var(--nav-item-hover)',
               }}
+              whileTap={{ scale: 0.98 }}
             >
               <TriggerContent />
             </motion.button>
@@ -186,13 +195,19 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
           <AnimatePresence>
             {(isOpen || isChildActive) && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, height: 0, y: -10 }}
+                animate={{ opacity: 1, height: 'auto', y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -10 }}
+                transition={{
+                  duration: 0.4,
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                  opacity: { duration: 0.3 },
+                  height: { duration: 0.4 },
+                  y: { duration: 0.3 },
+                }}
                 className={cn(
-                  'w-full',
-                  !isCollapsed && 'pl-2',
+                  'overflow-hidden relative',
+                  !isCollapsed && 'ml-6',
                   isCollapsed && 'border-l',
                 )}
                 style={
@@ -201,14 +216,76 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
                     : {}
                 }
               >
-                {item.children.map((child) => (
-                  <SidebarLink
-                    key={child.id}
-                    item={child}
-                    isCollapsed={isCollapsed}
-                    isNested={true}
-                  />
-                ))}
+                <div className="space-y-1 py-2">
+                  {item.children.map((child, index) => {
+                    const isLastChild = index === item.children.length - 1;
+                    return (
+                      <motion.div
+                        key={child.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -10 }}
+                        transition={{
+                          delay: index * 0.05,
+                          duration: 0.25,
+                          ease: 'easeOut',
+                        }}
+                        className="relative"
+                      >
+                        {/* Conexión horizontal desde la línea vertical */}
+                        {!isCollapsed && (
+                          <>
+                            {/* Línea vertical por hijo (no último) para evitar línea extra bajo el último */}
+                            {!isLastChild && (
+                              <div
+                                className="absolute left-0 top-0 bottom-0 w-0.5 bg-current"
+                                style={{
+                                  color: isChildActive
+                                    ? 'var(--nav-item-active)'
+                                    : 'var(--sidebar-border)',
+                                }}
+                              />
+                            )}
+                            {/* Línea horizontal normal o esquina para el último */}
+                            <div
+                              className="absolute left-0 top-1/2 h-0.5 bg-current -translate-y-1/2"
+                              style={{
+                                width: isLastChild ? '20px' : '12px',
+                                color:
+                                  child.url && pathname === child.url
+                                    ? 'var(--nav-item-active)'
+                                    : 'var(--sidebar-border)',
+                              }}
+                            />
+
+                            {/* Esquina para el último hijo */}
+                            {isLastChild && (
+                              <div
+                                className="absolute left-0 top-0 w-0.5 bg-current"
+                                style={{
+                                  height: '50%',
+                                  color: item.children.some(
+                                    (c) => c.url && pathname === c.url,
+                                  )
+                                    ? 'var(--nav-item-active)'
+                                    : 'var(--sidebar-border)',
+                                }}
+                              />
+                            )}
+                          </>
+                        )}
+
+                        <div className="ml-3">
+                          <SidebarLink
+                            item={child}
+                            isCollapsed={isCollapsed}
+                            isNested={true}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -218,22 +295,13 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
   }
 
   const linkClassName = cn(
-    'flex w-full p-2 rounded-r-md relative transition-all',
-    isCollapsed ? 'justify-center' : 'items-center gap-3',
-    isNested && {
-      'ml-2': !isCollapsed,
-      '': isCollapsed,
-    },
+    'flex w-full relative transition-all group',
+    isCollapsed ? 'justify-center p-3' : 'items-center gap-3 p-3',
+    isNested && isCollapsed && 'p-2',
   );
 
   const LinkWrapper = ({ children }: { children: React.ReactNode }) => (
-    <motion.div
-      whileHover={{ x: isCollapsed ? 0 : 2 }}
-      transition={{ duration: 0.2 }}
-      className="w-full overflow-hidden relative"
-    >
-      {children}
-    </motion.div>
+    <div className="w-full relative">{children}</div>
   );
 
   const MainContent = () => (
@@ -272,12 +340,14 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
         </TooltipTrigger>
         <TooltipContent
           side="right"
-          className="bg-layout-sidebar border-sidebar-border text-layout-sidebar-foreground"
+          className="bg-layout-sidebar border-sidebar-border text-layout-sidebar-foreground shadow-lg"
         >
-          <p>{item.name}</p>
-          {isNested && (
-            <p className="text-xs opacity-70">Elemento del submenú</p>
-          )}
+          <div className="space-y-1">
+            <p className="font-medium">{item.name}</p>
+            {isNested && (
+              <p className="text-xs opacity-70">• Elemento del submenú</p>
+            )}
+          </div>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

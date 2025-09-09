@@ -6,8 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { getUserMenuAction } from '@features/layout/actions/get-menu';
-import { MenuItem } from '@features/layout/types/menu.types';
+import { useMenuStore } from '@features/layout/stores/menu-store';
 import { AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
@@ -20,39 +19,19 @@ export interface SidebarRef {
 const Sidebar = forwardRef<SidebarRef>((props, ref) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const { menuItems, isLoading, error, fetchMenuItems } = useMenuStore();
 
   useImperativeHandle(ref, () => ({
     toggleMobile: () => setIsMobileOpen(!isMobileOpen),
   }));
 
   useEffect(() => {
-    const fetchMenuData = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+    fetchMenuItems();
+  }, [fetchMenuItems]);
 
-        const { data, success, error } = await getUserMenuAction();
-
-        if (success && data) {
-          setMenuItems(data.views);
-        } else {
-          setError(error || 'Error al cargar el menú');
-        }
-      } catch (err) {
-        console.error('Error fetching menu:', err);
-        setError('Error al cargar el menú');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMenuData();
-  }, []);
-
-  if (isLoading) {
+  // Mostrar loading solo en la primera carga (sin datos en caché)
+  if (isLoading && menuItems.length === 0) {
     return (
       <div className="hidden lg:block w-64 h-dvh bg-gray-900 border-r border-gray-800">
         <div className="p-4">
