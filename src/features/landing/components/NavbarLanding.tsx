@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { LoginModal } from '@/features/auth/components/LoginModal';
+import { LoginSheet } from '@/features/auth/components/LoginSheet';
 import ThemeSwitch from '@/features/shared/components/ThemeSwich';
 import { UserMenu } from '@/features/user/components/UserMenu';
 import { useSession } from 'next-auth/react';
@@ -53,9 +53,9 @@ export function NavbarLanding() {
                 <UserMenu />
               </div>
             ) : (
-              <LoginModal>
+              <LoginSheet>
                 <Button>Ingresar</Button>
-              </LoginModal>
+              </LoginSheet>
             )}
           </div>
         </div>

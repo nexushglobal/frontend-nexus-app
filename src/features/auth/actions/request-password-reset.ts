@@ -1,21 +1,21 @@
-"use server";
-import { api } from "@/features/shared/services/api";
-import { ApiError } from "@/features/shared/types/api.types";
-import { RequestPasswordResetResponse } from "../types/password-reset.type";
+'use server';
+import { api } from '@/features/shared/services/api';
+import { ApiError } from '@/features/shared/types/api.types';
+import { RequestPasswordResetResponse } from '../types/password-reset.type';
 
 export async function requestPasswordResetAction(email: string) {
   if (!email?.trim()) {
-    return { success: false, error: "Email es requerido" };
+    return { success: false, error: 'Email es requerido' };
   }
 
-  if (!email.includes("@")) {
-    return { success: false, error: "Email debe ser válido" };
+  if (!email.includes('@')) {
+    return { success: false, error: 'Email debe ser válido' };
   }
 
   try {
     const response = await api.post<RequestPasswordResetResponse>(
-      "/auth/password-reset/request",
-      { email }
+      '/api/auth/password-reset/request',
+      { email },
     );
 
     return {
@@ -23,7 +23,7 @@ export async function requestPasswordResetAction(email: string) {
       message: response.message,
     };
   } catch (error) {
-    console.error("Request password reset error:", error);
+    console.error('Request password reset error:', error);
 
     if (error instanceof ApiError) {
       return {
@@ -35,7 +35,7 @@ export async function requestPasswordResetAction(email: string) {
 
     return {
       success: false,
-      error: "Error interno. Intenta más tarde.",
+      error: 'Error interno. Intenta más tarde.',
       errors: null,
     };
   }

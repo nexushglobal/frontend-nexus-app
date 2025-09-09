@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useDashboardUserInfo } from '../../hooks/useDashboardUserInfo';
 import { BirthdayModal } from '../modals/BirthdayModal';
 import { ExpiredMembershipModal } from '../modals/ExpiredMembershipModal';
+import { NoMembershipModal } from '../modals/NoMembershipModal';
 import { DashboardUserInfoCards } from './DashboardUserInfoCards';
 import { DashboardUserInfoSkeleton } from './DashboardUserInfoSkeleton';
 
@@ -15,6 +16,7 @@ export function DashboardUserInfo() {
   const [showBirthdayModal, setShowBirthdayModal] = useState(false);
   const [showExpiredMembershipModal, setShowExpiredMembershipModal] =
     useState(false);
+  const [showNoMembershipModal, setShowNoMembershipModal] = useState(false);
 
   useEffect(() => {
     if (data?.userData) {
@@ -30,11 +32,23 @@ export function DashboardUserInfo() {
       }
     }
 
-    // Check if membership is expired
+    // Check membership status
     if (data?.membershipData) {
       const { hasMembership, membership } = data.membershipData;
 
-      if (hasMembership && membership) {
+      if (!hasMembership) {
+        // No membership - show no membership modal
+        if (showBirthdayModal) {
+          // Delay to show after birthday modal
+          const timer = setTimeout(() => {
+            setShowNoMembershipModal(true);
+          }, 1000);
+          return () => clearTimeout(timer);
+        } else {
+          setShowNoMembershipModal(true);
+        }
+      } else if (hasMembership && membership) {
+        // Has membership - check if expired
         const today = new Date();
         const endDate = new Date(membership.endDate);
         const isExpired = endDate < today;
@@ -96,6 +110,13 @@ export function DashboardUserInfo() {
         userName={data.userData.firstName}
         isOpen={showBirthdayModal}
         onClose={() => setShowBirthdayModal(false)}
+      />
+
+      {/* No Membership Modal */}
+      <NoMembershipModal
+        isOpen={showNoMembershipModal}
+        onClose={() => setShowNoMembershipModal(false)}
+        userName={data.userData.firstName}
       />
 
       {/* Expired Membership Modal */}

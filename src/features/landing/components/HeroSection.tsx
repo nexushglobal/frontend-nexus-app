@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { LoginModal } from '@/features/auth/components/LoginModal';
+import { LoginSheet } from '@/features/auth/components/LoginSheet';
 import { motion } from 'framer-motion';
 import { ArrowRight, LogIn } from 'lucide-react';
 import Image from 'next/image';
@@ -108,7 +108,7 @@ export default function HeroSection() {
                 <ArrowRight className="h-6 w-6 sm:h-7 sm:w-7 ml-2 sm:ml-3" />
               </Button>
             </motion.div>
-            <LoginModal>
+            <LoginSheet>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
@@ -123,7 +123,7 @@ export default function HeroSection() {
                   INGRESAR
                 </Button>
               </motion.div>
-            </LoginModal>
+            </LoginSheet>
           </motion.div>
           <motion.div
             initial={{ opacity: 0 }}

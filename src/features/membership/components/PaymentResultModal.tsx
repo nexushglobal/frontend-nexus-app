@@ -55,7 +55,7 @@ export function PaymentResultModal({
   };
 
   const handleViewMembership = () => {
-    router.push('/dashboard/membresias/mi-estado');
+    router.push('/dashboard/cli-membresias/mi-plan');
     onClose();
   };
 

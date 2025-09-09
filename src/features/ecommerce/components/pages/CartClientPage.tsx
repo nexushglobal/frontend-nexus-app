@@ -174,7 +174,7 @@ function CartItemCard({
   return (
     <div className="flex items-center gap-4 group">
       {/* Product Image - Clickable */}
-      <Link href={`/dashboard/cli-tienda/productos/${item.id}`}>
+      <Link href={`/dashboard/cli-tienda/productos/detalle/${item.id}`}>
         <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border bg-muted cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all">
           {item.image ? (
             <Image
@@ -198,7 +198,7 @@ function CartItemCard({
       {/* Product Info */}
       <div className="flex-1 space-y-1">
         <Link
-          href={`/dashboard/cli-tienda/productos/${item.id}`}
+          href={`/dashboard/cli-tienda/productos/detalle/${item.id}`}
           className="hover:text-primary transition-colors"
         >
           <h3 className="font-medium text-sm leading-tight cursor-pointer">
@@ -216,7 +216,7 @@ function CartItemCard({
       {/* Action Controls */}
       <div className="flex items-center gap-2">
         {/* View Product Button */}
-        <Link href={`/dashboard/cli-tienda/productos/${item.id}`}>
+        <Link href={`/dashboard/cli-tienda/productos/detalle/${item.id}`}>
           <Button
             variant="ghost"
             size="sm"

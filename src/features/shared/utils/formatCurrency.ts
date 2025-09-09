@@ -26,11 +26,18 @@ export function formatDate(
   } else if (typeof dateInput === 'string') {
     // Try native parse first
     let s = dateInput.trim();
-    date = new Date(s);
-
-    // Try with 'T' separator if needed
-    if (isNaN(date.getTime()) && s.includes(' ')) {
-      date = new Date(s.replace(' ', 'T'));
+    
+    // For date-only strings (YYYY-MM-DD), treat as local date to avoid timezone issues
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+      const [year, month, day] = s.split('-').map(Number);
+      date = new Date(year, month - 1, day); // month is 0-indexed
+    } else {
+      date = new Date(s);
+      
+      // Try with 'T' separator if needed
+      if (isNaN(date.getTime()) && s.includes(' ')) {
+        date = new Date(s.replace(' ', 'T'));
+      }
     }
 
     // Try common patterns if still invalid
