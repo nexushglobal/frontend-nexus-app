@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <div className="min-h-dvh bg-background flex items-center justify-center p-6">
       <div className="max-w-2xl w-full space-y-8">
         {/* Número 404 con efectos */}
         <div className="text-center">

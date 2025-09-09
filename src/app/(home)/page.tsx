@@ -144,7 +144,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <div className="min-h-screen">
+      <div className="min-h-dvh">
         <HeroSection />
         <FeaturesSection />
         <StatsSection />

@@ -13,9 +13,9 @@ export default function LayoutDashboard({
   const sidebarRef = useRef<SidebarRef>(null);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-dvh overflow-hidden">
       <Sidebar ref={sidebarRef} />
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-dvh">
         <div className="sticky top-0 z-50">
           <Navbar onMenuToggle={() => sidebarRef.current?.toggleMobile()} />
         </div>

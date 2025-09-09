@@ -1,53 +1,56 @@
-import { AuthProvider } from "@/components/providers/AuthProvider";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "@/styles/globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import { QueryProvider } from "@/components/providers/QueryProvider";
+import { AuthProvider } from '@/components/providers/AuthProvider';
+import { QueryProvider } from '@/components/providers/QueryProvider';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { Toaster } from '@/components/ui/sonner';
+import '@/styles/globals.css';
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://nexus-h-global.com'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || 'https://nexus-h-global.com',
+  ),
   title: {
-    default: "NEXUS H GLOBAL - Tu Camino hacia la Libertad Financiera",
-    template: "%s | NEXUS H GLOBAL"
+    default: 'NEXUS H GLOBAL - Tu Camino hacia la Libertad Financiera',
+    template: '%s | NEXUS H GLOBAL',
   },
-  description: "Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario con NEXUS H GLOBAL. Más de 10 años de experiencia, +4,000 lotes vendidos y S/ 300M+ en activos.",
+  description:
+    'Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario con NEXUS H GLOBAL. Más de 10 años de experiencia, +4,000 lotes vendidos y S/ 300M+ en activos.',
   keywords: [
-    "bienes raíces",
-    "inversión inmobiliaria", 
-    "libertad financiera",
-    "educación financiera",
-    "marketing multinivel",
-    "MLM",
-    "network marketing",
-    "negocio inmobiliario",
-    "lotes de inversión",
-    "Nexus Academy",
-    "emprendimiento",
-    "comisiones inmobiliarias",
-    "El Olivar",
-    "Apolo",
-    "Oasis",
-    "Flamant",
-    "Huertas Inmobiliaria",
-    "Inverti Fast",
-    "Perú",
-    "Lima"
+    'bienes raíces',
+    'inversión inmobiliaria',
+    'libertad financiera',
+    'educación financiera',
+    'marketing multinivel',
+    'MLM',
+    'network marketing',
+    'negocio inmobiliario',
+    'lotes de inversión',
+    'Nexus Academy',
+    'emprendimiento',
+    'comisiones inmobiliarias',
+    'El Olivar',
+    'Apolo',
+    'Oasis',
+    'Flamant',
+    'Huertas Inmobiliaria',
+    'Inverti Fast',
+    'Perú',
+    'Lima',
   ],
-  authors: [{ name: "NEXUS H GLOBAL", url: "https://nexus-h-global.com" }],
-  creator: "NEXUS H GLOBAL",
-  publisher: "NEXUS H GLOBAL",
+  authors: [{ name: 'NEXUS H GLOBAL', url: 'https://nexus-h-global.com' }],
+  creator: 'NEXUS H GLOBAL',
+  publisher: 'NEXUS H GLOBAL',
   robots: {
     index: true,
     follow: true,
@@ -65,7 +68,8 @@ export const metadata: Metadata = {
     url: 'https://nexus-h-global.com',
     siteName: 'NEXUS H GLOBAL',
     title: 'NEXUS H GLOBAL - Tu Camino hacia la Libertad Financiera',
-    description: 'Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario. Más de 10 años de experiencia respaldando tu camino hacia la libertad financiera.',
+    description:
+      'Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario. Más de 10 años de experiencia respaldando tu camino hacia la libertad financiera.',
     images: [
       {
         url: '/imgs/og-image.jpg',
@@ -78,7 +82,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'NEXUS H GLOBAL - Tu Camino hacia la Libertad Financiera',
-    description: 'Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario con más de 10 años de experiencia.',
+    description:
+      'Invierte en bienes raíces, desarrolla tu educación financiera y construye tu negocio inmobiliario con más de 10 años de experiencia.',
     images: ['/imgs/twitter-card.jpg'],
     creator: '@nexushglobal',
     site: '@nexushglobal',
@@ -87,7 +92,7 @@ export const metadata: Metadata = {
     canonical: 'https://nexus-h-global.com',
     languages: {
       'es-PE': 'https://nexus-h-global.com',
-      'es': 'https://nexus-h-global.com',
+      es: 'https://nexus-h-global.com',
     },
   },
   category: 'Real Estate Investment',
@@ -97,22 +102,22 @@ export const metadata: Metadata = {
   },
   icons: [
     {
-      rel: "icon",
-      url: "/imgs/isotipo_negro.ico",
-      media: "(prefers-color-scheme: light)",
+      rel: 'icon',
+      url: '/imgs/isotipo_negro.ico',
+      media: '(prefers-color-scheme: light)',
     },
     {
-      rel: "icon", 
-      url: "/imgs/isotipo_blanco.ico",
-      media: "(prefers-color-scheme: dark)",
+      rel: 'icon',
+      url: '/imgs/isotipo_blanco.ico',
+      media: '(prefers-color-scheme: dark)',
     },
     {
-      rel: "apple-touch-icon",
-      sizes: "180x180",
-      url: "/imgs/apple-touch-icon.png",
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      url: '/imgs/apple-touch-icon.png',
     },
   ],
-  manifest: "/manifest.json",
+  manifest: '/manifest.json',
   other: {
     'msapplication-TileColor': '#1f2937',
     'msapplication-config': '/browserconfig.xml',
@@ -142,14 +147,13 @@ export default function RootLayout({
                 duration={5000}
                 closeButton
                 toastOptions={{
-                  className: "bg-popover text-popover-foreground",
+                  className: 'bg-popover text-popover-foreground',
                   style: {
-                    "--normal-bg": "var(--popover)",
-                    "--normal-text": "var(--popover-foreground)",
-                    "--normal-border": "var(--border)",
+                    '--normal-bg': 'var(--popover)',
+                    '--normal-text': 'var(--popover-foreground)',
+                    '--normal-border': 'var(--border)',
                   } as React.CSSProperties,
                 }}
-
               />
             </ThemeProvider>
           </QueryProvider>

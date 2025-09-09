@@ -2,26 +2,21 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from '@/components/ui/collapsible';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { ICON_MAPPING } from "@features/layout/constants/menu.constants";
-import { MenuItem } from "@features/layout/types/menu.types";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  ChevronDown,
-  Home
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-
-
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { ICON_MAPPING } from '@features/layout/constants/menu.constants';
+import { MenuItem } from '@features/layout/types/menu.types';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, Home } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 type Props = {
   item: MenuItem;
@@ -36,7 +31,7 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
 
   const isActive = item.url && pathname === item.url;
   const isChildActive = item.children?.some(
-    (child) => child.url && pathname === child.url
+    (child) => child.url && pathname === child.url,
   );
 
   const getActiveStyles = () => {
@@ -54,7 +49,7 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
           width: '4px',
           backgroundColor: 'var(--nav-item-active)',
           borderRadius: '0 4px 4px 0',
-        }
+        },
       };
     }
     return {};
@@ -63,8 +58,8 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
   const LinkContent = () => (
     <motion.div
       className={cn(
-        "flex items-center gap-3",
-        isCollapsed && "justify-center w-full"
+        'flex items-center gap-3',
+        isCollapsed && 'justify-center w-full',
       )}
       initial={false}
       animate={{ x: 0 }}
@@ -74,23 +69,25 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
         size={20}
         className="transition-colors duration-200"
         style={{
-          color: isActive || isChildActive
-            ? 'var(--nav-item-selected-foreground)'
-            : 'var(--nav-item-foreground)'
+          color:
+            isActive || isChildActive
+              ? 'var(--nav-item-selected-foreground)'
+              : 'var(--nav-item-foreground)',
         }}
       />
       <AnimatePresence>
         {!isCollapsed && (
           <motion.span
             initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "auto" }}
+            animate={{ opacity: 1, width: 'auto' }}
             exit={{ opacity: 0, width: 0 }}
             transition={{ duration: 0.2 }}
             className="font-medium whitespace-nowrap overflow-hidden transition-colors duration-200"
             style={{
-              color: isActive || isChildActive
-                ? 'var(--nav-item-selected-foreground)'
-                : 'var(--nav-item-foreground)'
+              color:
+                isActive || isChildActive
+                  ? 'var(--nav-item-selected-foreground)'
+                  : 'var(--nav-item-foreground)',
             }}
           >
             {item.name}
@@ -104,9 +101,9 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
     const TriggerContent = () => (
       <div
         className={cn(
-          "flex items-center w-full",
-          !isCollapsed && "justify-between",
-          isCollapsed && "justify-center"
+          'flex items-center w-full',
+          !isCollapsed && 'justify-between',
+          isCollapsed && 'justify-center',
         )}
       >
         <LinkContent />
@@ -115,9 +112,10 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.2 }}
             style={{
-              color: (isActive || isChildActive || isOpen)
-                ? 'var(--nav-item-selected-foreground)'
-                : 'var(--nav-item-foreground)'
+              color:
+                isActive || isChildActive || isOpen
+                  ? 'var(--nav-item-selected-foreground)'
+                  : 'var(--nav-item-foreground)',
             }}
           >
             <ChevronDown size={16} />
@@ -157,7 +155,9 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
                   side="right"
                   className="bg-layout-sidebar border-sidebar-border"
                 >
-                  <p className="font-medium text-layout-sidebar-foreground">{item.name}</p>
+                  <p className="font-medium text-layout-sidebar-foreground">
+                    {item.name}
+                  </p>
                   <div
                     className="h-px w-full my-1"
                     style={{ backgroundColor: 'var(--sidebar-border)' }}
@@ -191,11 +191,15 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
                 className={cn(
-                  "w-full",
-                  !isCollapsed && "pl-2",
-                  isCollapsed && "border-l"
+                  'w-full',
+                  !isCollapsed && 'pl-2',
+                  isCollapsed && 'border-l',
                 )}
-                style={isCollapsed ? { borderLeftColor: 'var(--sidebar-separator)' } : {}}
+                style={
+                  isCollapsed
+                    ? { borderLeftColor: 'var(--sidebar-separator)' }
+                    : {}
+                }
               >
                 {item.children.map((child) => (
                   <SidebarLink
@@ -214,12 +218,12 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
   }
 
   const linkClassName = cn(
-    "flex w-full p-2 rounded-r-md relative transition-all",
-    isCollapsed ? "justify-center" : "items-center gap-3",
+    'flex w-full p-2 rounded-r-md relative transition-all',
+    isCollapsed ? 'justify-center' : 'items-center gap-3',
     isNested && {
-      "ml-2": !isCollapsed,
-      "": isCollapsed,
-    }
+      'ml-2': !isCollapsed,
+      '': isCollapsed,
+    },
   );
 
   const LinkWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -237,10 +241,7 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
       {item.url ? (
         <Link
           href={item.url}
-          className={cn(
-            linkClassName,
-            "hover:bg-[var(--nav-item-hover)]"
-          )}
+          className={cn(linkClassName, 'hover:bg-[var(--nav-item-hover)]')}
           style={{
             ...getActiveStyles(),
           }}
