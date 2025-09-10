@@ -1,5 +1,5 @@
 export enum ProductStatus {
-  AVAILABLE = 'available',
-  OUT_OF_STOCK = 'out_of_stock',
-  LOW_STOCK = 'low_stock',
+  AVAILABLE = 'AVAILABLE',
+  OUT_OF_STOCK = 'OUT_OF_STOCK',
+  LOW_STOCK = 'LOW_STOCK',
 }

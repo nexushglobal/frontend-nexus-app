@@ -14,7 +14,11 @@ import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-export function UserMenu() {
+interface Props {
+  profile: boolean;
+}
+
+export function UserMenu({ profile }: Props) {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -82,13 +86,16 @@ export function UserMenu() {
           <LayoutDashboard className="mr-2 h-4 w-4" />
           Dashboard
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleNavigation('/dashboard/cli-perfil')}
-          className="cursor-pointer"
-        >
-          <User className="mr-2 h-4 w-4" />
-          Perfil
-        </DropdownMenuItem>
+        {profile && (
+          <DropdownMenuItem
+            onClick={() => handleNavigation('/dashboard/cli-perfil')}
+            className="cursor-pointer"
+          >
+            <User className="mr-2 h-4 w-4" />
+            Perfil
+          </DropdownMenuItem>
+        )}
+
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleSignOut}

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { MenuItem } from '../types/menu.types';
 import { getUserMenuAction } from '../actions/get-menu';
+import { MenuItem } from '../types/menu.types';
 
 interface MenuState {
   menuItems: MenuItem[];
@@ -28,7 +28,11 @@ export const useMenuStore = create<MenuState>()(
         const now = Date.now();
 
         // Si tenemos datos en caché y no han expirado, no hacer fetch
-        if (lastFetch && menuItems.length > 0 && (now - lastFetch) < CACHE_DURATION) {
+        if (
+          lastFetch &&
+          menuItems.length > 0 &&
+          now - lastFetch < CACHE_DURATION
+        ) {
           return;
         }
 
@@ -69,6 +73,6 @@ export const useMenuStore = create<MenuState>()(
         menuItems: state.menuItems,
         lastFetch: state.lastFetch,
       }),
-    }
-  )
+    },
+  ),
 );

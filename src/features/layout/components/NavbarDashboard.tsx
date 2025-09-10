@@ -7,20 +7,16 @@ import ThemeSwitch from '@/features/shared/components/ThemeSwich';
 import { UserMenu } from '@/features/user/components/UserMenu';
 import { motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 interface NavbarProps {
   onMenuToggle?: () => void;
 }
 
 const Navbar = ({ onMenuToggle }: NavbarProps) => {
-  const formatDate = () => {
-    return new Intl.DateTimeFormat('es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(new Date());
-  };
+  const { data: session, status } = useSession();
+
+  const roleCode = session?.user.role?.code;
 
   return (
     <motion.nav
@@ -42,10 +38,26 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
         </div>
 
         <div className="flex items-center gap-4">
+          {status === 'loading' ? (
+            <div className="flex space-x-2 animate-pulse">
+              <div className="h-7 w-7 rounded bg-muted" />
+              <div className="h-7 w-7 rounded bg-muted" />
+            </div>
+          ) : (
+            <>
+              {' '}
+              {roleCode === 'CLI' && (
+                <>
+                  <NavbarCartIcon />
+                  <PointsMenu />
+                </>
+              )}
+              <UserMenu profile={roleCode === 'CLI'} />
+            </>
+          )}
+
           <ThemeSwitch />
-          <NavbarCartIcon />
-          <PointsMenu />
-          <UserMenu />
+
           <Separator orientation="vertical" className="h-6 bg-border" />
         </div>
       </div>

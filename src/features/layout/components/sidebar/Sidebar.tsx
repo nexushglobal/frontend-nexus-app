@@ -31,7 +31,7 @@ const Sidebar = forwardRef<SidebarRef>((props, ref) => {
   }, [fetchMenuItems]);
 
   // Mostrar loading solo en la primera carga (sin datos en caché)
-  if (isLoading && menuItems.length === 0) {
+  if (isLoading) {
     return (
       <div className="hidden lg:block w-64 h-dvh bg-gray-900 border-r border-gray-800">
         <div className="p-4">

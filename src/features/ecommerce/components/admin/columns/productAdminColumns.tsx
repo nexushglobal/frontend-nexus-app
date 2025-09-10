@@ -2,12 +2,12 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { getStatusConfig } from '@/features/shared/utils/status.utils';
+import { ProductStatus } from '@/features/ecommerce/types/enums-products';
 import {
   formatCurrency,
   formatDate,
 } from '@/features/shared/utils/formatCurrency';
-import { ProductStatus } from '../../types/enums-products';
+import { getStatusConfig } from '@/features/shared/utils/status.utils';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   Calendar,
@@ -125,7 +125,7 @@ export function createProductAdminColumns({
       accessorKey: 'status',
       header: 'Estado Producto',
       cell: ({ row }) => {
-        const status = row.getValue('status') as ProductStatus;
+        const status: ProductStatus = row.getValue('status');
         const config = getStatusConfig(status);
 
         return (
