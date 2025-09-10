@@ -1,12 +1,12 @@
-import { useMemo } from "react";
-import { z } from "zod";
+import { useMemo } from 'react';
+import { z } from 'zod';
 
 export interface UseValidatedSearchParamsOptions {
   logValidationErrors?: boolean;
 
   onValidationError?: (
     error: z.ZodError,
-    rawParams: Record<string, any>
+    rawParams: Record<string, any>,
   ) => void;
 
   fallbackDefaults?: Partial<any>;
@@ -15,10 +15,10 @@ export interface UseValidatedSearchParamsOptions {
 export function useValidatedSearchParams<T>(
   schema: z.ZodSchema<T>,
   searchParams?: Record<string, string | string[] | undefined> | null,
-  options: UseValidatedSearchParamsOptions = {}
+  options: UseValidatedSearchParamsOptions = {},
 ): T {
   const {
-    logValidationErrors = process.env.NODE_ENV === "development",
+    logValidationErrors = process.env.APP_ENV === 'development',
     onValidationError,
     fallbackDefaults,
   } = options;
@@ -34,7 +34,7 @@ export function useValidatedSearchParams<T>(
           }
           return acc;
         },
-        {} as Record<string, string | undefined>
+        {} as Record<string, string | undefined>,
       );
 
       const paramsWithDefaults = fallbackDefaults
@@ -45,7 +45,7 @@ export function useValidatedSearchParams<T>(
     } catch (error) {
       if (error instanceof z.ZodError) {
         if (logValidationErrors) {
-          console.warn("🔍 Search params validation failed:", {
+          console.warn('🔍 Search params validation failed:', {
             errors: error.errors,
             received: searchParams,
             schema: schema._def,
@@ -65,8 +65,8 @@ export function useValidatedSearchParams<T>(
 
       if (logValidationErrors) {
         console.error(
-          "❌ Unexpected error in useValidatedSearchParams:",
-          error
+          '❌ Unexpected error in useValidatedSearchParams:',
+          error,
         );
       }
 
@@ -83,11 +83,11 @@ export function useValidatedSearchParams<T>(
 
 export function createValidatedSearchParamsHook<T>(
   schema: z.ZodSchema<T>,
-  defaultOptions?: UseValidatedSearchParamsOptions
+  defaultOptions?: UseValidatedSearchParamsOptions,
 ) {
   return function useFeatureSearchParams(
     searchParams?: Record<string, string | string[] | undefined> | null,
-    options?: UseValidatedSearchParamsOptions
+    options?: UseValidatedSearchParamsOptions,
   ): T {
     return useValidatedSearchParams(schema, searchParams, {
       ...defaultOptions,

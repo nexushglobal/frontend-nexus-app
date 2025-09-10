@@ -76,12 +76,12 @@ export function BasePaymentSheet<T = any>({
   useEffect(() => {
     if (
       selectedMethod === PaymentMethod.PAYMENT_GATEWAY &&
-      process.env.NODE_ENV === 'production'
+      process.env.APP_ENV === 'production'
     ) {
       setSelectedMethod(PaymentMethod.VOUCHER);
     }
     console.log('Selected Method: ', selectedMethod);
-    console.log('NODE_ENV: ', process.env.NODE_ENV);
+    console.log('APP_ENV: ', process.env.APP_ENV);
   }, [selectedMethod]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [files, setFiles] = useState<File[]>([]);
@@ -436,7 +436,7 @@ export function BasePaymentSheet<T = any>({
                     {/* Gateway Option - Disabled in production */}
                     <div
                       className={`border rounded-lg p-4 ${
-                        process.env.NODE_ENV === 'production'
+                        process.env.APP_ENV === 'production'
                           ? 'opacity-50 bg-muted/30'
                           : ''
                       }`}
@@ -445,12 +445,12 @@ export function BasePaymentSheet<T = any>({
                         <RadioGroupItem
                           value={PaymentMethod.PAYMENT_GATEWAY}
                           id="gateway"
-                          disabled={process.env.NODE_ENV === 'production'}
+                          disabled={process.env.APP_ENV === 'production'}
                         />
                         <Label
                           htmlFor="gateway"
                           className={`flex items-center gap-2 flex-1 ${
-                            process.env.NODE_ENV === 'production'
+                            process.env.APP_ENV === 'production'
                               ? 'cursor-not-allowed text-muted-foreground'
                               : 'cursor-pointer'
                           }`}
@@ -459,7 +459,7 @@ export function BasePaymentSheet<T = any>({
                           <div>
                             <div className="font-medium">Pasarela</div>
                             <div className="text-xs text-muted-foreground">
-                              {process.env.NODE_ENV === 'production'
+                              {process.env.APP_ENV === 'production'
                                 ? 'No disponible '
                                 : 'Pago con tarjeta de crédito/débito'}
                             </div>
