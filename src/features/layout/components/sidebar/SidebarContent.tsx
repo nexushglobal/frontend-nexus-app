@@ -10,6 +10,8 @@ import { ChevronLeft, ChevronRight, LogOut, User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import SidebarLink from './SidebarLink';
+import { useQueryClient } from '@tanstack/react-query';
+import { performLogoutCleanup } from '@/lib/logout-utils';
 
 type Props = {
   isCollapsed: boolean;
@@ -25,7 +27,14 @@ export const SidebarContent = ({
   menuItems = [],
 }: Props) => {
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
   const user = session?.user;
+
+  const handleSignOut = async () => {
+    // Limpiar todos los datos antes de cerrar sesión
+    performLogoutCleanup(queryClient);
+    await signOut();
+  };
 
   if (!user) return null;
 
@@ -239,7 +248,7 @@ export const SidebarContent = ({
                     rotate: 5,
                   }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => signOut()}
+                  onClick={handleSignOut}
                   className="flex items-center justify-center gap-3 p-3 mx-2 rounded-xl transition-colors w-full border border-transparent hover:border-destructive/20"
                   style={{
                     color: 'var(--destructive)',
@@ -269,7 +278,7 @@ export const SidebarContent = ({
               x: 2,
             }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => signOut()}
+            onClick={handleSignOut}
             className="flex items-center gap-3 p-3 mx-2 rounded-xl transition-colors w-full group border border-transparent hover:border-destructive/20"
             style={{
               color: 'var(--destructive)',

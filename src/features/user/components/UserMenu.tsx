@@ -13,6 +13,8 @@ import { LayoutDashboard, LogOut, User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+import { performLogoutCleanup } from '@/lib/logout-utils';
 
 interface Props {
   profile: boolean;
@@ -21,9 +23,13 @@ interface Props {
 export function UserMenu({ profile }: Props) {
   const { data: session } = useSession();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleSignOut = async () => {
     try {
+      // Limpiar todos los datos antes de cerrar sesión
+      performLogoutCleanup(queryClient);
+      
       await signOut({ redirect: false });
       toast.success('Sesión cerrada', {
         description: 'Has cerrado sesión correctamente',
