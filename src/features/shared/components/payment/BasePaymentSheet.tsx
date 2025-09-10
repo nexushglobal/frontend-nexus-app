@@ -80,6 +80,8 @@ export function BasePaymentSheet<T = any>({
     ) {
       setSelectedMethod(PaymentMethod.VOUCHER);
     }
+    console.log('Selected Method: ', selectedMethod);
+    console.log('NODE_ENV: ', process.env.NODE_ENV);
   }, [selectedMethod]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [files, setFiles] = useState<File[]>([]);
