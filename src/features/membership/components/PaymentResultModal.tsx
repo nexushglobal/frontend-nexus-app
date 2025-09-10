@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { formatDate } from '@/features/payment/utils/payement.utils';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import {
   AlertCircle,
@@ -21,6 +22,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SubscribeResult } from '../types/membership-detail.type';
+import { translateMembershipStatus } from '../utils/membershipTranslations';
 
 interface PaymentResponse {
   success: boolean;
@@ -46,13 +48,6 @@ export function PaymentResultModal({
   const router = useRouter();
 
   if (!result) return null;
-
-  const handleViewPayment = () => {
-    if (result.data?.payment.id) {
-      router.push(`/dashboard/cli-mis-pagos/detalle/${result.data.payment.id}`);
-      onClose();
-    }
-  };
 
   const handleViewMembership = () => {
     router.push('/dashboard/cli-membresias/mi-plan');
@@ -100,13 +95,6 @@ export function PaymentResultModal({
                 {formatCurrency(data.totalAmount)}
               </span>
             </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">ID de Pago:</span>
-              <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                {data.payment.id}
-              </span>
-            </div>
           </CardContent>
         </Card>
 
@@ -127,7 +115,7 @@ export function PaymentResultModal({
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Estado:</span>
                 <Badge variant="secondary" className="badge-success">
-                  {data.membership.status}
+                  {translateMembershipStatus(data.membership.status)}
                 </Badge>
               </div>
 
@@ -135,7 +123,9 @@ export function PaymentResultModal({
                 <span className="text-sm text-muted-foreground">
                   Válida hasta:
                 </span>
-                <span className="text-sm">{data.membership.endDate}</span>
+                <span className="text-sm">
+                  {formatDate(data.membership.endDate)}
+                </span>
               </div>
             </div>
           </CardContent>
@@ -145,7 +135,7 @@ export function PaymentResultModal({
         <div className="grid grid-cols-2 gap-3">
           <Link
             className="flex items-center gap-2"
-            href={`/dashboard/cli-mis-pagos/detalle/${data.payment.id}`}
+            href={`/dashboard/cli-transacciones/mis-pagos/detalle/${data.payment.id}`}
           >
             <Eye className="h-4 w-4" />
             Ver Pago

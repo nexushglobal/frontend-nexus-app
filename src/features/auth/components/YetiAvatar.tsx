@@ -527,7 +527,7 @@ const YetiAvatar = forwardRef<YetiAvatarHandle, Props>(function YetiAvatar(
         <clipPath id="armMask">
           <use xlinkHref="#armMaskPath" overflow="visible" />
         </clipPath>
-        <circle cx="100" cy="100" r="100" fill="#a9ddf3" />
+        <circle cx="100" cy="100" r="100" fill="#c3f63c" />
         <g className="body">
           <path
             className="bodyBGchanged"
@@ -761,7 +761,7 @@ const YetiAvatar = forwardRef<YetiAvatarHandle, Props>(function YetiAvatar(
                 d="M158.3,67.8l23.1-6.2c2.7-0.7,5.4,0.9,6.1,3.5v0c0.7,2.7-0.9,5.4-3.5,6.1l-23.1,6.2"
               />
               <path
-                fill="#A9DDF3"
+                fill="#c3f63c"
                 d="M180.1,65l2.2-0.6c1.1-0.3,2.2,0.3,2.4,1.4v0c0.3,1.1-0.3,2.2-1.4,2.4l-2.2,0.6L180.1,65z"
               />
               <path
@@ -774,16 +774,16 @@ const YetiAvatar = forwardRef<YetiAvatarHandle, Props>(function YetiAvatar(
                 d="M160.8,77.5l19.4-5.2c2.7-0.7,5.4,0.9,6.1,3.5v0c0.7,2.7-0.9,5.4-3.5,6.1l-18.3,4.9"
               />
               <path
-                fill="#A9DDF3"
+                fill="#c3f63c"
                 d="M178.8,75.7l2.2-0.6c1.1-0.3,2.2,0.3,2.4,1.4v0c0.3,1.1-0.3,2.2-1.4,2.4l-2.2,0.6L178.8,75.7z"
               />
             </g>
             <path
-              fill="#A9DDF3"
+              fill="#c3f63c"
               d="M175.5,55.9l2.2-0.6c1.1-0.3,2.2,0.3,2.4,1.4v0c0.3,1.1-0.3,2.2-1.4,2.4l-2.2,0.6L175.5,55.9z"
             />
             <path
-              fill="#A9DDF3"
+              fill="#c3f63c"
               d="M152.1,50.4l2.2-0.6c1.1-0.3,2.2,0.3,2.4,1.4v0c0.3,1.1-0.3,2.2-1.4,2.4l-2.2,0.6L152.1,50.4z"
             />
             <path
@@ -839,7 +839,7 @@ const YetiAvatar = forwardRef<YetiAvatarHandle, Props>(function YetiAvatar(
               d="M252.4 52.4L233 47.2c-2.7-.7-5.4.9-6.1 3.5-.7 2.7.9 5.4 3.5 6.1l10.3 2.8M226 76.4l-19.4-5.2c-2.7-.7-5.4.9-6.1 3.5-.7 2.7.9 5.4 3.5 6.1l18.3 4.9M228.4 66.7l-23.1-6.2c-2.7-.7-5.4.9-6.1 3.5-.7 2.7.9 5.4 3.5 6.1l23.1 6.2M235.8 58.3l-26-7c-2.7-.7-5.4.9-6.1 3.5-.7 2.7.9 5.4 3.5 6.1l21.3 5.7"
             />
             <path
-              fill="#a9ddf3"
+              fill="#c3f63c"
               d="M207.9 74.7l-2.2-.6c-1.1-.3-2.2.3-2.4 1.4-.3 1.1.3 2.2 1.4 2.4l2.2.6 1-3.8zM206.7 64l-2.2-.6c-1.1-.3-2.2.3-2.4 1.4-.3 1.1.3 2.2 1.4 2.4l2.2.6 1-3.8zM211.2 54.8l-2.2-.6c-1.1-.3-2.2.3-2.4 1.4-.3 1.1.3 2.2 1.4 2.4l2.2.6 1-3.8zM234.6 49.4l-2.2-.6c-1.1-.3-2.2.3-2.4 1.4-.3 1.1.3 2.2 1.4 2.4l2.2.6 1-3.8z"
             />
             <path

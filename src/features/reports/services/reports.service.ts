@@ -1,5 +1,8 @@
 import { api } from '@/features/shared/services/api';
-import { ListReportsResponse, ReportDownloadRequest } from '../types/reports.types';
+import {
+  ListReportsResponse,
+  ReportDownloadRequest,
+} from '../types/reports.types';
 
 export class ReportsService {
   static async getActiveReports(): Promise<ListReportsResponse> {

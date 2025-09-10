@@ -1,14 +1,13 @@
 'use client';
 
+import { subscribeToPlanAction } from '@/features/membership/actions/suscription-to-plan';
+import { PaymentResultModal } from '@/features/membership/components/PaymentResultModal';
 import {
   MembershipPlan,
   UserMembership,
-  SubscribeResult,
 } from '@/features/membership/types/membership-detail.type';
-import { subscribeToPlanAction } from '@/features/membership/actions/suscription-to-plan';
-import { BasePaymentSheet } from './BasePaymentSheet';
-import { PaymentResultModal } from '@/features/membership/components/PaymentResultModal';
 import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { BasePaymentSheet } from './BasePaymentSheet';
 
 interface SubscriptionPaymentSheetProps {
   isOpen: boolean;

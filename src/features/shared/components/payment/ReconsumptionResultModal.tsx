@@ -7,10 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { formatCurrency } from '@/features/shared/utils/formatCurrency';
-import { CheckCircle, XCircle, RefreshCw, Edit } from 'lucide-react';
-import { PaymentResponse } from './BasePaymentSheet';
 import { ReconsumtionResult } from '@/features/membership/types/reconsumption.type';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
+import { CheckCircle, Edit, RefreshCw, XCircle } from 'lucide-react';
+import { PaymentResponse } from './BasePaymentSheet';
 
 interface ReconsumptionResultModalProps {
   isOpen: boolean;
@@ -87,7 +87,9 @@ export function ReconsumptionResultModal({
                 <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                   <span className="text-sm font-medium">Período:</span>
                   <span className="text-sm">
-                    {new Date(data.reconsumption.periodDate).toLocaleDateString('es-ES')}
+                    {new Date(data.reconsumption.periodDate).toLocaleDateString(
+                      'es-ES',
+                    )}
                   </span>
                 </div>
               </div>

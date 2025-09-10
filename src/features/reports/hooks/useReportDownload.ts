@@ -15,41 +15,47 @@ interface DownloadedFile {
 export const useReportDownload = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [downloadedFile, setDownloadedFile] = useState<DownloadedFile | null>(null);
+  const [downloadedFile, setDownloadedFile] = useState<DownloadedFile | null>(
+    null,
+  );
 
-  const downloadReport = async (params: ReportDownloadRequest, reportName: string) => {
+  const downloadReport = async (
+    params: ReportDownloadRequest,
+    reportName: string,
+  ) => {
     setIsDownloading(true);
     setProgress(0);
 
     // Simulate progress loading over 4 seconds
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
-        const newProgress = prev + (100 / 40); // 40 increments over 4 seconds
+        const newProgress = prev + 100 / 40; // 40 increments over 4 seconds
         return newProgress >= 99 ? 99 : newProgress; // Stop at 99% until API responds
       });
     }, 100);
 
     try {
       const blob = await ReportsService.downloadReport(params);
-      
+
       // Complete the progress
       setProgress(100);
       clearInterval(progressInterval);
+      console.log(blob);
 
-      const fileName = `reporte_${params.reportCode}_${params.startDate}_${params.endDate}.csv`;
+      const fileName = `reporte_${params.reportCode}_${params.startDate}_${params.endDate}.xlsx`;
 
       // Create download link
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.download = fileName;
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       URL.revokeObjectURL(url);
-      
+
       // Store downloaded file info
       setDownloadedFile({
         fileName,
@@ -59,7 +65,7 @@ export const useReportDownload = () => {
         endDate: params.endDate,
         reportName,
       });
-      
+
       toast.success('Reporte descargado exitosamente');
     } catch (error) {
       clearInterval(progressInterval);

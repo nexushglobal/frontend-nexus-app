@@ -13,7 +13,8 @@
       "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\steps\\step1/**)",
       "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\types/**)",
       "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\hooks/**)",
-      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\validations/**)"
+      "Read(/C:\\Users\\antho\\microservices\\frontend-nexus-app\\src\\features\\sale\\validations/**)",
+      "Bash(bun remove:*)"
     ],
     "defaultMode": "acceptEdits"
   },

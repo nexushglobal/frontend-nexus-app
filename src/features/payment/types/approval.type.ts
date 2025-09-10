@@ -36,6 +36,19 @@ export interface PaymentRejectionResponse {
   user: UserInfo;
 }
 
+export interface PaymentOperationResponse {
+  success: boolean;
+  message: string;
+  data: {
+    paymentId: string;
+    status: string;
+    reviewedBy?: string;
+    reviewedAt?: string;
+    reason?: string;
+    user?: UserInfo;
+  };
+}
+
 export interface PaymentCompleteResponse {
   paymentId: string;
   status: string;
