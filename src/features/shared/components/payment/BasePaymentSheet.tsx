@@ -16,8 +16,8 @@ import {
   Payment,
   PaymentMethod,
 } from '@/features/membership/types/membership-detail.type';
-import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import { getUserPointsAction } from '@/features/point/action/get-points.action';
+import { formatCurrency } from '@/features/shared/utils/formatCurrency';
 import {
   AlertCircle,
   CheckCircle,
@@ -30,7 +30,7 @@ import {
   Trash2,
   Zap,
 } from 'lucide-react';
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 export interface PaymentResponse<T = any> {
   success: boolean;
@@ -71,6 +71,16 @@ export function BasePaymentSheet<T = any>({
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(
     PaymentMethod.VOUCHER,
   );
+
+  // Reset to VOUCHER if PAYMENT_GATEWAY is selected in development
+  useEffect(() => {
+    if (
+      selectedMethod === PaymentMethod.PAYMENT_GATEWAY &&
+      process.env.NODE_ENV === 'production'
+    ) {
+      setSelectedMethod(PaymentMethod.VOUCHER);
+    }
+  }, [selectedMethod]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -95,7 +105,7 @@ export function BasePaymentSheet<T = any>({
     if (selectedMethod === PaymentMethod.POINTS && userPoints === null) {
       setIsLoadingPoints(true);
       setPointsError(null);
-      
+
       getUserPointsAction()
         .then((response) => {
           if (response.success && response.data) {
@@ -363,7 +373,7 @@ export function BasePaymentSheet<T = any>({
                           </div>
                         </Label>
                       </div>
-                      
+
                       {selectedMethod === PaymentMethod.POINTS && (
                         <div className="mt-3 pt-3 border-t">
                           {isLoadingPoints ? (
@@ -378,22 +388,33 @@ export function BasePaymentSheet<T = any>({
                           ) : (
                             <div className="space-y-2">
                               <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Puntos disponibles:</span>
-                                <span className={`font-medium ${
-                                  userPoints !== null && userPoints >= totalAmount
-                                    ? 'text-success'
-                                    : 'text-destructive'
-                                }`}>
-                                  {userPoints !== null ? userPoints.toLocaleString() : '0'} pts
+                                <span className="text-muted-foreground">
+                                  Puntos disponibles:
+                                </span>
+                                <span
+                                  className={`font-medium ${
+                                    userPoints !== null &&
+                                    userPoints >= totalAmount
+                                      ? 'text-success'
+                                      : 'text-destructive'
+                                  }`}
+                                >
+                                  {userPoints !== null
+                                    ? userPoints.toLocaleString()
+                                    : '0'}{' '}
+                                  pts
                                 </span>
                               </div>
                               <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Puntos requeridos:</span>
+                                <span className="text-muted-foreground">
+                                  Puntos requeridos:
+                                </span>
                                 <span className="font-medium">
                                   {totalAmount.toLocaleString()} pts
                                 </span>
                               </div>
-                              {userPoints !== null && userPoints >= totalAmount ? (
+                              {userPoints !== null &&
+                              userPoints >= totalAmount ? (
                                 <div className="flex items-center gap-2 text-xs text-success">
                                   <CheckCircle className="h-3 w-3" />
                                   Tienes suficientes puntos
@@ -410,22 +431,35 @@ export function BasePaymentSheet<T = any>({
                       )}
                     </div>
 
-                    {/* Gateway Option - Now enabled */}
-                    <div className="border rounded-lg p-4">
+                    {/* Gateway Option - Disabled in production */}
+                    <div
+                      className={`border rounded-lg p-4 ${
+                        process.env.NODE_ENV === 'production'
+                          ? 'opacity-50 bg-muted/30'
+                          : ''
+                      }`}
+                    >
                       <div className="flex items-center space-x-3">
                         <RadioGroupItem
                           value={PaymentMethod.PAYMENT_GATEWAY}
                           id="gateway"
+                          disabled={process.env.NODE_ENV === 'production'}
                         />
                         <Label
                           htmlFor="gateway"
-                          className="flex items-center gap-2 cursor-pointer flex-1"
+                          className={`flex items-center gap-2 flex-1 ${
+                            process.env.NODE_ENV === 'production'
+                              ? 'cursor-not-allowed text-muted-foreground'
+                              : 'cursor-pointer'
+                          }`}
                         >
                           <CreditCard className="h-4 w-4" />
                           <div>
                             <div className="font-medium">Pasarela</div>
                             <div className="text-xs text-muted-foreground">
-                              Pago con tarjeta de crédito/débito
+                              {process.env.NODE_ENV === 'production'
+                                ? 'No disponible '
+                                : 'Pago con tarjeta de crédito/débito'}
                             </div>
                           </div>
                         </Label>
@@ -567,10 +601,9 @@ export function BasePaymentSheet<T = any>({
                 <div className="flex items-center gap-2 p-3 bg-warning/10 border border-warning/20 rounded-lg">
                   <AlertCircle className="h-4 w-4 text-warning" />
                   <span className="text-sm text-warning">
-                    {userPoints === null 
+                    {userPoints === null
                       ? 'Cargando información de puntos...'
-                      : `Necesitas ${totalAmount.toLocaleString()} puntos, pero solo tienes ${userPoints.toLocaleString()} puntos disponibles`
-                    }
+                      : `Necesitas ${totalAmount.toLocaleString()} puntos, pero solo tienes ${userPoints.toLocaleString()} puntos disponibles`}
                   </span>
                 </div>
               )}

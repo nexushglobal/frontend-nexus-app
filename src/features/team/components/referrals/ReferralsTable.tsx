@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Crown, TrendingDown, TrendingUp } from 'lucide-react'
+import { Crown, Phone, Shield, TrendingDown, TrendingUp } from 'lucide-react'
 import { DirectTeam } from '../../types/team.types'
 
 interface ReferralsTableProps {
@@ -35,6 +35,9 @@ export function ReferralsTable({ data, isLoading }: ReferralsTableProps) {
                   Posición
                 </TableHead>
                 <TableHead className="text-center font-semibold text-primary">
+                  Membresía
+                </TableHead>
+                <TableHead className="text-center font-semibold text-primary">
                   Volumen Total
                 </TableHead>
                 <TableHead className="text-center font-semibold text-primary">
@@ -59,6 +62,12 @@ export function ReferralsTable({ data, isLoading }: ReferralsTableProps) {
                       <div className="text-sm text-muted-foreground">
                         {referral.email}
                       </div>
+                      {referral.phone && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Phone className="h-3 w-3" />
+                          {referral.phone}
+                        </div>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
@@ -72,6 +81,36 @@ export function ReferralsTable({ data, isLoading }: ReferralsTableProps) {
                     >
                       {referral.position === 'LEFT' ? 'Izquierda' : 'Derecha'}
                     </Badge>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {referral.membership ? (
+                      <div className="space-y-1">
+                        <Badge 
+                          variant="outline" 
+                          className={`gap-1 ${
+                            referral.membership.status === 'ACTIVE' 
+                              ? 'border-emerald-500 text-emerald-700' 
+                              : referral.membership.status === 'EXPIRED'
+                              ? 'border-red-500 text-red-700'
+                              : referral.membership.status === 'PENDING'
+                              ? 'border-yellow-500 text-yellow-700'
+                              : 'border-gray-500 text-gray-700'
+                          }`}
+                        >
+                          <Shield className="h-3 w-3" />
+                          {referral.membership.status === 'ACTIVE' ? 'Activa' : 
+                           referral.membership.status === 'EXPIRED' ? 'Expirada' : 
+                           referral.membership.status === 'PENDING' ? 'Pendiente' : 'Inactiva'}
+                        </Badge>
+                        {referral.membership.plan && (
+                          <div className="text-xs text-muted-foreground">
+                            {referral.membership.plan.name}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-sm text-muted-foreground border border-gray-300 px-2 py-1 rounded-md">Sin membresía</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-center">
                     {referral.monthlyVolume.totalVolume === 0 ? (
@@ -163,6 +202,7 @@ function ReferralsTableSkeleton() {
               <TableRow className="border-b bg-muted/30">
                 <TableHead className="w-[250px]">Usuario</TableHead>
                 <TableHead className="text-center">Posición</TableHead>
+                <TableHead className="text-center">Membresía</TableHead>
                 <TableHead className="text-center">Volumen Total</TableHead>
                 <TableHead className="text-center">Lotes</TableHead>
                 <TableHead className="text-center">Rango Actual</TableHead>
@@ -180,6 +220,9 @@ function ReferralsTableSkeleton() {
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="h-6 bg-muted rounded animate-pulse mx-auto w-16" />
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="h-6 bg-muted rounded animate-pulse mx-auto w-20" />
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="space-y-1">

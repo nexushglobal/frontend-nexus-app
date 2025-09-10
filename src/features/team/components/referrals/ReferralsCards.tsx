@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Crown, Mail, TrendingDown, TrendingUp, User } from 'lucide-react'
+import { Crown, Mail, Phone, Shield, TrendingDown, TrendingUp, User } from 'lucide-react'
 import { DirectTeam } from '../../types/team.types'
 
 interface ReferralsCardsProps {
@@ -44,6 +44,12 @@ function ReferralCard({ referral }: ReferralCardProps) {
                 <Mail className="h-3 w-3" />
                 {referral.email}
               </div>
+              {referral.phone && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Phone className="h-3 w-3" />
+                  {referral.phone}
+                </div>
+              )}
             </div>
           </div>
           <Badge
@@ -56,6 +62,47 @@ function ReferralCard({ referral }: ReferralCardProps) {
           >
             {referral.position === 'LEFT' ? 'Izquierda' : 'Derecha'}
           </Badge>
+        </div>
+
+        <Separator />
+
+        {/* Membership Info */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">
+              Membresía
+            </span>
+            <div>
+              {referral.membership ? (
+                <div className="space-y-1">
+                  <Badge 
+                    variant="outline" 
+                    className={`gap-1 ${
+                      referral.membership.status === 'ACTIVE' 
+                        ? 'border-emerald-500 text-emerald-700' 
+                        : referral.membership.status === 'EXPIRED'
+                        ? 'border-red-500 text-red-700'
+                        : referral.membership.status === 'PENDING'
+                        ? 'border-yellow-500 text-yellow-700'
+                        : 'border-gray-500 text-gray-700'
+                    }`}
+                  >
+                    <Shield className="h-3 w-3" />
+                    {referral.membership.status === 'ACTIVE' ? 'Activa' : 
+                     referral.membership.status === 'EXPIRED' ? 'Expirada' : 
+                     referral.membership.status === 'PENDING' ? 'Pendiente' : 'Inactiva'}
+                  </Badge>
+                  {referral.membership.plan && (
+                    <div className="text-xs text-muted-foreground text-right">
+                      {referral.membership.plan.name}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <span className="text-sm text-muted-foreground border border-gray-300 px-2 py-1 rounded-md">Sin membresía</span>
+              )}
+            </div>
+          </div>
         </div>
 
         <Separator />

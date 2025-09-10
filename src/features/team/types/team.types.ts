@@ -53,11 +53,21 @@ export interface TeamSearchParams {
   page?: number;
   limit?: number;
 }
-
+export interface UserMembershipPlanDto {
+  id: number;
+  name: string;
+}
 export interface DirectTeam {
   userId: string;
   fullName: string;
   email: string;
+  phone: string | null;
+  membership: {
+    status: 'ACTIVE' | 'INACTIVE' | 'EXPIRED' | 'PENDING';
+    plan?: UserMembershipPlanDto;
+    hasActiveMembership: boolean;
+    endDate: string | null;
+  } | null;
   monthlyVolume: {
     leftVolume: number;
     rightVolume: number;

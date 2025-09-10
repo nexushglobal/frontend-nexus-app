@@ -74,6 +74,37 @@ export function createPaymentAdminColumns({
       },
     },
     {
+      id: 'operation',
+      header: 'Operación',
+      cell: ({ row }) => {
+        const payment = row.original;
+        const { operationCode, ticketNumber } = payment;
+        
+        if (!operationCode && !ticketNumber) {
+          return (
+            <div className="text-sm text-muted-foreground">-</div>
+          );
+        }
+        
+        return (
+          <div className="space-y-1">
+            {operationCode && (
+              <div className="text-sm">
+                <span className="text-muted-foreground">Código:</span>
+                <span className="ml-1 font-mono">{operationCode}</span>
+              </div>
+            )}
+            {ticketNumber && (
+              <div className="text-sm">
+                <span className="text-muted-foreground">Ticket:</span>
+                <span className="ml-1 font-mono">{ticketNumber}</span>
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: 'status',
       header: 'Estado',
 
