@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Sheet,
   SheetContent,
@@ -10,14 +10,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
-import { Eye, EyeOff, Loader2, Lock, LogIn, Mail, Shield } from "lucide-react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-import { PasswordResetSheet } from "./PasswordResetSheet";
+} from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
+import { Eye, EyeOff, Loader2, Lock, LogIn, Mail, Shield } from 'lucide-react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { PasswordResetSheet } from './PasswordResetSheet';
+import YetiAvatar, { YetiAvatarHandle } from './YetiAvatar';
 
 interface LoginSheetProps {
   children: React.ReactNode;
@@ -26,26 +27,31 @@ interface LoginSheetProps {
 export function LoginSheet({ children }: LoginSheetProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const yetiRef = useRef<YetiAvatarHandle>(null);
   const router = useRouter();
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
 
     if (!email) {
-      newErrors.email = "El email es requerido";
+      newErrors.email = 'El email es requerido';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "El email no es válido";
+      newErrors.email = 'El email no es válido';
     }
 
     if (!password) {
-      newErrors.password = "La contraseña es requerida";
+      newErrors.password = 'La contraseña es requerida';
     } else if (password.length < 6) {
-      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
+      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
     }
 
     setErrors(newErrors);
@@ -60,47 +66,72 @@ export function LoginSheet({ children }: LoginSheetProps) {
     setIsLoading(true);
 
     try {
-      const result = await signIn("credentials", {
+      const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
       });
 
       if (result?.error) {
-        if (result.error === "CredentialsSignin") {
-          toast.error("Credenciales incorrectas", {
-            description: "Por favor verifica tu email y contraseña",
+        if (result.error === 'CredentialsSignin') {
+          toast.error('Credenciales incorrectas', {
+            description: 'Por favor verifica tu email y contraseña',
           });
         } else {
-          toast.error("Error de autenticación", {
-            description: "Ha ocurrido un error durante el inicio de sesión",
+          toast.error('Error de autenticación', {
+            description: 'Ha ocurrido un error durante el inicio de sesión',
           });
         }
       } else {
-        toast.success("¡Bienvenido!", {
-          description: "Has iniciado sesión correctamente",
+        toast.success('¡Bienvenido!', {
+          description: 'Has iniciado sesión correctamente',
         });
         setOpen(false);
         resetForm();
-        router.push("/dashboard");
+        router.push('/dashboard');
         router.refresh();
       }
     } catch {
-      toast.error("Error de conexión", {
-        description: "Por favor intenta nuevamente",
+      toast.error('Error de conexión', {
+        description: 'Por favor intenta nuevamente',
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const togglePasswordVisibility = (
+    e?: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    // Prevent button from stealing focus from the password input
+    e?.preventDefault();
+    const next = !showPassword;
+    setShowPassword(next);
+    // Animate fingers to reveal/hide eye
+    if (next) {
+      yetiRef.current?.spreadFingers();
+      // keep hands up if focused on password
+      if (focusedField !== 'password') {
+        yetiRef.current?.coverEyes();
+      }
+    } else {
+      yetiRef.current?.closeFingers();
+      // If we're still focused on password, re-cover eyes; otherwise uncover
+      if (focusedField === 'password') {
+        yetiRef.current?.coverEyes();
+      } else {
+        yetiRef.current?.uncoverEyes();
+      }
+    }
+    // Keep focus on password so blur handler doesn't drop hands
+    if (focusedField === 'password') {
+      passwordRef.current?.focus();
+    }
   };
 
   const resetForm = () => {
-    setEmail("");
-    setPassword("");
+    setEmail('');
+    setPassword('');
     setShowPassword(false);
     setErrors({});
     setFocusedField(null);
@@ -116,7 +147,10 @@ export function LoginSheet({ children }: LoginSheetProps) {
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent side="right" className="w-full sm:w-[480px] p-0 bg-gradient-to-br from-background via-background/98 to-background/95 border-l border-border/30">
+      <SheetContent
+        side="right"
+        className="w-full sm:w-[480px] p-0 bg-gradient-to-br from-background via-background/98 to-background/95 border-l border-border/30"
+      >
         {/* Header con gradiente */}
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
@@ -136,24 +170,36 @@ export function LoginSheet({ children }: LoginSheetProps) {
                 </SheetHeader>
               </div>
             </div>
+            {/* Yeti avatar */}
           </div>
         </div>
 
         {/* Formulario */}
         <div className="px-6 pb-6 flex-1 flex flex-col">
           <form onSubmit={handleSubmit} className="space-y-6 flex-1">
+            <div className="w-full flex items-center justify-center py-2">
+              <YetiAvatar
+                ref={yetiRef}
+                emailInputRef={emailRef}
+                passwordInputRef={passwordRef}
+                className="w-40 h-40"
+              />
+            </div>
             {/* Campo Email */}
             <div className="space-y-3">
-              <Label htmlFor="email" className="text-sm font-semibold text-foreground">
+              <Label
+                htmlFor="email"
+                className="text-sm font-semibold text-foreground"
+              >
                 Correo Electrónico
               </Label>
               <div className="relative group">
                 <div
                   className={cn(
-                    "absolute left-4 top-1/2 -translate-y-1/2 transition-all duration-300",
-                    focusedField === "email" || email
-                      ? "text-primary scale-110"
-                      : "text-muted-foreground group-hover:text-primary/70"
+                    'absolute left-4 top-1/2  -translate-y-1/2 transition-all duration-300',
+                    focusedField === 'email' || email
+                      ? 'text-primary scale-110'
+                      : 'text-muted-foreground group-hover:text-primary/70',
                   )}
                 >
                   <Mail className="h-4 w-4" />
@@ -163,18 +209,25 @@ export function LoginSheet({ children }: LoginSheetProps) {
                   type="email"
                   placeholder="tu@email.com"
                   value={email}
+                  ref={emailRef}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    if (errors.email) setErrors({ ...errors, email: undefined });
+                    if (errors.email)
+                      setErrors({ ...errors, email: undefined });
                   }}
-                  onFocus={() => setFocusedField("email")}
-                  onBlur={() => setFocusedField(null)}
+                  onFocus={() => {
+                    setFocusedField('email');
+                    yetiRef.current?.recalcLayout();
+                  }}
+                  onBlur={() => {
+                    setFocusedField(null);
+                  }}
                   className={cn(
-                    "pl-12 h-12 border-2 transition-all duration-300 rounded-xl bg-background/60 backdrop-blur-sm shadow-sm",
-                    "hover:shadow-md hover:bg-background/80",
+                    'pl-12 h-12 border-2 transition-all duration-300 rounded-xl bg-background/80 shadow-sm',
+                    'hover:shadow-md hover:bg-background/90',
                     errors.email
-                      ? "border-destructive focus:border-destructive focus:ring-destructive/20 shadow-destructive/20"
-                      : "border-border/60 focus:border-primary focus:ring-primary/20 focus:shadow-primary/20 hover:border-primary/40"
+                      ? 'border-destructive focus:border-destructive focus:ring-destructive/20 shadow-destructive/20'
+                      : 'border-border/60 focus:border-primary focus:ring-primary/20 focus:shadow-primary/20 hover:border-primary/40',
                   )}
                   disabled={isLoading}
                 />
@@ -188,37 +241,49 @@ export function LoginSheet({ children }: LoginSheetProps) {
 
             {/* Campo Contraseña */}
             <div className="space-y-3">
-              <Label htmlFor="password" className="text-sm font-semibold text-foreground">
+              <Label
+                htmlFor="password"
+                className="text-sm font-semibold text-foreground"
+              >
                 Contraseña
               </Label>
               <div className="relative group">
                 <div
                   className={cn(
-                    "absolute left-4 top-1/2 -translate-y-1/2 transition-all duration-300",
-                    focusedField === "password" || password
-                      ? "text-primary scale-110"
-                      : "text-muted-foreground group-hover:text-primary/70"
+                    'absolute left-4 top-1/2 -translate-y-1/2 transition-all duration-300',
+                    focusedField === 'password' || password
+                      ? 'text-primary scale-110'
+                      : 'text-muted-foreground group-hover:text-primary/70',
                   )}
                 >
                   <Lock className="h-4 w-4" />
                 </div>
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   value={password}
+                  ref={passwordRef}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    if (errors.password) setErrors({ ...errors, password: undefined });
+                    if (errors.password)
+                      setErrors({ ...errors, password: undefined });
                   }}
-                  onFocus={() => setFocusedField("password")}
-                  onBlur={() => setFocusedField(null)}
+                  onFocus={() => {
+                    setFocusedField('password');
+                    yetiRef.current?.coverEyes();
+                  }}
+                  onBlur={() => {
+                    setFocusedField(null);
+                    // On leaving password input, always lower hands smoothly
+                    yetiRef.current?.uncoverEyes();
+                  }}
                   className={cn(
-                    "pl-12 pr-12 h-12 border-2 transition-all duration-300 rounded-xl bg-background/60 backdrop-blur-sm shadow-sm",
-                    "hover:shadow-md hover:bg-background/80",
+                    'pl-12 pr-12 h-12 border-2 transition-all duration-300 rounded-xl bg-background/80 shadow-sm',
+                    'hover:shadow-md hover:bg-background/90',
                     errors.password
-                      ? "border-destructive focus:border-destructive focus:ring-destructive/20 shadow-destructive/20"
-                      : "border-border/60 focus:border-primary focus:ring-primary/20 focus:shadow-primary/20 hover:border-primary/40"
+                      ? 'border-destructive focus:border-destructive focus:ring-destructive/20 shadow-destructive/20'
+                      : 'border-border/60 focus:border-primary focus:ring-primary/20 focus:shadow-primary/20 hover:border-primary/40',
                   )}
                   disabled={isLoading}
                 />
@@ -227,9 +292,12 @@ export function LoginSheet({ children }: LoginSheetProps) {
                   variant="ghost"
                   size="sm"
                   className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-muted/60 rounded-lg transition-all duration-200 hover:scale-110"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={togglePasswordVisibility}
                   disabled={isLoading}
-                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-label={
+                    showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+                  }
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4 text-muted-foreground" />
