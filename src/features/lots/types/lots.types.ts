@@ -1,3 +1,5 @@
+import { PaginationMeta } from '@/features/shared/types/api.types';
+
 export interface Project {
   id: string;
   name: string;
@@ -44,4 +46,15 @@ export interface LotsFilters {
   projectId: string | null;
   stageId: string | null;
   blockId: string | null;
+}
+
+export interface LotDetail extends Lot {
+  blockName: string;
+  stageName: string;
+  projectName: string;
+  projectCurrency: string;
+}
+
+export interface LotResponse extends PaginationMeta {
+  items: LotDetail[];
 }

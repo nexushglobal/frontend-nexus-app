@@ -1,41 +1,20 @@
-Quiero que realices la siguiente vista
-/dashboard/(facturacion)/fac-libro-reclamaciones
-en esta vista inicialmente consumiremos la api de
-/api/app/complaints
-el cual retorna
- {
-                "id": 1,
-                "fullName": "Anthoni Portocarrero",
-                "address": "Mz L Lt 10 santa margarita",
-                "documentType": "DNI", `DNI | CE`
-                "documentNumber": "10375089",
-                "phone": "958920823",
-                "email": "softwaretoni21@gmail.com",
-                "parentGuardian": "",
-                "itemType": "PRODUCT", `SERVICE | PRODUCT`
-                "claimAmount": "200.00",
-                "description": "asdasdasda asdas dasd asd asd asd",
-                "detail": " asdasd adasd a dsada dsadas dasd",
-                "complaintType": "COMPLAINT", `COMPLAINT | CLAIM`
-                "order": "123",
-                "attended": false,
-                "createdAt": "2025-09-02T09:03:09.443Z",
-                "updatedAt": "2025-09-02T09:03:09.443Z"
-            }[]
-esta tiene paginacion, y los parametros disponibles son
--startDate:string
--endDate:string
--attended:boolean
--page y limit para la paginacion
+Quiero que realicemos la siguiente vista:
+/dashboard/(cliente)/cli-unilevel/lotes-disponibles
 
-se tiene que implementar un vista de una tabla que muestre los resultados de la api
-guiarte de src/app/dashboard/(facturacion)/fac-pagos/page.tsx
-para mobile debe ser cards y para desktop debe ser una tabla
+para ello lo primero que haremos sera consumir el servicio de getProjects de src/features/lots/services/lotsService.ts
+y mostraremos en cards todos los proyectos que nos devuelva el servicio, al hacer click en una card, en la misma vista
+mostraremos los lotes disponibles de ese proyecto, para ello usaremos el servicio getAllLots de src/features/lots/services/lotsService.ts
 
-una de las columnas debe ser para marcar como atendido, para ello usar la siguiente api
-/api/app/complaints/:id/attend
-body : {attended:boolean}
+luego usaremos los componentes de src/features/shared tanto para la paginacion como para la tabla de lotes, tambien recuerda que para
+mobile usaremos cards en lugar de una tabla. tomar de referencia la vista de src/app/dashboard/(cliente)/cli-transacciones/mis-pagos/page.tsx
 
-recuerda usar los componentes de feature/shared para la estructura de la creacion de la integracion de la api y las tablas
-tomar de referencia la integracion y vista de src/app/dashboard/(facturacion)/fac-pagos/page.tsx
-usar los styles de globals.css
+la api de getAllLots recibe parametros para filtrar, ordenar y paginar, estos parametros son:
+- page
+- limit
+- term (para buscar por nombre de lote)
+- stageId (para filtrar por etapa) se debe consumir la api getStages para obtener las etapas de un proyecto
+- blockId (para filtrar por manzana) se debe consumir la api getBlocks para obtener las manzanas de una etapa
+
+se debe poder regresar a la seleccion de proyecto, para ello usaremos un boton de regresar que nos llevara a la vista inicial
+recuerda crear los componentes que creas necesarios y usar los componentes ya existentes en src/features/shared
+tambien usar los colores de globales de src/styles/globals.css
