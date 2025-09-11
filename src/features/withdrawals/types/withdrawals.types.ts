@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 import { WithdrawalStatus } from './enums-withdrawals';
 
 export interface WithdrawalBase {
@@ -36,11 +36,13 @@ export interface WithdrawalClient extends WithdrawalBase {
   isArchived: boolean;
 }
 
-export interface WithdrawalAdminResponse extends PaginationMeta {
+export interface WithdrawalAdminResponse {
+  pagination: ApiPaginationMeta;
   items: WithdrawalAdmin[];
 }
 
-export interface WithdrawalClientResponse extends PaginationMeta {
+export interface WithdrawalClientResponse {
+  pagination: ApiPaginationMeta;
   items: WithdrawalClient[];
 }
 

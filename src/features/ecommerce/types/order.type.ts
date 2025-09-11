@@ -1,5 +1,5 @@
 import { BasePaymentRequest } from '@/features/membership/types/membership-detail.type';
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface Client {
   userId: string;
@@ -67,11 +67,13 @@ export interface Metadata {
   Productos: Producto[];
 }
 
-export interface OrderAdminResponse extends PaginationMeta {
+export interface OrderAdminResponse {
+  pagination: ApiPaginationMeta;
   items: OrderAdminItem[];
 }
 
-export interface OrderClientResponse extends PaginationMeta {
+export interface OrderClientResponse {
+  pagination: ApiPaginationMeta;
   items: OrderClientItem[];
 }
 

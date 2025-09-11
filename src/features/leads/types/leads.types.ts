@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface Lead {
   id: number;
@@ -25,7 +25,8 @@ export interface ListLeadsRequest {
   endDate?: string;
 }
 
-export interface ListLeadsResponse extends PaginationMeta {
+export interface ListLeadsResponse {
+  pagination: ApiPaginationMeta;
   items: Lead[];
 }
 

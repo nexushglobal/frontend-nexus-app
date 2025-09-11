@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface Project {
   id: string;
@@ -55,6 +55,7 @@ export interface LotDetail extends Lot {
   projectCurrency: string;
 }
 
-export interface LotResponse extends PaginationMeta {
+export interface LotResponse {
   items: LotDetail[];
+  pagination: ApiPaginationMeta;
 }

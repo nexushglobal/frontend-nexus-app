@@ -1,3 +1,5 @@
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
+
 export interface MembershipPlan {
   id: number;
   name: string;
@@ -84,8 +86,8 @@ export interface MembershipHistoryItem {
   createdAt: string; // like "2025-08-13T05:42:00.126Z"
 }
 
-import { PaginationMeta } from '@/features/shared/types/api.types';
+export interface MembershipHistoryResponse {
+  pagination: ApiPaginationMeta;
 
-export interface MembershipHistoryResponse extends PaginationMeta {
   items: MembershipHistoryItem[];
 }

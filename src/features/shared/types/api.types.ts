@@ -22,10 +22,10 @@ export class ApiError extends Error {
   constructor(
     message: string,
     errors: string | string[] | null = null,
-    statusCode: number = 500
+    statusCode: number = 500,
   ) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
     this.success = false;
     this.errors = errors;
     this.statusCode = statusCode;
@@ -39,8 +39,4 @@ export interface ApiPaginationMeta {
   totalPages: number;
   hasNext: boolean;
   hasPrev: boolean;
-}
-
-export interface PaginationMeta {
-  pagination: ApiPaginationMeta;
 }

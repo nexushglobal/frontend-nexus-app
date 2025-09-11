@@ -8,9 +8,9 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useComplaints } from '../../hooks/useComplaints';
 import { useComplaintsFiltersStore } from '../../stores/complaints-filters.store';
-import { ComplaintsTable } from '../ComplaintsTable';
 import { ComplaintsCards } from '../ComplaintsCards';
 import { ComplaintsFilters } from '../ComplaintsFilters';
+import { ComplaintsTable } from '../ComplaintsTable';
 
 export function ComplaintsAdminPage() {
   const { filters, setFilter, setFilters } = useComplaintsFiltersStore();
@@ -50,7 +50,8 @@ export function ComplaintsAdminPage() {
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Error al cargar los reclamos: {error?.message || 'Error desconocido'}
+            Error al cargar los reclamos:{' '}
+            {error?.message || 'Error desconocido'}
           </AlertDescription>
         </Alert>
       </div>
@@ -78,7 +79,9 @@ export function ComplaintsAdminPage() {
             <CardContent className="flex items-center justify-center py-12">
               <div className="flex items-center gap-3">
                 <Loader2 className="h-6 w-6 animate-spin" />
-                <span className="text-muted-foreground">Cargando reclamos...</span>
+                <span className="text-muted-foreground">
+                  Cargando reclamos...
+                </span>
               </div>
             </CardContent>
           </Card>

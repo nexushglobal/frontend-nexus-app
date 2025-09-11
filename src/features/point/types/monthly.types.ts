@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface Rank {
   id: number;
@@ -22,6 +22,8 @@ export interface MonthlyVolume {
   updatedAt: string;
 }
 
-export interface MonthlyVolumeResponse extends PaginationMeta {
+export interface MonthlyVolumeResponse {
+  pagination: ApiPaginationMeta;
+
   items: MonthlyVolume[];
 }

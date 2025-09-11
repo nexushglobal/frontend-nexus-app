@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface ProductImage {
   id: number;
@@ -47,7 +47,8 @@ export interface ProductAdmin extends BaseProduct {
   mainImage: string;
 }
 
-export interface ProductAdminResponse extends PaginationMeta {
+export interface ProductAdminResponse {
+  pagination: ApiPaginationMeta;
   items: ProductAdmin[];
 }
 
@@ -71,7 +72,9 @@ export interface StockProductHistory {
   };
 }
 
-export interface StockProductHistoryResponse extends PaginationMeta {
+export interface StockProductHistoryResponse {
+  pagination: ApiPaginationMeta;
+
   items: StockProductHistory[];
 }
 
@@ -88,7 +91,9 @@ export interface ProductClient extends BaseClientProduct {
   mainImage: string;
 }
 
-export interface ProductClientResponse extends PaginationMeta {
+export interface ProductClientResponse {
+  pagination: ApiPaginationMeta;
+
   items: ProductClient[];
 }
 

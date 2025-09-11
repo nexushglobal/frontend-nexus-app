@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export enum DocumentType {
   DNI = 'DNI',
@@ -61,6 +61,7 @@ export interface GetComplaintsParams {
 export interface AttendComplaintDto {
   attended: boolean;
 }
-export interface AttendComplaintResponse extends PaginationMeta {
+export interface AttendComplaintResponse {
   items: Complaint[];
+  pagination: ApiPaginationMeta;
 }

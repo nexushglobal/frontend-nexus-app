@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface WeeklyVolume {
   id: number;
@@ -15,7 +15,9 @@ export interface WeeklyVolume {
   updatedAt: Date;
 }
 
-export interface WeeklyVolumeResponse extends PaginationMeta {
+export interface WeeklyVolumeResponse {
+  pagination: ApiPaginationMeta;
+
   items: WeeklyVolume[];
 }
 
@@ -29,6 +31,8 @@ export interface WeeklyVolumeHistory {
   updatedAt: Date; // like "2025-06-15T23:58:45.034Z"
 }
 
-export interface WeeklyVolumeHistoryResponse extends PaginationMeta {
+export interface WeeklyVolumeHistoryResponse {
+  pagination: ApiPaginationMeta;
+
   items: WeeklyVolumeHistory[];
 }

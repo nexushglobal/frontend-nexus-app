@@ -63,7 +63,7 @@ export default function Error({ error, reset }: ErrorProps) {
 
           <CardContent className="space-y-6">
             {/* Detalles del error para desarrollo */}
-            {process.env.APP_ENV === 'development' && (
+            {process.env.APP_ENV == 'development' && (
               <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4 space-y-2">
                 <h3 className="font-semibold text-sm flex items-center gap-2 text-destructive">
                   <Bug className="w-4 h-4" />

@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface PointTransactionBase {
   id: number;
@@ -25,11 +25,15 @@ export interface PointLotTransactionBase {
   updatedAt: string; //like "2025-08-11T09:00:00.115Z"
 }
 
-export interface PointTransactionListResponse extends PaginationMeta {
+export interface PointTransactionListResponse {
+  pagination: ApiPaginationMeta;
+
   items: PointTransactionBase[];
 }
 
-export interface PointLotTransactionListResponse extends PaginationMeta {
+export interface PointLotTransactionListResponse {
+  pagination: ApiPaginationMeta;
+
   items: PointLotTransactionBase[];
 }
 
@@ -54,7 +58,8 @@ export interface PaymentItem {
   createdAt: string; // like "2025-08-11T09:00:00.115Z"
 }
 
-export interface PaymentList extends PaginationMeta {
+export interface PaymentList {
+  pagination: ApiPaginationMeta;
   items?: PaymentItem[];
 }
 export interface PointTransactionDetailResponse extends PointTransactionBase {

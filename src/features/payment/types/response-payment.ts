@@ -1,5 +1,5 @@
-import { PaginationMeta } from "@/features/shared/types/api.types";
-import { PaymentMethod, PaymentStatus } from "./enums-payments";
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
+import { PaymentMethod, PaymentStatus } from './enums-payments';
 
 // ---- BASE TYPES ----
 export interface PaymentConfig {
@@ -34,7 +34,9 @@ export interface PaymentBase {
 // ---- PAYMENTS USER ----
 export interface PaymentUser extends PaymentBase {}
 
-export interface PaymentUserResponse extends PaginationMeta {
+export interface PaymentUserResponse {
+  pagination: ApiPaginationMeta;
+
   items: PaymentUser[];
   meta: {
     activePaymentConfigs: PaymentConfig[];
@@ -70,7 +72,9 @@ export interface PaymentAdmin extends PaymentBase {
   ticketNumber?: string | null;
 }
 
-export interface PaymentAdminResponse extends PaginationMeta {
+export interface PaymentAdminResponse {
+  pagination: ApiPaginationMeta;
+
   items: PaymentAdmin[];
   meta: {
     activePaymentConfigs: PaymentConfig[];

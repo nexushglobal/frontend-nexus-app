@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 import { BasePaymentRequest } from './membership-detail.type';
 
 export interface ReconsumtionItem {
@@ -13,7 +13,9 @@ export interface ReconsumtionItem {
   updatedAt: string; // like "2025-06-16T14:20:00.191Z"
 }
 
-export interface InfoReconsumptions extends PaginationMeta {
+export interface InfoReconsumptions {
+  pagination: ApiPaginationMeta;
+
   items: ReconsumtionItem[];
 }
 

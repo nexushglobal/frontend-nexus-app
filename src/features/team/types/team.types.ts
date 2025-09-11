@@ -1,4 +1,4 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 export interface TeamMember {
   id: string;
@@ -91,7 +91,8 @@ export interface DirectTeam {
   position: 'LEFT' | 'RIGHT';
 }
 
-export interface DirectTeamPagination extends PaginationMeta {
+export interface DirectTeamPagination {
+  pagination: ApiPaginationMeta;
   items: DirectTeam[];
 }
 export interface DirectTeamResponse {

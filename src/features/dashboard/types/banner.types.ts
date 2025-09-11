@@ -1,9 +1,9 @@
-import { PaginationMeta } from '@/features/shared/types/api.types';
+import { ApiPaginationMeta } from '@/features/shared/types/api.types';
 
 // Enums
 export enum LinkType {
   INTERNAL = 'INTERNAL',
-  EXTERNAL = 'EXTERNAL'
+  EXTERNAL = 'EXTERNAL',
 }
 
 // Base banner interface
@@ -38,7 +38,8 @@ export interface ActiveBanner {
 }
 
 // API Response types
-export interface BannerListResponse extends PaginationMeta {
+export interface BannerListResponse {
+  pagination: ApiPaginationMeta;
   items: Banner[];
 }
 
@@ -99,7 +100,7 @@ export interface BannerFormData {
   linkType?: LinkType;
   isActive?: boolean;
   startDate?: string; // ISO string for form handling
-  endDate?: string;   // ISO string for form handling
+  endDate?: string; // ISO string for form handling
   bannerImage?: File;
 }
 
