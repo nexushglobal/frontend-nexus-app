@@ -17,9 +17,11 @@ export function DashboardUserInfo() {
   const [showExpiredMembershipModal, setShowExpiredMembershipModal] =
     useState(false);
   const [showNoMembershipModal, setShowNoMembershipModal] = useState(false);
+  const [hasShownBirthdayModal, setHasShownBirthdayModal] = useState(false);
 
+  // Effect for checking birthday only once when data loads
   useEffect(() => {
-    if (data?.userData) {
+    if (data?.userData && !hasShownBirthdayModal) {
       const today = new Date();
       const birthdate = new Date(data.userData.birthdate);
 
@@ -29,24 +31,19 @@ export function DashboardUserInfo() {
 
       if (isBirthday) {
         setShowBirthdayModal(true);
+        setHasShownBirthdayModal(true);
       }
     }
+  }, [data?.userData, hasShownBirthdayModal]);
 
-    // Check membership status
+  // Effect for checking membership status
+  useEffect(() => {
     if (data?.membershipData) {
       const { hasMembership, membership } = data.membershipData;
 
       if (!hasMembership) {
         // No membership - show no membership modal
-        if (showBirthdayModal) {
-          // Delay to show after birthday modal
-          const timer = setTimeout(() => {
-            setShowNoMembershipModal(true);
-          }, 1000);
-          return () => clearTimeout(timer);
-        } else {
-          setShowNoMembershipModal(true);
-        }
+        setShowNoMembershipModal(true);
       } else if (hasMembership && membership) {
         // Has membership - check if expired
         const today = new Date();
@@ -54,20 +51,40 @@ export function DashboardUserInfo() {
         const isExpired = endDate < today;
 
         if (isExpired) {
-          // Show expired modal after birthday modal (if any) or immediately
-          if (showBirthdayModal) {
-            // Delay to show after birthday modal
-            const timer = setTimeout(() => {
-              setShowExpiredMembershipModal(true);
-            }, 1000);
-            return () => clearTimeout(timer);
-          } else {
-            setShowExpiredMembershipModal(true);
-          }
+          setShowExpiredMembershipModal(true);
         }
       }
     }
-  }, [data, showBirthdayModal]);
+  }, [data?.membershipData]);
+
+  // Handle birthday modal close and show next modal if needed
+  const handleBirthdayModalClose = () => {
+    setShowBirthdayModal(false);
+
+    // After closing birthday modal, check if we need to show membership modals
+    if (data?.membershipData) {
+      const { hasMembership, membership } = data.membershipData;
+
+      if (!hasMembership) {
+        // Delay to show no membership modal after birthday modal closes
+        setTimeout(() => {
+          setShowNoMembershipModal(true);
+        }, 500);
+      } else if (hasMembership && membership) {
+        // Has membership - check if expired
+        const today = new Date();
+        const endDate = new Date(membership.endDate);
+        const isExpired = endDate < today;
+
+        if (isExpired) {
+          // Delay to show expired modal after birthday modal closes
+          setTimeout(() => {
+            setShowExpiredMembershipModal(true);
+          }, 500);
+        }
+      }
+    }
+  };
 
   if (isLoading) {
     return <DashboardUserInfoSkeleton />;
@@ -109,7 +126,7 @@ export function DashboardUserInfo() {
       <BirthdayModal
         userName={data.userData.firstName}
         isOpen={showBirthdayModal}
-        onClose={() => setShowBirthdayModal(false)}
+        onClose={handleBirthdayModalClose}
       />
 
       {/* No Membership Modal */}
