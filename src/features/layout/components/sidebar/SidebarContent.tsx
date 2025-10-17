@@ -12,6 +12,7 @@ import Image from 'next/image';
 import SidebarLink from './SidebarLink';
 import { useQueryClient } from '@tanstack/react-query';
 import { performLogoutCleanup } from '@/lib/logout-utils';
+import { CourseButton } from './CourseButton';
 
 type Props = {
   isCollapsed: boolean;
@@ -224,6 +225,11 @@ export const SidebarContent = ({
       </div>
 
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4">
+        {/* Botón destacado de Cursos */}
+        <div className="mb-4">
+          <CourseButton isCollapsed={isCollapsed} />
+        </div>
+
         <div className="space-y-2 px-3">
           {menuItems.map((item) => (
             <SidebarLink key={item.id} item={item} isCollapsed={isCollapsed} />

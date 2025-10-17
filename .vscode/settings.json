@@ -15,5 +15,14 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
+  },
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#7B2CBF",
+    "titleBar.activeForeground": "#ffffff",
+    "titleBar.inactiveBackground": "#4A1585",
+    "titleBar.inactiveForeground": "#cccccc",
+    "activityBar.background": "#9D4EDD",
+    "activityBar.foreground": "#ffffff",
+    "activityBar.inactiveForeground": "#999999"
   }
 }
