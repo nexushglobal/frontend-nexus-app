@@ -1,0 +1,25 @@
+{
+    "name": "NEXUS H GLOBAL - Libertad Financiera",
+    "short_name": "NEXUS H",
+    "description": "Invierte en bienes raíces y construye tu negocio inmobiliario con NEXUS H GLOBAL",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "theme_color": "#1f2937",
+    "background_color": "#1f2937",
+    "display": "standalone",
+    "orientation": "portrait",
+    "start_url": "/",
+    "scope": "/"
+}

@@ -103,21 +103,38 @@ export const metadata: Metadata = {
   icons: [
     {
       rel: 'icon',
-      url: '/imgs/isotipo_negro.ico',
-      media: '(prefers-color-scheme: light)',
+      type: 'image/x-icon',
+      url: '/favicon.ico',
     },
     {
       rel: 'icon',
-      url: '/imgs/isotipo_blanco.ico',
-      media: '(prefers-color-scheme: dark)',
+      type: 'image/png',
+      sizes: '16x16',
+      url: '/favicon-16x16.png',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      url: '/favicon-32x32.png',
     },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
-      url: '/imgs/apple-touch-icon.png',
+      url: '/apple-touch-icon.png',
+    },
+    {
+      rel: 'android-chrome',
+      sizes: '192x192',
+      url: '/android-chrome-192x192.png',
+    },
+    {
+      rel: 'android-chrome',
+      sizes: '512x512',
+      url: '/android-chrome-512x512.png',
     },
   ],
-  manifest: '/manifest.json',
+  manifest: '/site.webmanifest',
   other: {
     'msapplication-TileColor': '#1f2937',
     'msapplication-config': '/browserconfig.xml',
